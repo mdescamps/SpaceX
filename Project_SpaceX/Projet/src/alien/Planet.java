@@ -2,6 +2,9 @@ package alien;
 
 import java.util.ArrayList;
 
+import formes.Circle;
+import formes.Point2D;
+
 public class Planet {
 
 	private int productionRate;
@@ -9,6 +12,7 @@ public class Planet {
 	private ArrayList<SpaceShip> spaceShips;
 	private int nbSpaceShips;
 	private Sprite sprite;
+	private Circle c;
 	
 	public Planet(int rate, int p, Sprite sprite) {
 		this.productionRate = rate;
@@ -16,6 +20,8 @@ public class Planet {
 		this.spaceShips = new ArrayList<SpaceShip>();
 		this.nbSpaceShips = this.spaceShips.size();
 		this.sprite = sprite;
+		Point2D center = new Point2D(sprite.getX() + (sprite.width()/2), sprite.getY() + (sprite.height()/2));
+		this.c = new Circle(center,sprite.width());
 	}
 	
 	public int getNbSpaceShips() {
@@ -28,6 +34,10 @@ public class Planet {
 	
 	public int getPlayer() {
 		return this.player;
+	}
+	
+	public Circle getCircle() {
+		return c;
 	}
 	
 	public int getProductionRate() {

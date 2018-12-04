@@ -1,4 +1,4 @@
-package alien;
+package formes;
 
 public class Circle {
 	
