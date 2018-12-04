@@ -5,12 +5,12 @@ import java.util.ArrayList;
 public class Planet {
 
 	private int productionRate;
-	private String player;
+	private int player;
 	private ArrayList<SpaceShip> spaceShips;
 	private int nbSpaceShips;
 	private Sprite sprite;
 	
-	public Planet(int rate, String p, Sprite sprite) {
+	public Planet(int rate, int p, Sprite sprite) {
 		this.productionRate = rate;
 		this.player = p;
 		this.spaceShips = new ArrayList<SpaceShip>();
@@ -24,6 +24,10 @@ public class Planet {
 
 	public void setNbSpaceShips(int nbSpaceShips) {
 		this.nbSpaceShips = nbSpaceShips;
+	}
+	
+	public int getPlayer() {
+		return this.player;
 	}
 	
 	public int getProductionRate() {

@@ -51,7 +51,7 @@ public class Game extends Application {
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setFont(Font.font("Helvetica", FontWeight.BOLD, 24));
 		gc.setFill(Color.BISQUE);
-		gc.setStroke(Color.RED);
+		gc.setStroke(Color.TRANSPARENT);
 		gc.setLineWidth(1);
 
 		Image space = new Image(getRessourcePathByName("images/space.jpg"), WIDTH, HEIGHT, false, false);
@@ -72,7 +72,7 @@ public class Game extends Application {
 				}
 			}
 			planet.validatePosition();
-			planets.add(new Planet(r.nextInt(120) + 30,"",planet));
+			planets.add(new Planet(r.nextInt(60) + 30,i,planet));
 		}
 
 		stage.setScene(scene);
@@ -80,13 +80,7 @@ public class Game extends Application {
 
 		EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent e) {
-				
-				if (e.getEventType() == MouseEvent.MOUSE_DRAGGED) {
-					Planet p1 = (Planet) e.getSource();
-					Planet p2 = (Planet) e.getTarget();
-					p1.sendShip(p2);
-				}
-				
+						
 			}
 		};
 
@@ -105,13 +99,24 @@ public class Game extends Application {
 					Planet planet = planets.get(i);
 					planet.getSprite().render(gc);
 					
-					String text = "40";
+					String text =  "" + planet.getNbSpaceShips();
 					gc.fillText(text, planet.getSprite().getX() + (planet.getSprite().width()/2), planet.getSprite().getY() + (planet.getSprite().height()/2));
 					gc.strokeText(text, planet.getSprite().getX() + (planet.getSprite().width()/2), planet.getSprite().getY() + (planet.getSprite().height()/2));
 					gc.setTextAlign(TextAlignment.CENTER);
 					
 					if (timer%(planet.getProductionRate()) == 0) {
 						planet.productShip();
+					}
+					
+					switch (planet.getPlayer()) {
+					case(1):
+						gc.setFill(Color.BLUE);
+						break;
+					case (2):
+						gc.setFill(Color.RED);
+						break;
+					default:
+						gc.setFill(Color.BISQUE);
 					}
 				}
 				timer++;
