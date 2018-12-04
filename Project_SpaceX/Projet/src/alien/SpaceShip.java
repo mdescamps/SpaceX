@@ -1,5 +1,6 @@
 package alien;
 
+import formes.Point2D;
 import formes.Triangle;
 
 public class SpaceShip {
@@ -16,6 +17,19 @@ public class SpaceShip {
 		this.speed = s;
 		this.productionSpeed = production;
 		this.firePower = 1;
+		this.origin = null;
+		this.destination = null;
+		
 	}
+	
+	public void setDestination(Planet destination) {
+		this.destination = destination;
+	}
+	
+	public void setOrigin(Planet origin) {
+		this.origin = origin;
+	}
+	
+	
 
 }
