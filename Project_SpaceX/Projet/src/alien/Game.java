@@ -5,17 +5,24 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Random;
 
+import formes.Point2D;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
+import javafx.event.EventTarget;
+import javafx.event.EventType;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaException;
 import javafx.scene.media.MediaPlayer;
@@ -80,10 +87,29 @@ public class Game extends Application {
 
 		EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent e) {
+						if (e.getEventType() == MouseEvent.DRAG_DETECTED) {
+							scene.startFullDrag();
+							Point2D p = new Point2D(e.getSceneX(), e.getSceneY());
+							for (Planet p1 : planets) {
+								if (p1.getCircle().isInside(p)) {
+									p1.setNbSpaceShips(10);
+								}
+							}
+						}
+						if (e.getEventType() == MouseEvent.MOUSE_RELEASED) {
+							Point2D p = new Point2D(e.getSceneX(), e.getSceneY());
+							for (Planet p1 : planets) {
+								if (p1.getCircle().isInside(p)) {
+									p1.setNbSpaceShips(100);
+								}
+							}
+						}
 						
 			}
 		};
 
+		scene.setOnMouseReleased(mouseHandler);
+		scene.setOnDragDetected(mouseHandler);
 		scene.setOnMouseDragged(mouseHandler);
 		scene.setOnMousePressed(mouseHandler);
 
@@ -104,15 +130,15 @@ public class Game extends Application {
 					gc.strokeText(text, planet.getSprite().getX() + (planet.getSprite().width()/2), planet.getSprite().getY() + (planet.getSprite().height()/2));
 					gc.setTextAlign(TextAlignment.CENTER);
 					
-					if (timer%(planet.getProductionRate()) == 0) {
+					if (timer%(planet.getProductionRate()) == 0 && (planet.getPlayer() == 1 || planet.getPlayer() == 2)) {
 						planet.productShip();
 					}
 					
 					switch (planet.getPlayer()) {
-					case(1):
+					case(0):
 						gc.setFill(Color.BLUE);
 						break;
-					case (2):
+					case (1):
 						gc.setFill(Color.RED);
 						break;
 					default:

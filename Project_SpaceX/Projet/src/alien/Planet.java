@@ -21,7 +21,7 @@ public class Planet {
 		this.nbSpaceShips = this.spaceShips.size();
 		this.sprite = sprite;
 		Point2D center = new Point2D(sprite.getX() + (sprite.width()/2), sprite.getY() + (sprite.height()/2));
-		this.c = new Circle(center,sprite.width());
+		this.c = new Circle(center,(sprite.height() / 2));
 	}
 	
 	public int getNbSpaceShips() {
