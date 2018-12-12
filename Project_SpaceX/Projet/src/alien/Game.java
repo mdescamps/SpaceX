@@ -85,27 +85,35 @@ public class Game extends Application {
 		stage.setScene(scene);
 		stage.show();
 		
-		Collection<SpaceShip> SpaceShips = new ArrayList<SpaceShip>();
+		ArrayList<SpaceShip> SpaceShips = new ArrayList<SpaceShip>();
 
 		EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent e) {
-						if (e.getEventType() == MouseEvent.DRAG_DETECTED) {
-							scene.startFullDrag();
-							Point2D p = new Point2D(e.getSceneX(), e.getSceneY());
-							for (Planet p1 : planets) {
-								if (p1.getCircle().isInside(p)) {
-									p1.setNbSpaceShips(10);
-								}
+				int planet1 = 2;
+				boolean b = true;
+				if (e.getEventType() == MouseEvent.MOUSE_CLICKED) {
+					Point2D p = new Point2D(e.getSceneX(), e.getSceneY());
+					for (int i = 0 ; i < planets.size() ; i++) {
+						if (planets.get(i).getCircle().isInside(p)) {
+							planet1 = 2;
+						}
+					}
+				}
+				if (e.getEventType() == MouseEvent.MOUSE_RELEASED) {
+					Point2D p = new Point2D(e.getSceneX(), e.getSceneY());
+					for (Planet planet2 : planets) {
+						if (planet2.getCircle().isInside(p)) {
+							if (b) {
+								planet2.setNbSpaceShips(100);
+								planets.get(planet1).setNbSpaceShips(10);
+								planet1 = -1;
 							}
 						}
-						if (e.getEventType() == MouseEvent.MOUSE_RELEASED) {
-							Point2D p = new Point2D(e.getSceneX(), e.getSceneY());
-							for (Planet p1 : planets) {
-								if (p1.getCircle().isInside(p)) {
-									p1.setNbSpaceShips(100);
-								}
-							}
+						else {
+							planet1 = -1;
 						}
+					}
+				}
 						
 				if (e.isControlDown()) {
 					SpaceShip S = new SpaceShip(0,0,0,new Sprite(getRessourcePathByName("images/Planet.png"), 20, 15, WIDTH, HEIGHT));
