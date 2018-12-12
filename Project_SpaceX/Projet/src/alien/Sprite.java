@@ -75,6 +75,14 @@ public class Sprite {
 		this.xSpeed = xSpeed;
 		this.ySpeed = ySpeed;
 	}
+	
+	public double getXSpeed() {
+		return this.xSpeed;
+	}
+	
+	public double getYSpeed() {
+		return this.ySpeed;
+	}
 
 	public void changeSpeed(KeyCode code) {
 		switch (code) {

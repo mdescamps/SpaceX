@@ -57,7 +57,6 @@ public class Planet {
 	}
 
 	public void productShip() {
-		this.spaceShips.add(new SpaceShip(10, 10, 10));
 		this.nbSpaceShips ++;
 	}
 	

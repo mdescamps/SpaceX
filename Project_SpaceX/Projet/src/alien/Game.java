@@ -77,16 +77,22 @@ public class Game extends Application {
 
 		stage.setScene(scene);
 		stage.show();
+		
+		Collection<SpaceShip> SpaceShips = new ArrayList<SpaceShip>();
 
 		EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent e) {
-						
+				if (e.isControlDown()) {
+					SpaceShip S = new SpaceShip(0,0,0,new Sprite(getRessourcePathByName("images/Planet.png"), 20, 15, WIDTH, HEIGHT));
+					S.getSprite().setPosition(e.getX() , e.getY());
+					SpaceShips.add(S);
+				}
 			}
 		};
 
 		scene.setOnMouseDragged(mouseHandler);
 		scene.setOnMousePressed(mouseHandler);
-
+		
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 			}
@@ -104,9 +110,23 @@ public class Game extends Application {
 					gc.strokeText(text, planet.getSprite().getX() + (planet.getSprite().width()/2), planet.getSprite().getY() + (planet.getSprite().height()/2));
 					gc.setTextAlign(TextAlignment.CENTER);
 					
+					Iterator<SpaceShip> it = SpaceShips.iterator();
+					while(it.hasNext()) {
+						SpaceShip SpaceShip = it.next();
+						SpaceShip.getSprite().updatePosition();
+						if(SpaceShip.getSprite().intersects(planet.getSprite())) {
+							it.remove();
+							planet.productShip();
+						}
+						else {
+							SpaceShip.getSprite().render(gc);
+						}
+					}
+					
 					if (timer%(planet.getProductionRate()) == 0) {
 						planet.productShip();
 					}
+					
 					
 					switch (planet.getPlayer()) {
 					case(1):
