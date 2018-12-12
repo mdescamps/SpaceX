@@ -108,8 +108,10 @@ public class Game extends Application {
 						}
 						
 				if (e.isControlDown()) {
-					SpaceShip S = new SpaceShip(0,0,0,new Sprite(getRessourcePathByName("images/Planet.png"), 20, 15, WIDTH, HEIGHT));
+					SpaceShip S = new SpaceShip(0,0,0,new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, WIDTH, HEIGHT));
+					S.getSprite().setSpeed(1, 1);
 					S.getSprite().setPosition(e.getX() , e.getY());
+					S.setPosition();
 					SpaceShips.add(S);
 				}
 			}
@@ -141,7 +143,8 @@ public class Game extends Application {
 					while(it.hasNext()) {
 						SpaceShip SpaceShip = it.next();
 						SpaceShip.getSprite().updatePosition();
-						if(SpaceShip.getSprite().intersects(planet.getSprite())) {
+						SpaceShip.setPosition();
+						if(planet.getCircle().isInside(SpaceShip.getPosition())) {
 							it.remove();
 							planet.productShip();
 						}

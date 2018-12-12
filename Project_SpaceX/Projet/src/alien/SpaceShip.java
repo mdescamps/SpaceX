@@ -9,6 +9,7 @@ public class SpaceShip {
 	private int productionSpeed;
 	private int firePower;
 	private Sprite sprite;
+	private Point2D p;
 	
 	
 	public SpaceShip(int s, int production, int power, Sprite sprite) {
@@ -25,6 +26,14 @@ public class SpaceShip {
 	
 	public Sprite getSprite() {
 		return this.sprite;
+	}
+	
+	public void setPosition() {
+		this.p = new Point2D(this.sprite.getX(), this.sprite.getY());
+	}
+	
+	public Point2D getPosition() {
+		return this.p;
 	}
 
 }
