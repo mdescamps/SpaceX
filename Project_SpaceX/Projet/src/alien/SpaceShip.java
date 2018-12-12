@@ -9,27 +9,22 @@ public class SpaceShip {
 	private int productionSpeed;
 	private int firePower;
 	private Sprite sprite;
-	private Triangle triangle;
-	private Planet origin;
-	private Planet destination;
 	
-	public SpaceShip(int s, int production, int power) {
+	
+	public SpaceShip(int s, int production, int power, Sprite sprite) {
 		this.speed = s;
 		this.productionSpeed = production;
 		this.firePower = 1;
-		this.origin = null;
-		this.destination = null;
-		
+		this.sprite = sprite;
+		this.sprite.setSpeed(this.sprite.getXSpeed() * speed, this.sprite.getYSpeed());
 	}
 	
-	public void setDestination(Planet destination) {
-		this.destination = destination;
+	public void setSprite(Sprite sprite) {
+		this.sprite = sprite;
 	}
 	
-	public void setOrigin(Planet origin) {
-		this.origin = origin;
+	public Sprite getSprite() {
+		return this.sprite;
 	}
-	
-	
 
 }
