@@ -37,8 +37,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class Game extends Application {
-	private int percent1;
-	private int percent2;
+	private float[] percent = new float[2];
 	private final static int WIDTH = 1900;
 	private final static int HEIGHT = 1100;
 	private double timer = 0;
@@ -128,48 +127,47 @@ public class Game extends Application {
 					
 					Point2D p = new Point2D(e.getSceneX(), e.getSceneY());
 					
-					
+					int number = 0;
 					for (Planet planet1 : planets) {
 						if (planet1.isSelected()) {
 							for (Planet planet2 : planets) {
 								if (planet2.getCircle().isInside(p) && planet2 != planet1) {
-									
-									
-									
-									TextInputDialog ask = new TextInputDialog("guest");
-									ask.setTitle("control panel");
-									ask.setContentText("Spaceships number :");
-									ask.setHeaderText(null);
-									ask.setGraphic(null);
-									Optional<String> textIn = ask.showAndWait();
-									if (textIn.isPresent()) {
-										int number = Integer.valueOf(textIn.get());
-										
-										
-										
-										if (number < planet1.getNbSpaceShips()) {
-											for (int i = 0 ; i < number ; i++) {
-												planet1.getAttacked();
-												SpaceShip S = new SpaceShip(0,new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, 0, 0, WIDTH, HEIGHT));
-												S.setPlayer(planet1.getPlayer());
-												S.getSprite().setSpeed(1, 0);
-												S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius() + i*15,
-																		  planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius() - 100);
-												S.setPosition();
-												SpaceShips.add(S);
-											}
+									number = (int)(percent[0]*planet1.getNbSpaceShips());
+									if (e.isControlDown()) {
+										number = (int)(percent[0]*planet1.getNbSpaceShips());
+									}
+									else {
+										TextInputDialog ask = new TextInputDialog("");
+										ask.setTitle("control panel");
+										ask.setContentText("Spaceships number :");
+										ask.setHeaderText(null);
+										ask.setGraphic(null);
+										Optional<String> textIn = ask.showAndWait();
+										if (textIn.isPresent()){
+											number = Integer.valueOf(textIn.get());
 										}
 									}
-									planet1.unSelect();
+									if (number <= planet1.getNbSpaceShips()) {
+										for (int i = 0 ; i < number; i++) {
+											planet1.getAttacked();
+											SpaceShip S = new SpaceShip(0,new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, 0, 0, WIDTH, HEIGHT));
+											S.setPlayer(planet1.getPlayer());
+											S.getSprite().setSpeed(1, 0);
+											S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius() + i*15,
+													                  planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius() - 100);
+											S.setPosition();
+											SpaceShips.add(S);
+										}
+									}
 								}
+								planet1.unSelect();
 							}
 						}
 					}
-				}
-				
+				}		
 					
 				
-				if (e.isControlDown()) {
+				if (e.isShiftDown()) {
 					SpaceShip S = new SpaceShip(0,new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, 0, 0, WIDTH, HEIGHT));
 					S.setPlayer(1);
 					S.getSprite().setSpeed(1, 1);
@@ -180,23 +178,50 @@ public class Game extends Application {
 			}
 		};
 		
-		
-		EventHandler<ScrollEvent> ScrollHandeler = new EventHandler<ScrollEvent>() {
-			public void handle(ScrollEvent s) {
-				
-				if (s.isControlDown()) {
-					
-				}
-				
-			}
-		};
-		
-
 		scene.setOnMouseReleased(mouseHandler);
 		scene.setOnDragDetected(mouseHandler);
 		scene.setOnMouseDragged(mouseHandler);
 		scene.setOnMousePressed(mouseHandler);
 		
+		
+		
+		EventHandler<ScrollEvent> ScrollHandeler = new EventHandler<ScrollEvent>() {
+			public void handle(ScrollEvent s) {
+				
+				if (s.isControlDown()) {
+					if(s.getDeltaY()>0) {
+						percent[0] += 0.05;
+					}
+					else {
+						percent[0] -= 0.05;
+					}
+				}
+				if (s.isAltDown()) {
+					if(s.getDeltaY()>0) {
+						percent[1] += 0.05;
+					}
+					else {
+						percent[2] -= 0.05;
+					}
+				}
+				if (percent[0]*100 > 100) {
+					percent[0] = 1;
+				}
+				if (percent[1]*100 > 100) {
+					percent[1] = 1;
+				}
+				if (percent[0] < 0) {
+					percent[0] = 0;
+				}
+				if (percent[1] < 0) {
+					percent[1] = 0;
+				}
+			}
+		};
+		
+		scene.setOnScroll(ScrollHandeler);
+		
+
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 			}
@@ -252,9 +277,6 @@ public class Game extends Application {
 						}
 					}
 				
-					if (timer%(planet.getProductionRate()) == 0  && planet.getPlayer() != 0) {
-						planet.productShip();
-					}
 				}
 				
 				int blueVictory = 0;
@@ -280,12 +302,21 @@ public class Game extends Application {
 				timer++;
 				
 				gc.setFont(Font.font("Helvetica", FontWeight.BOLD, 15));
-				String percentage1 = "percentage : " + percent1 + "%";
-				String percentage2 = "percentage : " + percent2 + "%";
-				gc.fillText(percentage2, WIDTH - 75, 36);
-				gc.setFill(Color.RED);
-				gc.fillText(percentage1, 80, 36);
-				gc.setFill(Color.DEEPSKYBLUE);
+				for (int i = 0 ; i < percent.length ; i++) {
+					String percentage = "percentage : " + (int)(percent[i]*100)+ "%";
+					switch (i) {
+					case(0):
+						gc.setFill(Color.DEEPSKYBLUE);
+						gc.fillText(percentage, 95, 36);
+						break;
+					case(1):
+						gc.setFill(Color.RED);
+						gc.fillText(percentage, WIDTH - 95, 36);
+						break;
+					default:
+						gc.setFill(Color.BISQUE);
+					}
+				}
 				gc.setTextAlign(TextAlignment.RIGHT);
 				gc.setFont(Font.font("Helvetica", FontWeight.BOLD, 24));
 				
