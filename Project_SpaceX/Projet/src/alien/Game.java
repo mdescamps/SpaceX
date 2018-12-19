@@ -79,7 +79,7 @@ public class Game extends Application {
 			Sprite planet = new Sprite(getRessourcePathByName("images/Planet.png"), w, h, 20, 20, WIDTH - 20, HEIGHT - 20);
 			planet.setPosition(WIDTH * Math.random(), HEIGHT * Math.random());
 			for (int j = 0 ; j < planets.size() ; j++) {
-				while (planets.get(j).getSprite().intersects(planet)) {
+				while (planets.get(j).getSprite().intersectsPlanet(planet)) {
 					planet.setPosition(WIDTH * Math.random(), HEIGHT * Math.random());
 					j = 0;
 				}
@@ -141,7 +141,7 @@ public class Game extends Application {
 						
 				if (e.isControlDown()) {
 					SpaceShip S = new SpaceShip(0,new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, 0, 0, WIDTH, HEIGHT));
-					S.getSprite().setSpeed(0, 0);
+					S.getSprite().setSpeed(0, -0.2);
 					S.getSprite().setPosition(e.getX() , e.getY());
 					S.setPosition();
 					SpaceShips.add(S);
@@ -206,6 +206,7 @@ public class Game extends Application {
 						planet.productShip();
 					}
 				}
+				
 				timer++;
 			}
 		}.start();

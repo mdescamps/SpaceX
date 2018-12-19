@@ -13,7 +13,7 @@ public class SpaceShip {
 	public SpaceShip(int s, Sprite sprite) {
 		this.speed = s;
 		this.sprite = sprite;
-		this.sprite.setSpeed(this.sprite.getXSpeed() * speed, this.sprite.getYSpeed());
+		this.sprite.setSpeed(this.sprite.getXSpeed(), this.sprite.getYSpeed());
 	}
 	
 	public void setSprite(Sprite sprite) {
