@@ -52,8 +52,12 @@ public class Sprite {
 	}
 
 	public void validatePosition() {
-		if (x - width <= minX) {
-			x = minX + width;
+		if (x <= minX) {
+			x = minX;
+			xSpeed *= -1;
+		} else if (x < 0) {
+			x = 0;
+			xSpeed *= -1;
 		}
 		
 		if (x + width >= maxX) {
@@ -64,8 +68,12 @@ public class Sprite {
 			xSpeed *= -1;
 		}
 		
-		if (y - width <= minY) {
-			y = minY + width;
+		if (y <= minY) {
+			y = minY;
+			ySpeed *= -1;
+		} else if (y < 0) {
+			y = 0;
+			ySpeed *= -1;
 		}
 
 		if (y + height >= maxY) {
@@ -130,6 +138,25 @@ public class Sprite {
 	public boolean intersects(Sprite s) {
 		return ((x >= s.x && x <= s.x + s.width) || (s.x >= x && s.x <= x + width))
 				&& ((y >= s.y && y <= s.y + s.height) || (s.y >= y && s.y <= y + height));
+	}
+	
+	public boolean intersectsPlanet(Sprite s) {
+		return ((x >= s.x - 20 && x <= s.x + s.width + 20) || (s.x >= x - 20 && s.x <= x + width + 20))
+				&& ((y >= s.y - 20 && y <= s.y + s.height + 20) || (s.y >= y - 20 && s.y <= y + height + 20));
+	}
+	
+	public void evitate(Planet p) {
+		if (this.intersectsPlanet(p.getSprite())) {
+			boolean finish = false;
+			while (!finish) {
+				double y = Math.sqrt(Math.pow(p.getCircle().getRadius() + 2,2) - Math.pow(this.x,2));
+				this.setPosition(this.x, y);
+				if (!this.intersectsPlanet(p.getSprite())) {
+					finish = true;
+				}
+			}
+		}
+		
 	}
 
 	public String toString() {

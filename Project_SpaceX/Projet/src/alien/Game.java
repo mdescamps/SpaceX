@@ -85,7 +85,7 @@ public class Game extends Application {
 			Sprite planet = new Sprite(getRessourcePathByName("images/Planet.png"), w, h, 20, 20, WIDTH - 20, HEIGHT - 20);
 			planet.setPosition(WIDTH * Math.random(), HEIGHT * Math.random());
 			for (int j = 0 ; j < planets.size() ; j++) {
-				while (planets.get(j).getSprite().intersects(planet)) {
+				while (planets.get(j).getSprite().intersectsPlanet(planet)) {
 					planet.setPosition(WIDTH * Math.random(), HEIGHT * Math.random());
 					j = 0;
 				}
