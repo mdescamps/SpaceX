@@ -212,7 +212,7 @@ public class Game extends Application {
 					
 					switch (planet.getPlayer()) {
 					case(1):
-						gc.setFill(Color.BLUE);
+						gc.setFill(Color.DEEPSKYBLUE);
 						break;
 					case(2):
 						gc.setFill(Color.RED);
@@ -285,7 +285,7 @@ public class Game extends Application {
 				gc.fillText(percentage2, WIDTH - 75, 36);
 				gc.setFill(Color.RED);
 				gc.fillText(percentage1, 80, 36);
-				gc.setFill(Color.BLUE);
+				gc.setFill(Color.DEEPSKYBLUE);
 				gc.setTextAlign(TextAlignment.RIGHT);
 				gc.setFont(Font.font("Helvetica", FontWeight.BOLD, 24));
 				
