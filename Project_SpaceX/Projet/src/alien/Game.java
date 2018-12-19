@@ -33,8 +33,8 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class Game extends Application {
-	private final static int WIDTH = 900;
-	private final static int HEIGHT = 900;
+	private final static int WIDTH = 1900;
+	private final static int HEIGHT = 1100;
 	private double timer = 0;
 
 	public static String getRessourcePathByName(String name) {
@@ -43,6 +43,12 @@ public class Game extends Application {
 
 	public static void main(String[] args) {
 		launch(args);
+	}
+	
+	public void unSelectAll(ArrayList<Planet> planets) {
+		for (Planet planet : planets) {
+			planet.unSelect();
+		}
 	}
 
 	public void start(Stage stage) {
@@ -60,11 +66,11 @@ public class Game extends Application {
 		gc.setFill(Color.BISQUE);
 		gc.setStroke(Color.TRANSPARENT);
 		gc.setLineWidth(1);
-
+		
 		Image space = new Image(getRessourcePathByName("images/space.jpg"), WIDTH, HEIGHT, false, false);
 		ArrayList<Planet> planets = new ArrayList<Planet>();
-		for (int i = 0 ; i < 5 ; i++) {
-			Random r = new Random();
+		Random r = new Random();
+		for (int i = 0 ; i < r.nextInt(5) + 5 ; i++) {
 			double h = 0;
 			while (h < HEIGHT / 8) {
 				h = r.nextInt(HEIGHT / 4);
@@ -79,8 +85,10 @@ public class Game extends Application {
 				}
 			}
 			planet.validatePosition();
-			planets.add(new Planet(r.nextInt(60) + 30,i,planet));
+			planets.add(new Planet(r.nextInt(60) + 30,0,planet));
 		}
+		planets.get(0).setPlayer(1);
+		planets.get(1).setPlayer(2);
 
 		stage.setScene(scene);
 		stage.show();
@@ -89,33 +97,41 @@ public class Game extends Application {
 
 		EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent e) {
-				int planet1 = 2;
-				boolean b = true;
-				if (e.getEventType() == MouseEvent.MOUSE_CLICKED) {
+				if (e.getEventType() == MouseEvent.MOUSE_PRESSED) {
+					unSelectAll(planets);
 					Point2D p = new Point2D(e.getSceneX(), e.getSceneY());
-					for (int i = 0 ; i < planets.size() ; i++) {
-						if (planets.get(i).getCircle().isInside(p)) {
-							planet1 = 2;
+					for (Planet planet : planets) {
+						if (planet.getCircle().isInside(p) && planet.getPlayer() != 0) {
+							planet.select();
 						}
 					}
 				}
 				if (e.getEventType() == MouseEvent.MOUSE_RELEASED) {
+					int number = 10;
 					Point2D p = new Point2D(e.getSceneX(), e.getSceneY());
-					for (Planet planet2 : planets) {
-						if (planet2.getCircle().isInside(p)) {
-							if (b) {
-								planet2.setNbSpaceShips(100);
-								planets.get(planet1).setNbSpaceShips(10);
-								planet1 = -1;
+					for (Planet planet1 : planets) {
+						if (planet1.isSelected()) {
+							for (Planet planet2 : planets) {
+								if (planet2.getCircle().isInside(p) && planet2 != planet1 && planet1.getNbSpaceShips() >= number) {
+									/*SpaceShip S = new SpaceShip(0,0,0,new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, WIDTH, HEIGHT));
+									S.getSprite().setSpeed(1, 0);
+									S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius() + 5 ,
+															  planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius() + 5);
+									S.setPosition();
+									SpaceShips.add(S);*/
+									planet1.sendShip(planet2,number);
+									if (planet2.getNbSpaceShips() < 0) {
+										planet2.setPlayer(planet1.getPlayer());
+										planet2.setNbSpaceShips(0);
+									}
+									planet1.unSelect();
+								}
 							}
-						}
-						else {
-							planet1 = -1;
 						}
 					}
 				}
 						
-				if (e.isControlDown()) {
+				if (e.isControlDown() && e.getEventType() == MouseEvent.MOUSE_PRESSED) {
 					SpaceShip S = new SpaceShip(0,0,0,new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, WIDTH, HEIGHT));
 					S.getSprite().setSpeed(1, 1);
 					S.getSprite().setPosition(e.getX() , e.getY());
@@ -143,6 +159,18 @@ public class Game extends Application {
 					planet.getSprite().render(gc);
 					
 					String text =  "" + planet.getNbSpaceShips();
+					
+					switch (planet.getPlayer()) {
+					case (1):
+						gc.setFill(Color.BLUE);
+						break;
+					case (2):
+						gc.setFill(Color.RED);
+						break;
+					default:
+						gc.setFill(Color.BISQUE);
+					}
+					
 					gc.fillText(text, planet.getSprite().getX() + (planet.getSprite().width()/2), planet.getSprite().getY() + (planet.getSprite().height()/2));
 					gc.strokeText(text, planet.getSprite().getX() + (planet.getSprite().width()/2), planet.getSprite().getY() + (planet.getSprite().height()/2));
 					gc.setTextAlign(TextAlignment.CENTER);
@@ -161,20 +189,8 @@ public class Game extends Application {
 						}
 					}
 					
-					if (timer%(planet.getProductionRate()) == 0) {
+					if (timer%(planet.getProductionRate()) == 0  && planet.getPlayer() != 0) {
 						planet.productShip();
-					}
-					
-					
-					switch (planet.getPlayer()) {
-					case(0):
-						gc.setFill(Color.BLUE);
-						break;
-					case (1):
-						gc.setFill(Color.RED);
-						break;
-					default:
-						gc.setFill(Color.BISQUE);
 					}
 				}
 				timer++;
