@@ -5,6 +5,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import formes.Point2D;
 import javafx.animation.AnimationTimer;
@@ -150,11 +151,29 @@ public class Game extends Application {
 										if (number < planet1.getNbSpaceShips()) {
 											for (int i = 0 ; i < number ; i++) {
 												planet1.getAttacked();
-												SpaceShip S = new SpaceShip(0,new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, 0, 0, WIDTH, HEIGHT));
+												SpaceShip S = new SpaceShip(0,planet2,new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, 0, 0, WIDTH, HEIGHT));
 												S.setPlayer(planet1.getPlayer());
-												S.getSprite().setSpeed(1, 0);
-												S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius() + i*15,
-																		  planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius() - 100);
+												if (planet1.getSprite().getX() < planet2.getSprite().getX()) {
+													if (planet1.getSprite().getY() < planet2.getSprite().getY()) {
+														S.getSprite().setSpeed(0.1, 0.1);
+														S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius(),
+																  planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius());
+													} else {
+														S.getSprite().setSpeed(0.1, -0.1);
+														S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius(),
+																  planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius());
+													}
+												} else {
+													if (planet1.getSprite().getY() < planet2.getSprite().getY()) {
+														S.getSprite().setSpeed(-0.1, 0.1);
+														S.getSprite().setPosition(planet1.getCircle().getCenter().getX() - planet1.getCircle().getRadius(),
+																  planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius());
+													} else {
+														S.getSprite().setSpeed(-0.1, -0.1);
+														S.getSprite().setPosition(planet1.getCircle().getCenter().getX() - planet1.getCircle().getRadius(),
+																  planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius());
+													}
+												}
 												S.setPosition();
 												SpaceShips.add(S);
 											}
@@ -170,7 +189,7 @@ public class Game extends Application {
 					
 				
 				if (e.isControlDown()) {
-					SpaceShip S = new SpaceShip(0,new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, 0, 0, WIDTH, HEIGHT));
+					SpaceShip S = new SpaceShip(0,planets.get(0),new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, 0, 0, WIDTH, HEIGHT));
 					S.setPlayer(1);
 					S.getSprite().setSpeed(1, 1);
 					S.getSprite().setPosition(e.getX() , e.getY());
@@ -233,6 +252,7 @@ public class Game extends Application {
 					Iterator<SpaceShip> it = SpaceShips.iterator();
 					while(it.hasNext()) {
 						SpaceShip SpaceShip = it.next();
+						SpaceShip.travel();
 						SpaceShip.getSprite().updatePosition();
 						SpaceShip.setPosition();
 						if(planet.getCircle().isInside(SpaceShip.getPosition())) {
@@ -250,10 +270,6 @@ public class Game extends Application {
 						else {
 							SpaceShip.getSprite().render(gc);
 						}
-					}
-				
-					if (timer%(planet.getProductionRate()) == 0  && planet.getPlayer() != 0) {
-						planet.productShip();
 					}
 				}
 				

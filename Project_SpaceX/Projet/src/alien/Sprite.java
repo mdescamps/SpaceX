@@ -70,10 +70,10 @@ public class Sprite {
 		
 		if (y <= minY) {
 			y = minY;
-			ySpeed *= -1;
+			ySpeed *= 0;
 		} else if (y < 0) {
 			y = 0;
-			ySpeed *= -1;
+			ySpeed *= 0;
 		}
 
 		if (y + height >= maxY) {
