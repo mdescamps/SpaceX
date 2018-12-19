@@ -8,12 +8,22 @@ public class SpaceShip {
 	private int speed;
 	private Sprite sprite;
 	private Point2D p;
+	private int player;
 	
+	
+	public int getPlayer() {
+		return this.player;
+	}
+	
+	public void setPlayer(int player) {
+		this.player = player;
+	}
 	
 	public SpaceShip(int s, Sprite sprite) {
 		this.speed = s;
 		this.sprite = sprite;
 		this.sprite.setSpeed(this.sprite.getXSpeed() * speed, this.sprite.getYSpeed());
+		this.player = 0;
 	}
 	
 	public void setSprite(Sprite sprite) {

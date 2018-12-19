@@ -63,18 +63,16 @@ public class Planet {
 		}
 		else {
 			for(int i = 0 ;i < number ; i++) {
-				p.getHelped();
+				p.productShip();
 			}
 		}
-	}
-	
-	public void getHelped() {
-		this.nbSpaceShips++;
 	}
 	
 	public void  getAttacked() {
 		this.nbSpaceShips--;
 	}
+	
+	
 	
 	public int getPlayer() {
 		return this.player;
@@ -83,6 +81,8 @@ public class Planet {
 	public void setPlayer(int p) {
 		this.player = p;
 	}
+	
+	
 	
 	public Circle getCircle() {
 		return c;
