@@ -6,16 +6,12 @@ import formes.Triangle;
 public class SpaceShip {
 	
 	private int speed;
-	private int productionSpeed;
-	private int firePower;
 	private Sprite sprite;
 	private Point2D p;
 	
 	
-	public SpaceShip(int s, int production, int power, Sprite sprite) {
+	public SpaceShip(int s, Sprite sprite) {
 		this.speed = s;
-		this.productionSpeed = production;
-		this.firePower = 1;
 		this.sprite = sprite;
 		this.sprite.setSpeed(this.sprite.getXSpeed() * speed, this.sprite.getYSpeed());
 	}

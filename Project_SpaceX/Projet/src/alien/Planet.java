@@ -36,6 +36,10 @@ public class Planet {
 		return this.player;
 	}
 	
+	public void setPlayer(int p) {
+		this.player = p;
+	}
+	
 	public Circle getCircle() {
 		return c;
 	}

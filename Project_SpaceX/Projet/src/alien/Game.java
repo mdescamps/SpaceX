@@ -33,7 +33,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class Game extends Application {
-	private final static int WIDTH = 900;
+	private final static int WIDTH = 1600;
 	private final static int HEIGHT = 900;
 	private double timer = 0;
 
@@ -63,14 +63,14 @@ public class Game extends Application {
 
 		Image space = new Image(getRessourcePathByName("images/space.jpg"), WIDTH, HEIGHT, false, false);
 		ArrayList<Planet> planets = new ArrayList<Planet>();
-		for (int i = 0 ; i < 5 ; i++) {
-			Random r = new Random();
+		Random r = new Random();
+		for (int i = 0 ; i < 6 ; i++) {
 			double h = 0;
 			while (h < HEIGHT / 8) {
 				h = r.nextInt(HEIGHT / 4);
 			}
 			double w = 1.75 * h;
-			Sprite planet = new Sprite(getRessourcePathByName("images/Planet.png"), w, h, WIDTH, HEIGHT);
+			Sprite planet = new Sprite(getRessourcePathByName("images/Planet.png"), w, h, 20, 20, WIDTH - 20, HEIGHT - 20);
 			planet.setPosition(WIDTH * Math.random(), HEIGHT * Math.random());
 			for (int j = 0 ; j < planets.size() ; j++) {
 				while (planets.get(j).getSprite().intersects(planet)) {
@@ -79,7 +79,15 @@ public class Game extends Application {
 				}
 			}
 			planet.validatePosition();
-			planets.add(new Planet(r.nextInt(60) + 30,i,planet));
+			planets.add(new Planet(r.nextInt(60) + 30,0,planet));
+		}
+		planets.get(0).setPlayer(1);
+		planets.get(1).setPlayer(2);
+		
+		for (Planet p : planets) {
+			if(p.getPlayer() == 0) {
+				p.setNbSpaceShips(r.nextInt(145) + 5);
+			}
 		}
 
 		stage.setScene(scene);
@@ -116,8 +124,8 @@ public class Game extends Application {
 				}
 						
 				if (e.isControlDown()) {
-					SpaceShip S = new SpaceShip(0,0,0,new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, WIDTH, HEIGHT));
-					S.getSprite().setSpeed(1, 1);
+					SpaceShip S = new SpaceShip(0,new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, 0, 0, WIDTH, HEIGHT));
+					S.getSprite().setSpeed(0.5, 0.5);
 					S.getSprite().setPosition(e.getX() , e.getY());
 					S.setPosition();
 					SpaceShips.add(S);
@@ -143,9 +151,26 @@ public class Game extends Application {
 					planet.getSprite().render(gc);
 					
 					String text =  "" + planet.getNbSpaceShips();
+					
+					switch (planet.getPlayer()) {
+					case(1):
+						gc.setFill(Color.BLUE);
+						break;
+					case(2):
+						gc.setFill(Color.RED);
+						break;
+					default:
+						gc.setFill(Color.BISQUE);
+					}
+					
 					gc.fillText(text, planet.getSprite().getX() + (planet.getSprite().width()/2), planet.getSprite().getY() + (planet.getSprite().height()/2));
 					gc.strokeText(text, planet.getSprite().getX() + (planet.getSprite().width()/2), planet.getSprite().getY() + (planet.getSprite().height()/2));
 					gc.setTextAlign(TextAlignment.CENTER);
+					
+					if (timer%(planet.getProductionRate()) == 0 && planet.getPlayer() != 0) {
+						planet.productShip();
+					}
+					
 				
 					Iterator<SpaceShip> it = SpaceShips.iterator();
 					while(it.hasNext()) {
@@ -161,21 +186,6 @@ public class Game extends Application {
 						}
 					}
 					
-					if (timer%(planet.getProductionRate()) == 0) {
-						planet.productShip();
-					}
-					
-					
-					switch (planet.getPlayer()) {
-					case(0):
-						gc.setFill(Color.BLUE);
-						break;
-					case (1):
-						gc.setFill(Color.RED);
-						break;
-					default:
-						gc.setFill(Color.BISQUE);
-					}
 				}
 				timer++;
 			}

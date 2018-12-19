@@ -12,13 +12,17 @@ public class Sprite {
 	private double ySpeed;
 	private double width;
 	private double height;
+	private double minX;
+	private double minY;
 	private double maxX;
 	private double maxY;
 
-	public Sprite(String path, double width, double height, double maxX, double maxY) {
+	public Sprite(String path, double width, double height, double minX, double minY, double maxX, double maxY) {
 		image = new Image(path, width, height, false, false);
 		this.width = width;
 		this.height = height;
+		this.minX = minX;
+		this.minY = minY;
 		this.maxX = maxX;
 		this.maxY = maxY;
 	}
@@ -48,12 +52,20 @@ public class Sprite {
 	}
 
 	public void validatePosition() {
+		if (x - width <= minX) {
+			x = minX + width;
+		}
+		
 		if (x + width >= maxX) {
 			x = maxX - width;
 			xSpeed *= -1;
 		} else if (x < 0) {
 			x = 0;
 			xSpeed *= -1;
+		}
+		
+		if (y - width <= minY) {
+			y = minY + width;
 		}
 
 		if (y + height >= maxY) {
