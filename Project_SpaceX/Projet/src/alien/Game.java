@@ -56,7 +56,7 @@ public class Game extends Application {
 			planet.unSelect();
 		}
 	}
-
+	
 	public void start(Stage stage) {
 
 		stage.setTitle("SpaceX");
@@ -107,7 +107,8 @@ public class Game extends Application {
 		stage.setScene(scene);
 		stage.show();
 		
-		ArrayList<SpaceShip> SpaceShips = new ArrayList<SpaceShip>();
+		ArrayList<SpaceShip> SSBase = new ArrayList<SpaceShip>();
+		ArrayList<SpaceShip> SSLauch = new ArrayList<SpaceShip>();
 		
 		EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent e) {
@@ -154,31 +155,29 @@ public class Game extends Application {
 										if (number < planet1.getNbSpaceShips()) {
 											for (int i = 0 ; i < number ; i++) {
 												planet1.getAttacked();
-												SpaceShip S = new SpaceShip(0,planet2,new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, 0, 0, WIDTH, HEIGHT));
+												SpaceShip S = new SpaceShip(0,planet2,new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, 0, 0, WIDTH, HEIGHT));												
 												S.setPlayer(planet1.getPlayer());
+												S.setStart(planet1);
 												if (planet1.getSprite().getX() < planet2.getSprite().getX()) {
 													if (planet1.getSprite().getY() < planet2.getSprite().getY()) {
-														S.getSprite().setSpeed(0.1, 0.1);
 														S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius(),
 																  planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius());
 													} else {
-														S.getSprite().setSpeed(0.1, -0.1);
 														S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius(),
 																  planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius());
 													}
 												} else {
 													if (planet1.getSprite().getY() < planet2.getSprite().getY()) {
-														S.getSprite().setSpeed(-0.1, 0.1);
 														S.getSprite().setPosition(planet1.getCircle().getCenter().getX() - planet1.getCircle().getRadius(),
 																  planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius());
 													} else {
-														S.getSprite().setSpeed(-0.1, -0.1);
 														S.getSprite().setPosition(planet1.getCircle().getCenter().getX() - planet1.getCircle().getRadius(),
 																  planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius());
 													}
 												}
 												S.setPosition();
-												SpaceShips.add(S);
+												S.lauch();
+												SSBase.add(S);
 											}
 										}
 									}
@@ -192,10 +191,11 @@ public class Game extends Application {
 				if (e.isShiftDown()) {
 					SpaceShip S = new SpaceShip(0,planets.get(0),new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, 0, 0, WIDTH, HEIGHT));
 					S.setPlayer(1);
+					S.setStart(planets.get(0));
 					S.getSprite().setSpeed(1, 1);
 					S.getSprite().setPosition(e.getX() , e.getY());
 					S.setPosition();
-					SpaceShips.add(S);
+					SSLauch.add(S);
 				}
 			}
 		};
@@ -276,14 +276,19 @@ public class Game extends Application {
 						planet.productShip();
 					}
 					
+					if (timer % 5 == 0 && SSBase.size() > 0) {
+						SSLauch.add(SSBase.get(SSBase.size() - 1));
+						SSBase.remove(SSBase.size() - 1);
+					}
+					
 				
-					Iterator<SpaceShip> it = SpaceShips.iterator();
+					Iterator<SpaceShip> it = SSLauch.iterator();
 					while(it.hasNext()) {
 						SpaceShip SpaceShip = it.next();
 						SpaceShip.travel();
 						SpaceShip.getSprite().updatePosition();
 						SpaceShip.setPosition();
-						if(planet.getCircle().isInside(SpaceShip.getPosition())) {
+						if(planet.getCircle().isInside(SpaceShip.getPosition()) && SpaceShip.getDestination() == planet) {
 							if (planet.getPlayer() == SpaceShip.getPlayer()) {
 								planet.productShip();
 							}
@@ -296,6 +301,11 @@ public class Game extends Application {
 							it.remove();
 						}
 						else {
+							SpaceShip.getSprite().render(gc);
+						}
+						
+						if (planet.getCircle().isNear(SpaceShip.getPosition()) && SpaceShip.getDestination() != planet) {
+							SpaceShip.getSprite().evitate(planet);
 							SpaceShip.getSprite().render(gc);
 						}
 					}

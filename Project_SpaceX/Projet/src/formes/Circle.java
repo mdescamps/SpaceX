@@ -49,5 +49,9 @@ public class Circle {
 	public boolean isInside(Point2D p) {
 		return (this.getCenter().distance(p) <= this.getRadius());
 	}
+	
+	public boolean isNear(Point2D p) {
+		return (this.getCenter().distance(p) <= this.getRadius() + 20);
+	}
 
 }

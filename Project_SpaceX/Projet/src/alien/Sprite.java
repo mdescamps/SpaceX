@@ -10,6 +10,8 @@ public class Sprite {
 	private double y;
 	private double xSpeed;
 	private double ySpeed;
+	private double xSpeedOrigin;
+	private double ySpeedOrigin;
 	private double width;
 	private double height;
 	private double minX;
@@ -49,6 +51,14 @@ public class Sprite {
 	
 	public double getY() {
 		return y;
+	}
+	
+	public void setX(double x) {
+		this.x = x;
+	}
+	
+	public void setY(double y) {
+		this.y = y;
 	}
 
 	public void validatePosition() {
@@ -92,8 +102,16 @@ public class Sprite {
 	}
 
 	public void setSpeed(double xSpeed, double ySpeed) {
+		if (this.xSpeed == 0 && this.ySpeed == 0) {
+			this.xSpeedOrigin = xSpeed;
+			this.ySpeedOrigin = ySpeed;
+		}
 		this.xSpeed = xSpeed;
 		this.ySpeed = ySpeed;
+	}
+	
+	public void setOriginalSpeed() {
+		this.setSpeed(xSpeedOrigin, ySpeedOrigin);
 	}
 	
 	public double getXSpeed() {
@@ -146,21 +164,55 @@ public class Sprite {
 	}
 	
 	public void evitate(Planet p) {
-		if (this.intersectsPlanet(p.getSprite())) {
-			boolean finish = false;
-			while (!finish) {
-				double y = Math.sqrt(Math.pow(p.getCircle().getRadius() + 2,2) - Math.pow(this.x,2));
-				this.setPosition(this.x, y);
-				if (!this.intersectsPlanet(p.getSprite())) {
-					finish = true;
+		double xDestination;
+		double yDestination;
+		if (this.x <= p.getCircle().getCenter().getX()) {
+			if (this.xSpeed != 0) {
+				xDestination = this.x + ((p.getCircle().getCenter().getX() - this.x) * 2);
+			} else {
+				xDestination = this.x;
+			}
+			if (this.y <= p.getCircle().getCenter().getY()) {
+				if (this.ySpeed != 0) {
+					yDestination = this.y + ((p.getCircle().getCenter().getY() - this.y) * 2);
+				} else {
+					yDestination = this.y;
+				}
+			} else {
+				if (this.ySpeed != 0) {
+					yDestination = this.y - ((this.y - p.getCircle().getCenter().getY()) * 2);
+				} else {
+					yDestination = this.y;
 				}
 			}
+			this.x = xDestination;
+			this.y = yDestination;
+		} else {
+			if (this.xSpeed != 0) {
+				xDestination = this.x - ((this.x - p.getCircle().getCenter().getX()) * 2);
+			} else {
+				xDestination = this.x;
+			}
+			if (this.y <= p.getCircle().getCenter().getY()) {
+				if (this.ySpeed != 0) {
+					yDestination = this.y + ((p.getCircle().getCenter().getY() - this.y) * 2);
+				} else {
+					yDestination = this.y;
+				}
+			} else {
+				if (this.ySpeed != 0) {
+					yDestination = this.y - ((this.y - p.getCircle().getCenter().getY()) * 2);
+				} else {
+					yDestination = this.y;
+				}
+			}
+			this.x = xDestination;
+			this.y = yDestination;
 		}
-		
 	}
 
 	public String toString() {
-		return "Sprite<" + x + ", " + y + ">";
+		return "Sprite<" + x + ", " + y + ">" + this.xSpeed + ";" + this.ySpeed;
 	}
 
 }
