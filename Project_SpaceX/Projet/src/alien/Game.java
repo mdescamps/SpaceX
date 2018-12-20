@@ -174,8 +174,8 @@ public class Game extends Application {
 				start(stage);
 			}
 			
-
-			for (int i = 0 ; i < r.nextInt(5) + 5 ; i++) {
+			int nbplanets = 0;
+			for (; nbplanets < r.nextInt(5) + 5; nbplanets++) {
 				double h = 0;
 				while (h < HEIGHT / 10) {
 					h = r.nextInt(HEIGHT / 4);
@@ -202,10 +202,11 @@ public class Game extends Application {
 			planets.get(1).setPlayer(1);
 			planets.get(0).setNbSpaceShips(0);
 			planets.get(1).setNbSpaceShips(0);
-			planets.get(0).setProductionRate(40);
-			planets.get(1).setProductionRate(40);
+			planets.get(0).setProductionRate(60);
+			planets.get(1).setProductionRate(60);
 			
 		}
+		
 		else {
 			stage.close();
 		}
@@ -291,65 +292,6 @@ public class Game extends Application {
 							}
 						}
 				}
-				
-				
-				
-//				if (e.getEventType() != MouseEvent.MOUSE_EXITED) {
-//					int Player0Number = 0;
-//					int Player1Number = 0;
-//					for (Planet planet : planets) {
-//						if(planet.getPlayer() == 0) {
-//							Player0Number++;
-//						}
-//						if(planet.getPlayer() == 1) {
-//							Player1Number++;
-//						}
-//					}
-//					if (Player0Number == 0) {
-//						Alert victory1 = new Alert(AlertType.CONFIRMATION);
-//						
-//						victory1.setTitle("Game Over");
-//						victory1.setHeaderText(null);
-//						victory1.setGraphic(null);
-//						victory1.setContentText("Red Win, Congratulation");
-//						
-//						ButtonType btnRestart = new ButtonType("Restart");
-//						ButtonType btnEnd = new ButtonType("End Game");
-//						
-//						victory1.getButtonTypes().setAll(btnRestart, btnEnd);
-//						
-//						Optional<ButtonType> choice2 = victory1.showAndWait();
-//						
-//						if (choice2.get() == btnRestart) {
-//							start(stage);
-//						}
-//						else {
-//							stage.close();
-//						}
-//					}
-//					if (Player1Number == 0) {
-//						Alert victory2 = new Alert(AlertType.CONFIRMATION);
-//						
-//						victory2.setTitle("Game Over");
-//						victory2.setHeaderText(null);
-//						victory2.setGraphic(null);
-//						victory2.setContentText("Blue Win, Congratulation");
-//						
-//						ButtonType btnRestart = new ButtonType("Restart");
-//						ButtonType btnEnd = new ButtonType("End Game");
-//						
-//						victory2.getButtonTypes().setAll(btnRestart, btnEnd);
-//						
-//						Optional<ButtonType> choice2 = victory2.showAndWait();
-//						
-//						if (choice2.get() == btnRestart) {
-//							start(stage);
-//						}
-//						else {
-//							stage.close();
-//						}
-//					}
-//				}
 				
 					
 				
@@ -501,6 +443,8 @@ public class Game extends Application {
 					
 					
 					if(choice.get() == btnSave) {
+						
+						
 						try {
 							FileOutputStream fos = new FileOutputStream("game.txt");
 						    ObjectOutputStream oos = new ObjectOutputStream(fos);
@@ -537,6 +481,8 @@ public class Game extends Application {
 						}
 						stage.close();
 					}
+					
+					
 					else if(choice.get() == btnRestart) {
 							start(stage);
 					}
