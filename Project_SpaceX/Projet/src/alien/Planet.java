@@ -1,11 +1,12 @@
 package alien;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 import formes.Circle;
 import formes.Point2D;
 
-public class Planet {
+public class Planet implements Serializable {
 
 	private int productionRate;
 	private int player;

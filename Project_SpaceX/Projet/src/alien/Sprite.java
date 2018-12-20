@@ -1,10 +1,14 @@
 package alien;
 
+import java.io.Serializable;
+
+
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
 
-public class Sprite {
+public class Sprite implements Serializable {
+	
 	private Image image;
 	private double x;
 	private double y;
@@ -22,7 +26,7 @@ public class Sprite {
 	
 
 	public Sprite(String path, double width, double height, double minX, double minY, double maxX, double maxY) {
-		image = new Image(path, width, height, false, false);
+		this.image = new Image(path,width,height, false, false);
 		this.width = width;
 		this.height = height;
 		this.minX = minX;
@@ -40,7 +44,6 @@ public class Sprite {
 	}
 	
 	
-
 	public double width() {
 		return width;
 	}

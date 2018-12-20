@@ -1,5 +1,11 @@
 package alien;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -47,6 +53,10 @@ public class Game extends Application {
 	private final static int WIDTH = 1900;
 	private final static int HEIGHT = 1100;
 	private double timer = 0;
+	ArrayList<SpaceShip> SSBase = new ArrayList<SpaceShip>();
+	ArrayList<SpaceShip> SSLaunch = new ArrayList<SpaceShip>();
+	ArrayList<Planet> planets = new ArrayList<Planet>();
+	Random r = new Random();
 
 	public static String getRessourcePathByName(String name) {
 		return Game.class.getResource('/' + name).toString();
@@ -62,7 +72,7 @@ public class Game extends Application {
 		}
 	}
 	
-	public void start(Stage stage) {
+	public void start(Stage stage) throws ClassNotFoundException {
 
 		stage.setTitle("SpaceX");
 		stage.setResizable(false);
@@ -87,9 +97,9 @@ public class Game extends Application {
 		stage.show();
 		
 		
-Alert StartBox = new Alert(AlertType.CONFIRMATION);
+		Alert StartBox = new Alert(AlertType.CONFIRMATION);
 		
-		StartBox.getDialogPane().setPrefWidth(500);
+		StartBox.getDialogPane().setPrefWidth(450);
 		StartBox.getDialogPane().setPrefHeight(100);
 		StartBox.setTitle("SpaceX Main Menu");
 		StartBox.setHeaderText(null);
@@ -107,14 +117,30 @@ Alert StartBox = new Alert(AlertType.CONFIRMATION);
 		
 		if(choice.get() == btnReload) {
 			
+			try {
+				
+			FileInputStream fis = new FileInputStream("game.txt");
+		    ObjectInputStream ois = new ObjectInputStream(fis);
+		    while (fis.available() != 0) {
+		    	planets.add((Planet) ois.readObject());
+		    }
+		    
+		    ois.close();
+			} catch (FileNotFoundException e) {
+	            e.printStackTrace();
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
+			
+			
 		}
 		else if(choice.get() == btnNew) {
 			
 			/*Alert PlayersBox = new Alert(AlertType.CONFIRMATION);*/
 			
-			StartBox.getDialogPane().setPrefWidth(800);
+			StartBox.getDialogPane().setPrefWidth(400);
 			StartBox.getDialogPane().setPrefHeight(100);
-			StartBox.setTitle("Choose the number you are before start the game");
+			StartBox.setTitle("Choose the number you are");
 			StartBox.setHeaderText(null);
 			StartBox.setGraphic(null);
 			StartBox.setContentText("How many players ?");
@@ -142,6 +168,37 @@ Alert StartBox = new Alert(AlertType.CONFIRMATION);
 				start(stage);
 			}
 			
+
+			for (int i = 0 ; i < r.nextInt(5) + 5 ; i++) {
+				double h = 0;
+				while (h < HEIGHT / 10) {
+					h = r.nextInt(HEIGHT / 4);
+				}
+				double w = 1.75 * h;
+				Sprite planet = new Sprite("images/Planet.png", w, h, 20, 20, WIDTH - 20, HEIGHT - 20);
+				planet.setPosition(WIDTH * Math.random(), HEIGHT * Math.random());
+				for (int j = 0 ; j < planets.size() ; j++) {
+					while (planets.get(j).getSprite().intersectsPlanet(planet)) {
+						planet.setPosition(WIDTH * Math.random(), HEIGHT * Math.random());
+						j = 0;
+					}
+				}
+				planet.validatePosition();
+				planets.add(new Planet(r.nextInt(60) + 30,-1,planet));
+			}
+			
+			for (Planet p : planets) {
+				if(p.getPlayer() == -1) {
+					p.setNbSpaceShips(r.nextInt(145) + 5);
+				} 
+			}
+			planets.get(0).setPlayer(0);
+			planets.get(1).setPlayer(1);
+			planets.get(0).setNbSpaceShips(0);
+			planets.get(1).setNbSpaceShips(0);
+			planets.get(0).setProductionRate(40);
+			planets.get(1).setProductionRate(40);
+			
 		}
 		else {
 			stage.close();
@@ -149,42 +206,7 @@ Alert StartBox = new Alert(AlertType.CONFIRMATION);
 
 		
 		
-		ArrayList<Planet> planets = new ArrayList<Planet>();
-		Random r = new Random();
-		for (int i = 0 ; i < r.nextInt(5) + 5 ; i++) {
-			double h = 0;
-			while (h < HEIGHT / 10) {
-				h = r.nextInt(HEIGHT / 4);
-			}
-			double w = 1.75 * h;
-			Sprite planet = new Sprite(getRessourcePathByName("images/Planet.png"), w, h, 20, 20, WIDTH - 20, HEIGHT - 20);
-			planet.setPosition(WIDTH * Math.random(), HEIGHT * Math.random());
-			for (int j = 0 ; j < planets.size() ; j++) {
-				while (planets.get(j).getSprite().intersectsPlanet(planet)) {
-					planet.setPosition(WIDTH * Math.random(), HEIGHT * Math.random());
-					j = 0;
-				}
-			}
-			planet.validatePosition();
-			planets.add(new Planet(r.nextInt(60) + 30,-1,planet));
-		}
-		
-		for (Planet p : planets) {
-			if(p.getPlayer() == -1) {
-				p.setNbSpaceShips(r.nextInt(145) + 5);
-			} 
-		}
-		planets.get(0).setPlayer(0);
-		planets.get(1).setPlayer(1);
-		planets.get(0).setNbSpaceShips(0);
-		planets.get(1).setNbSpaceShips(0);
-		planets.get(0).setProductionRate(40);
-		planets.get(1).setProductionRate(40);
 
-		
-		
-		ArrayList<SpaceShip> SSBase = new ArrayList<SpaceShip>();
-		ArrayList<SpaceShip> SSLauch = new ArrayList<SpaceShip>();
 		
 		EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent e) {
@@ -232,7 +254,7 @@ Alert StartBox = new Alert(AlertType.CONFIRMATION);
 										if (number <= planet1.getNbSpaceShips()) {
 											for (int i = 0 ; i < number ; i++) {
 												planet1.getAttacked();
-												SpaceShip S = new SpaceShip(0,planet2,new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, 0, 0, WIDTH, HEIGHT));												
+												SpaceShip S = new SpaceShip(0,planet2,new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT));												
 												S.setPlayer(planet1.getPlayer());
 												S.setStart(planet1);
 												if (planet1.getSprite().getX() < planet2.getSprite().getX()) {
@@ -266,13 +288,13 @@ Alert StartBox = new Alert(AlertType.CONFIRMATION);
 					
 				
 				if (e.isShiftDown()) {
-					SpaceShip S = new SpaceShip(0,planets.get(0),new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, 0, 0, WIDTH, HEIGHT));
-					S.setPlayer(1);
+					SpaceShip S = new SpaceShip(0,planets.get(0),new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT));
+					S.setPlayer(0);
 					S.setStart(planets.get(0));
 					S.getSprite().setSpeed(1, 1);
 					S.getSprite().setPosition(e.getX() , e.getY());
 					S.setPosition();
-					SSLauch.add(S);
+					SSLaunch.add(S);
 				}
 			}
 		};
@@ -330,7 +352,7 @@ Alert StartBox = new Alert(AlertType.CONFIRMATION);
 					
 					Alert StartBox = new Alert(AlertType.CONFIRMATION);
 					
-					StartBox.getDialogPane().setPrefWidth(500);
+					StartBox.getDialogPane().setPrefWidth(565);
 					StartBox.getDialogPane().setPrefHeight(100);
 					StartBox.setTitle("Pause");
 					StartBox.setHeaderText(null);
@@ -350,13 +372,48 @@ Alert StartBox = new Alert(AlertType.CONFIRMATION);
 					
 					
 					if(choice.get() == btnSave) {
+						try {
+							FileOutputStream fos = new FileOutputStream("game.txt");
+						    ObjectOutputStream oos = new ObjectOutputStream(fos);
+						    
+						    for (Planet p : planets) {
+						    	oos.writeObject(p);
+						    }
+						    oos.close();
+						    
+						} catch (FileNotFoundException e1) {
+				            e1.printStackTrace();
+				        } catch (IOException e2) {
+				            e2.printStackTrace();
+							
+						}
 						
 					}
 					else if(choice.get() == btnSaveQuit) {
+						
+						try {
+							FileOutputStream fos = new FileOutputStream("game.txt");
+						    ObjectOutputStream oos = new ObjectOutputStream(fos);
+						    
+						    for (Planet p : planets) {
+						    	oos.writeObject(p);
+						    }
+						    oos.close();
+						    
+						} catch (FileNotFoundException e1) {
+				            e1.printStackTrace();
+				        } catch (IOException e2) {
+				            e2.printStackTrace();
+							
+						}
 						stage.close();
 					}
 					else if(choice.get() == btnRestart) {
-						start(stage);
+						try {
+							start(stage);
+						} catch (ClassNotFoundException e1) {
+							e1.printStackTrace();
+						}
 					}
 					else if(choice.get() == btnContinue) {
 						
@@ -372,8 +429,9 @@ Alert StartBox = new Alert(AlertType.CONFIRMATION);
 			public void handle(long arg0) {
 				gc.drawImage(space, 0, 0);
 				for (Planet planet : planets) {
+					//gc.drawImage(new Image(getRessourcePathByName(planet.getSprite().getUrl()),planet.getSprite().width(),planet.getSprite().height(), false, false), planet.getSprite().getX(), planet.getSprite().getY());
 					planet.getSprite().render(gc);
-					
+										
 					String text =  "" + planet.getNbSpaceShips();
 					
 					switch (planet.getPlayer()) {
@@ -396,12 +454,13 @@ Alert StartBox = new Alert(AlertType.CONFIRMATION);
 					}
 					
 					if (timer % 5 == 0 && SSBase.size() > 0) {
-						SSLauch.add(SSBase.get(SSBase.size() - 1));
-						SSBase.remove(SSBase.size() - 1);
+						int i = r.nextInt(SSBase.size());
+						SSLaunch.add(SSBase.get(i));
+						SSBase.remove(i);
 					}
 					
 				
-					Iterator<SpaceShip> it = SSLauch.iterator();
+					Iterator<SpaceShip> it = SSLaunch.iterator();
 					while(it.hasNext()) {
 						SpaceShip SpaceShip = it.next();
 						SpaceShip.travel();
@@ -420,11 +479,14 @@ Alert StartBox = new Alert(AlertType.CONFIRMATION);
 							it.remove();
 						}
 						else {
+							//gc.drawImage(new Image(getRessourcePathByName(SpaceShip.getSprite().getUrl()),SpaceShip.getSprite().width(),SpaceShip.getSprite().height(), false, false), SpaceShip.getSprite().getX(), SpaceShip.getSprite().getY());
 							SpaceShip.getSprite().render(gc);
+							
 						}
 						
 						if (planet.getCircle().isNear(SpaceShip.getPosition()) && SpaceShip.getDestination() != planet) {
 							SpaceShip.getSprite().evitate(planet);
+							//gc.drawImage(new Image(getRessourcePathByName(SpaceShip.getSprite().getUrl()),SpaceShip.getSprite().width(),SpaceShip.getSprite().height(), false, false), SpaceShip.getSprite().getX(), SpaceShip.getSprite().getY());
 							SpaceShip.getSprite().render(gc);
 						}
 					}

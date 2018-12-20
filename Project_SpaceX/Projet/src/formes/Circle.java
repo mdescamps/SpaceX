@@ -1,6 +1,8 @@
 package formes;
 
-public class Circle {
+import java.io.Serializable;
+
+public class Circle implements Serializable {
 	
 	private Point2D p;
 	private double radius;

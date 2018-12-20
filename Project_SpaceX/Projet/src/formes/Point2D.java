@@ -1,5 +1,8 @@
 package formes;
-public class Point2D {
+
+import java.io.Serializable;
+
+public class Point2D implements Serializable {
     private double x, y;
     
     public Point2D(double x, double y) {

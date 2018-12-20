@@ -1,9 +1,14 @@
 package alien;
 
+import java.io.Serializable;
+
+import com.sun.prism.Image;
+
 import formes.Point2D;
 
-public class SpaceShip {
+public class SpaceShip implements Serializable {
 	
+	private Image image;
 	private int speed;
 	private Sprite sprite;
 	private Point2D p;
