@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 import formes.Point2D;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.event.EventTarget;
 import javafx.event.EventType;
@@ -62,6 +63,8 @@ public class Game extends Application {
 		}
 	}
 	
+
+	
 	public void start(Stage stage) {
 
 		stage.setTitle("SpaceX");
@@ -110,7 +113,7 @@ Alert StartBox = new Alert(AlertType.CONFIRMATION);
 		}
 		else if(choice.get() == btnNew) {
 			
-			/*Alert PlayersBox = new Alert(AlertType.CONFIRMATION);*/
+			
 			
 			StartBox.getDialogPane().setPrefWidth(800);
 			StartBox.getDialogPane().setPrefHeight(100);
@@ -262,7 +265,67 @@ Alert StartBox = new Alert(AlertType.CONFIRMATION);
 								planet1.unSelect();
 							}
 						}
-				}		
+				}
+				
+				
+				
+//				if (e.getEventType() != MouseEvent.MOUSE_EXITED) {
+//					int Player0Number = 0;
+//					int Player1Number = 0;
+//					for (Planet planet : planets) {
+//						if(planet.getPlayer() == 0) {
+//							Player0Number++;
+//						}
+//						if(planet.getPlayer() == 1) {
+//							Player1Number++;
+//						}
+//					}
+//					if (Player0Number == 0) {
+//						Alert victory1 = new Alert(AlertType.CONFIRMATION);
+//						
+//						victory1.setTitle("Game Over");
+//						victory1.setHeaderText(null);
+//						victory1.setGraphic(null);
+//						victory1.setContentText("Red Win, Congratulation");
+//						
+//						ButtonType btnRestart = new ButtonType("Restart");
+//						ButtonType btnEnd = new ButtonType("End Game");
+//						
+//						victory1.getButtonTypes().setAll(btnRestart, btnEnd);
+//						
+//						Optional<ButtonType> choice2 = victory1.showAndWait();
+//						
+//						if (choice2.get() == btnRestart) {
+//							start(stage);
+//						}
+//						else {
+//							stage.close();
+//						}
+//					}
+//					if (Player1Number == 0) {
+//						Alert victory2 = new Alert(AlertType.CONFIRMATION);
+//						
+//						victory2.setTitle("Game Over");
+//						victory2.setHeaderText(null);
+//						victory2.setGraphic(null);
+//						victory2.setContentText("Blue Win, Congratulation");
+//						
+//						ButtonType btnRestart = new ButtonType("Restart");
+//						ButtonType btnEnd = new ButtonType("End Game");
+//						
+//						victory2.getButtonTypes().setAll(btnRestart, btnEnd);
+//						
+//						Optional<ButtonType> choice2 = victory2.showAndWait();
+//						
+//						if (choice2.get() == btnRestart) {
+//							start(stage);
+//						}
+//						else {
+//							stage.close();
+//						}
+//					}
+//				}
+				
 					
 				
 				if (e.isShiftDown()) {
@@ -282,6 +345,69 @@ Alert StartBox = new Alert(AlertType.CONFIRMATION);
 		scene.setOnMouseDragged(mouseHandler);
 		scene.setOnMousePressed(mouseHandler);
 		
+
+		scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent event) {
+				if (event.getEventType() == MouseEvent.MOUSE_PRESSED || event.getEventType() != MouseEvent.MOUSE_PRESSED || event.getEventType() == MouseEvent.ANY) {
+						
+					int Player0Number = 0;
+					int Player1Number = 0;
+					for (Planet planet : planets) {
+						if(planet.getPlayer() == 0) {
+							Player0Number++;
+						}
+						if(planet.getPlayer() == 1) {
+							Player1Number++;
+						}
+					}
+					if (Player0Number == 0) {
+						Alert victory1 = new Alert(AlertType.CONFIRMATION);
+						
+						victory1.setTitle("Game Over");
+						victory1.setHeaderText(null);
+						victory1.setGraphic(null);
+						victory1.setContentText("Red Win, Congratulation");
+						
+						ButtonType btnRestart = new ButtonType("Restart");
+						ButtonType btnEnd = new ButtonType("End Game");
+						
+						victory1.getButtonTypes().setAll(btnRestart, btnEnd);
+						
+						Optional<ButtonType> choice2 = victory1.showAndWait();
+						
+						if (choice2.get() == btnRestart) {
+							start(stage);
+						}
+						else {
+							stage.close();
+						}
+					}
+					if (Player1Number == 0) {
+						Alert victory2 = new Alert(AlertType.CONFIRMATION);
+						
+						victory2.setTitle("Game Over");
+						victory2.setHeaderText(null);
+						victory2.setGraphic(null);
+						victory2.setContentText("Blue Win, Congratulation");
+						
+						ButtonType btnRestart = new ButtonType("Restart");
+						ButtonType btnEnd = new ButtonType("End Game");
+						
+						victory2.getButtonTypes().setAll(btnRestart, btnEnd);
+						
+						Optional<ButtonType> choice2 = victory2.showAndWait();
+						
+						if (choice2.get() == btnRestart) {
+							start(stage);
+						}
+						else {
+							stage.close();
+						}
+					}
+				}		
+			}
+
+		});
 		
 		
 		EventHandler<ScrollEvent> ScrollHandeler = new EventHandler<ScrollEvent>() {
@@ -367,12 +493,16 @@ Alert StartBox = new Alert(AlertType.CONFIRMATION);
 				}
 			}
 		});
+		
+		
 
 		new AnimationTimer() {
 			public void handle(long arg0) {
 				gc.drawImage(space, 0, 0);
 				for (Planet planet : planets) {
 					planet.getSprite().render(gc);
+					
+					
 					
 					String text =  "" + planet.getNbSpaceShips();
 					
@@ -429,6 +559,7 @@ Alert StartBox = new Alert(AlertType.CONFIRMATION);
 						}
 					}
 				}
+		
 				
 				
 				timer++;
@@ -452,21 +583,6 @@ Alert StartBox = new Alert(AlertType.CONFIRMATION);
 				gc.setTextAlign(TextAlignment.RIGHT);
 				gc.setFont(Font.font("Helvetica", FontWeight.BOLD, 24));
 				
-				int Victory = 0;
-				for (Planet planet : planets) {
-					if(planet.getPlayer() == 0) {
-						Victory++;
-					}
-					if(planet.getPlayer() == 1) {
-						Victory--;
-					}
-				}
-				if (Victory == planets.size()) {
-					stage.close();
-				}
-				if (Victory == planets.size()*-1) {
-					stage.close();
-				}
 			}
 		}.start();
 	}
