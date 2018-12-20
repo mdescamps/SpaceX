@@ -17,6 +17,10 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Alert.AlertType;
+import javafx.scene.control.ButtonBar.ButtonData;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.input.ClipboardContent;
@@ -38,6 +42,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class Game extends Application {
+	private int players;
 	private float[] percent = new float[2];
 	private final static int WIDTH = 1900;
 	private final static int HEIGHT = 1100;
@@ -72,8 +77,78 @@ public class Game extends Application {
 		gc.setFill(Color.BISQUE);
 		gc.setStroke(Color.TRANSPARENT);
 		gc.setLineWidth(1);
+			
+			
 		
 		Image space = new Image(getRessourcePathByName("images/space.jpg"), WIDTH, HEIGHT, false, false);
+		
+		gc.drawImage(space, 0, 0);
+		stage.setScene(scene);
+		stage.show();
+		
+		
+Alert StartBox = new Alert(AlertType.CONFIRMATION);
+		
+		StartBox.getDialogPane().setPrefWidth(500);
+		StartBox.getDialogPane().setPrefHeight(100);
+		StartBox.setTitle("SpaceX Main Menu");
+		StartBox.setHeaderText(null);
+		StartBox.setGraphic(null);
+		StartBox.setContentText(null);
+		
+		ButtonType btnReload = new ButtonType ("reload last game");
+		ButtonType btnNew = new ButtonType ("new game");
+		ButtonType btnQuit = new ButtonType ("Quit" , ButtonData.CANCEL_CLOSE);
+		
+		
+		StartBox.getButtonTypes().setAll(btnReload,btnNew,btnQuit);
+		
+		Optional<ButtonType> choice = StartBox.showAndWait();
+		
+		if(choice.get() == btnReload) {
+			
+		}
+		else if(choice.get() == btnNew) {
+			
+			/*Alert PlayersBox = new Alert(AlertType.CONFIRMATION);*/
+			
+			StartBox.getDialogPane().setPrefWidth(800);
+			StartBox.getDialogPane().setPrefHeight(100);
+			StartBox.setTitle("Choose the number you are before start the game");
+			StartBox.setHeaderText(null);
+			StartBox.setGraphic(null);
+			StartBox.setContentText("How many players ?");
+			
+			ButtonType btn0 = new ButtonType ("0 player");
+			ButtonType btn1 = new ButtonType ("1 player");
+			ButtonType btn2 = new ButtonType ("2 players");
+			ButtonType btnx = new ButtonType ("Back" , ButtonData.CANCEL_CLOSE);
+			
+			
+			StartBox.getButtonTypes().setAll(btn0,btn1,btn2,btnx);
+			
+			Optional<ButtonType> choice2 = StartBox.showAndWait();
+			
+			if(choice2.get() == btn0) {
+				players = 0;
+			}
+			else if(choice2.get() == btn1) {
+				players = 1;
+			}
+			else if(choice2.get() == btn2) {
+				players = 2;
+			}
+			else {
+				start(stage);
+			}
+			
+		}
+		else {
+			stage.close();
+		}
+
+		
+		
 		ArrayList<Planet> planets = new ArrayList<Planet>();
 		Random r = new Random();
 		for (int i = 0 ; i < r.nextInt(5) + 5 ; i++) {
@@ -91,21 +166,22 @@ public class Game extends Application {
 				}
 			}
 			planet.validatePosition();
-			planets.add(new Planet(r.nextInt(60) + 30,0,planet));
+			planets.add(new Planet(r.nextInt(60) + 30,-1,planet));
 		}
-		planets.get(0).setPlayer(1);
-		planets.get(1).setPlayer(2);
 		
 		for (Planet p : planets) {
-			if(p.getPlayer() == 0) {
+			if(p.getPlayer() == -1) {
 				p.setNbSpaceShips(r.nextInt(145) + 5);
-			}
+			} 
 		}
-		planets.get(0).setPlayer(1);
-		planets.get(1).setPlayer(2);
+		planets.get(0).setPlayer(0);
+		planets.get(1).setPlayer(1);
+		planets.get(0).setNbSpaceShips(0);
+		planets.get(1).setNbSpaceShips(0);
+		planets.get(0).setProductionRate(40);
+		planets.get(1).setProductionRate(40);
 
-		stage.setScene(scene);
-		stage.show();
+		
 		
 		ArrayList<SpaceShip> SSBase = new ArrayList<SpaceShip>();
 		ArrayList<SpaceShip> SSLauch = new ArrayList<SpaceShip>();
@@ -119,7 +195,7 @@ public class Game extends Application {
 					unSelectAll(planets);
 					Point2D p = new Point2D(e.getSceneX(), e.getSceneY());
 					for (Planet planet : planets) {
-						if (planet.getCircle().isInside(p) && planet.getPlayer() != 0) {
+						if (planet.getCircle().isInside(p) && planet.getPlayer() != -1) {
 							planet.select();
 						}
 					}
@@ -135,7 +211,8 @@ public class Game extends Application {
 							for (Planet planet2 : planets) {
 								if (planet2.getCircle().isInside(p) && planet2 != planet1) {
 									if (e.isControlDown()) {
-										number = (int)(percent[0] * planet1.getNbSpaceShips());
+										int player = planet1.getPlayer();
+										number = (int)(percent[player] * planet1.getNbSpaceShips());
 									}
 									else {
 																		
@@ -152,7 +229,7 @@ public class Game extends Application {
 										
 										
 										
-										if (number < planet1.getNbSpaceShips()) {
+										if (number <= planet1.getNbSpaceShips()) {
 											for (int i = 0 ; i < number ; i++) {
 												planet1.getAttacked();
 												SpaceShip S = new SpaceShip(0,planet2,new Sprite(getRessourcePathByName("images/spaceship.png"), 20, 15, 0, 0, WIDTH, HEIGHT));												
@@ -223,7 +300,7 @@ public class Game extends Application {
 						percent[1] += 0.05;
 					}
 					else {
-						percent[2] -= 0.05;
+						percent[1] -= 0.05;
 					}
 				}
 				if (percent[0]*100 > 100) {
@@ -243,9 +320,51 @@ public class Game extends Application {
 		
 		scene.setOnScroll(ScrollHandeler);
 		
-
+		
+		
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
+				
+				if(e.getCode() == KeyCode.P) {
+					
+					
+					Alert StartBox = new Alert(AlertType.CONFIRMATION);
+					
+					StartBox.getDialogPane().setPrefWidth(500);
+					StartBox.getDialogPane().setPrefHeight(100);
+					StartBox.setTitle("Pause");
+					StartBox.setHeaderText(null);
+					StartBox.setGraphic(null);
+					StartBox.setContentText(null);
+					
+					ButtonType btnSave = new ButtonType ("Save");
+					ButtonType btnSaveQuit = new ButtonType ("Save & Quit", ButtonData.CANCEL_CLOSE);
+					ButtonType btnRestart = new ButtonType ("Restart");
+					ButtonType btnContinue = new ButtonType ("Continue", ButtonData.CANCEL_CLOSE);
+					ButtonType btnx = new ButtonType ("Quit" , ButtonData.CANCEL_CLOSE);
+					
+					
+					StartBox.getButtonTypes().setAll(btnSave,btnSaveQuit,btnRestart,btnContinue,btnx);
+					
+					Optional<ButtonType> choice = StartBox.showAndWait();
+					
+					
+					if(choice.get() == btnSave) {
+						
+					}
+					else if(choice.get() == btnSaveQuit) {
+						stage.close();
+					}
+					else if(choice.get() == btnRestart) {
+						start(stage);
+					}
+					else if(choice.get() == btnContinue) {
+						
+					}
+					else {
+						stage.close();
+					}
+				}
 			}
 		});
 
@@ -258,10 +377,10 @@ public class Game extends Application {
 					String text =  "" + planet.getNbSpaceShips();
 					
 					switch (planet.getPlayer()) {
-					case(1):
+					case(0):
 						gc.setFill(Color.DEEPSKYBLUE);
 						break;
-					case(2):
+					case(1):
 						gc.setFill(Color.RED);
 						break;
 					default:
@@ -272,7 +391,7 @@ public class Game extends Application {
 					gc.strokeText(text, planet.getSprite().getX() + (planet.getSprite().width()/2), planet.getSprite().getY() + (planet.getSprite().height()/2));
 					gc.setTextAlign(TextAlignment.CENTER);
 					
-					if (timer%(planet.getProductionRate()) == 0 && planet.getPlayer() != 0) {
+					if (timer%(planet.getProductionRate()) == 0 && planet.getPlayer() != -1) {
 						planet.productShip();
 					}
 					
@@ -311,31 +430,12 @@ public class Game extends Application {
 					}
 				}
 				
-				int blueVictory = 0;
-				int redVictory = 0;
-				for (Planet planet : planets) {
-					if(planet.getPlayer() == 2) {
-						blueVictory++;
-					}
-					if(planet.getPlayer() == 1) {
-						redVictory++;
-					}
-					if (blueVictory == 0) {
-						break;
-					}
-					if (redVictory == 0) {
-						break;
-					}
-					blueVictory = 0;
-					redVictory = 0;
-				}
-				
 				
 				timer++;
 				
 				gc.setFont(Font.font("Helvetica", FontWeight.BOLD, 15));
 				for (int i = 0 ; i < percent.length ; i++) {
-					String percentage = "percentage : " + (int)(percent[i]*100)+ "%";
+					String percentage = "percentage : " + (int)((percent[i]+0.002)*100)+ "%";
 					switch (i) {
 					case(0):
 						gc.setFill(Color.DEEPSKYBLUE);
@@ -352,6 +452,21 @@ public class Game extends Application {
 				gc.setTextAlign(TextAlignment.RIGHT);
 				gc.setFont(Font.font("Helvetica", FontWeight.BOLD, 24));
 				
+				int Victory = 0;
+				for (Planet planet : planets) {
+					if(planet.getPlayer() == 0) {
+						Victory++;
+					}
+					if(planet.getPlayer() == 1) {
+						Victory--;
+					}
+				}
+				if (Victory == planets.size()) {
+					stage.close();
+				}
+				if (Victory == planets.size()*-1) {
+					stage.close();
+				}
 			}
 		}.start();
 	}

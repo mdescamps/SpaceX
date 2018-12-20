@@ -18,6 +18,8 @@ public class Sprite {
 	private double minY;
 	private double maxX;
 	private double maxY;
+	
+	
 
 	public Sprite(String path, double width, double height, double minX, double minY, double maxX, double maxY) {
 		image = new Image(path, width, height, false, false);
@@ -36,6 +38,8 @@ public class Sprite {
 		maxX = s.maxX;
 		maxY = s.maxY;
 	}
+	
+	
 
 	public double width() {
 		return width;
@@ -44,6 +48,8 @@ public class Sprite {
 	public double height() {
 		return height;
 	}
+	
+	
 	
 	public double getX() {
 		return x;
@@ -100,6 +106,8 @@ public class Sprite {
 		this.y = y;
 		validatePosition();
 	}
+	
+	
 
 	public void setSpeed(double xSpeed, double ySpeed) {
 		if (this.xSpeed == 0 && this.ySpeed == 0) {
@@ -142,16 +150,22 @@ public class Sprite {
 		default:
 		}
 	}
+	
+	
 
 	public void updatePosition() {
 		x += xSpeed;
 		y += ySpeed;
 		validatePosition();
 	}
+	
+	
 
 	public void render(GraphicsContext gc) {
 		gc.drawImage(image, x, y);
 	}
+	
+	
 
 	public boolean intersects(Sprite s) {
 		return ((x >= s.x && x <= s.x + s.width) || (s.x >= x && s.x <= x + width))
@@ -162,6 +176,8 @@ public class Sprite {
 		return ((x >= s.x - 20 && x <= s.x + s.width + 20) || (s.x >= x - 20 && s.x <= x + width + 20))
 				&& ((y >= s.y - 20 && y <= s.y + s.height + 20) || (s.y >= y - 20 && s.y <= y + height + 20));
 	}
+	
+	
 	
 	public void evitate(Planet p) {
 		double xDestination;
@@ -210,6 +226,8 @@ public class Sprite {
 			this.y = yDestination;
 		}
 	}
+	
+	
 
 	public String toString() {
 		return "Sprite<" + x + ", " + y + ">" + this.xSpeed + ";" + this.ySpeed;
