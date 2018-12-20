@@ -15,9 +15,9 @@ public class Planet {
 	private Circle c;
 	private boolean selected;
 	
-	public Planet(int rate, int p, Sprite sprite) {
+	public Planet(int rate, int player, Sprite sprite) {
 		this.productionRate = rate;
-		this.player = p;
+		this.player = player;
 		this.spaceShips = new ArrayList<SpaceShip>();
 		this.nbSpaceShips = this.spaceShips.size();
 		this.sprite = sprite;

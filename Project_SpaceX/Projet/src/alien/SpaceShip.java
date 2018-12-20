@@ -17,6 +17,8 @@ public class SpaceShip {
 		this.player = 0;
 		this.destination = p;
 	}
+
+	
 	
 	public int getPlayer() {
 		return this.player;
@@ -26,6 +28,8 @@ public class SpaceShip {
 		this.player = player;
 	}
 	
+	
+	
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
@@ -34,6 +38,8 @@ public class SpaceShip {
 		return this.sprite;
 	}
 	
+	
+	
 	public void setPosition() {
 		this.p = new Point2D(this.sprite.getX(), this.sprite.getY());
 	}
@@ -41,6 +47,8 @@ public class SpaceShip {
 	public Point2D getPosition() {
 		return this.p;
 	}
+	
+	
 
 	public Planet getDestination() {
 		return destination;
@@ -49,6 +57,8 @@ public class SpaceShip {
 	public void setDestination(Planet destination) {
 		this.destination = destination;
 	}
+	
+	
 	
 	public void travel() {
 		if (this.sprite.getXSpeed() < 0 && this.sprite.getX() <= this.destination.getCircle().getCenter().getX()) {
