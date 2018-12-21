@@ -238,7 +238,7 @@ public class Game extends Application {
 					for (Planet planet1 : planets) {
 						if (planet1.isSelected()) {
 							for (Planet planet2 : planets) {
-								if (planet2.getCircle().isInside(p) && planet2 != planet1) {
+								if (planet2.getCircle().isInside(p) && planet2 != planet1 && (players == 2 || planet1.getPlayer() == 0 ) && players > 0) {
 									if (e.isControlDown()) {
 										int player = planet1.getPlayer();
 										number = (int)(percent[player] * planet1.getNbSpaceShips());
@@ -251,64 +251,139 @@ public class Game extends Application {
 										ask.setHeaderText(null);
 										ask.setGraphic(null);
 										Optional<String> textIn = ask.showAndWait();
-											if (textIn.isPresent()) {
-												number = Integer.valueOf(textIn.get());
-											}
+										if (textIn.isPresent()) {
+											number = Integer.valueOf(textIn.get());
+										}
 									}
 										
 										
 										
-										if (number <= planet1.getNbSpaceShips()) {
-											for (int i = 0 ; i < number ; i++) {
-												planet1.getAttacked();
-												SpaceShip S = new SpaceShip(0,planet2,new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT));												
-												S.setPlayer(planet1.getPlayer());
-												S.setStart(planet1);
-												if (planet1.getSprite().getX() < planet2.getSprite().getX()) {
-													if (planet1.getSprite().getY() < planet2.getSprite().getY()) {
-														S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius(),
-																  planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius());
-													} else {
-														S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius(),
-																  planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius());
-													}
-												} else {
-													if (planet1.getSprite().getY() < planet2.getSprite().getY()) {
-														S.getSprite().setPosition(planet1.getCircle().getCenter().getX() - planet1.getCircle().getRadius(),
-																  planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius());
-													} else {
-														S.getSprite().setPosition(planet1.getCircle().getCenter().getX() - planet1.getCircle().getRadius(),
-																  planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius());
-													}
+									if (number <= planet1.getNbSpaceShips()) {
+										for (int i = 0 ; i < number ; i++) {
+											planet1.getAttacked();
+											SpaceShip S = new SpaceShip(0,planet2,new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT));												
+											S.setPlayer(planet1.getPlayer());
+											S.setStart(planet1);
+											if (planet1.getSprite().getX() < planet2.getSprite().getX()) {
+												if (planet1.getSprite().getY() < planet2.getSprite().getY()) {
+													S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius(),
+															planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius());
+												} 
+												else {
+													S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius(),
+															planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius());
 												}
-												double diffX = planet1.getCircle().getCenter().getX() - planet2.getCircle().getCenter().getX();
-												double diffY = planet1.getCircle().getCenter().getY() - planet2.getCircle().getCenter().getY();
-												if (Math.abs(diffX) < 40 && diffY < 0) {
-													S.getSprite().setPosition(planet1.getCircle().getCenter().getX(),
-															  planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius() + 20);
+											} 
+											else {
+												if (planet1.getSprite().getY() < planet2.getSprite().getY()) {
+													S.getSprite().setPosition(planet1.getCircle().getCenter().getX() - planet1.getCircle().getRadius(),
+															planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius());
 												}
-												if (Math.abs(diffX) < 40 && diffY > 0) {
-													S.getSprite().setPosition(planet1.getCircle().getCenter().getX(),
-															  planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius() - 20);
+												else {
+													S.getSprite().setPosition(planet1.getCircle().getCenter().getX() - planet1.getCircle().getRadius(),
+															planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius());
 												}
-												if (Math.abs(diffY) < 40 && diffX < 0) {
-													S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius() + 20,
-															  planet1.getCircle().getCenter().getY());
-												}
-												if (Math.abs(diffY) < 40 && diffX > 0) {
-													S.getSprite().setPosition(planet1.getCircle().getCenter().getX()  - planet1.getCircle().getRadius() - 20,
-															  planet1.getCircle().getCenter().getY());
-												}
-												S.setPosition();
-												S.lauch();
-												SSBase.add(S);
 											}
+											double diffX = planet1.getCircle().getCenter().getX() - planet2.getCircle().getCenter().getX();
+											double diffY = planet1.getCircle().getCenter().getY() - planet2.getCircle().getCenter().getY();
+											if (Math.abs(diffX) < 40 && diffY < 0) {
+												S.getSprite().setPosition(planet1.getCircle().getCenter().getX(),
+														planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius() + 20);
+											}
+											if (Math.abs(diffX) < 40 && diffY > 0) {
+												S.getSprite().setPosition(planet1.getCircle().getCenter().getX(),
+														planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius() - 20);
+											}
+											if (Math.abs(diffY) < 40 && diffX < 0) {
+												S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius() + 20,
+														planet1.getCircle().getCenter().getY());
+											}
+											if (Math.abs(diffY) < 40 && diffX > 0) {
+												S.getSprite().setPosition(planet1.getCircle().getCenter().getX()  - planet1.getCircle().getRadius() - 20,
+														planet1.getCircle().getCenter().getY());
+											}
+											S.setPosition();
+											S.lauch();
+											SSBase.add(S);
 										}
 									}
 								}
-								planet1.unSelect();
 							}
+							planet1.unSelect();
+							
+							
 						}
+					}
+					
+					
+					
+					/**
+					 * ia aleatoire qui permet le mode 1 joueur
+					 */
+					if (players == 1) {
+								
+						int aiPlanets = r.nextInt(planets.size());
+						int aiCibles = r.nextInt(planets.size());
+						
+						while (planets.get(aiPlanets).getPlayer() != 1) {
+							aiPlanets = r.nextInt(planets.size());
+						}
+						while(planets.get(aiCibles).getPlayer() == 1) {
+							aiCibles = r.nextInt(planets.size());
+						}
+						
+						Planet aiPlanet = planets.get(aiPlanets);
+						Planet aiCible = planets.get(aiCibles);
+						int aiSpaceShips = r.nextInt(aiPlanet.getNbSpaceShips());
+						
+						for (int i = 0 ; i < aiSpaceShips ; i++) {
+							aiPlanet.getAttacked();
+							SpaceShip S = new SpaceShip(0,aiCible,new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT));												
+							S.setPlayer(aiPlanet.getPlayer());
+							S.setStart(aiPlanet);
+							if (aiPlanet.getSprite().getX() < aiCible.getSprite().getX()) {
+								if (aiPlanet.getSprite().getY() < aiCible.getSprite().getY()) {
+									S.getSprite().setPosition(aiPlanet.getCircle().getCenter().getX() + aiPlanet.getCircle().getRadius(),
+											aiPlanet.getCircle().getCenter().getY() + aiPlanet.getCircle().getRadius());
+								} 
+								else {
+									S.getSprite().setPosition(aiPlanet.getCircle().getCenter().getX() + aiPlanet.getCircle().getRadius(),
+											aiPlanet.getCircle().getCenter().getY() - aiPlanet.getCircle().getRadius());
+								}
+							} 
+							else {
+								if (aiPlanet.getSprite().getY() < aiCible.getSprite().getY()) {
+									S.getSprite().setPosition(aiPlanet.getCircle().getCenter().getX() - aiPlanet.getCircle().getRadius(),
+											aiPlanet.getCircle().getCenter().getY() + aiPlanet.getCircle().getRadius());
+								}
+								else {
+									S.getSprite().setPosition(aiPlanet.getCircle().getCenter().getX() - aiPlanet.getCircle().getRadius(),
+											aiPlanet.getCircle().getCenter().getY() - aiPlanet.getCircle().getRadius());
+								}
+							}
+							double diffX = aiPlanet.getCircle().getCenter().getX() - aiCible.getCircle().getCenter().getX();
+							double diffY = aiPlanet.getCircle().getCenter().getY() - aiCible.getCircle().getCenter().getY();
+							if (Math.abs(diffX) < 40 && diffY < 0) {
+								S.getSprite().setPosition(aiPlanet.getCircle().getCenter().getX(),
+										aiPlanet.getCircle().getCenter().getY() + aiPlanet.getCircle().getRadius() + 20);
+							}
+							if (Math.abs(diffX) < 40 && diffY > 0) {
+								S.getSprite().setPosition(aiPlanet.getCircle().getCenter().getX(),
+										aiPlanet.getCircle().getCenter().getY() - aiPlanet.getCircle().getRadius() - 20);
+							}
+							if (Math.abs(diffY) < 40 && diffX < 0) {
+								S.getSprite().setPosition(aiPlanet.getCircle().getCenter().getX() + aiPlanet.getCircle().getRadius() + 20,
+										aiPlanet.getCircle().getCenter().getY());
+							}
+							if (Math.abs(diffY) < 40 && diffX > 0) {
+								S.getSprite().setPosition(aiPlanet.getCircle().getCenter().getX()  - aiPlanet.getCircle().getRadius() - 20,
+										aiPlanet.getCircle().getCenter().getY());
+							}
+							S.setPosition();
+							S.lauch();
+							SSBase.add(S);
+						}	
+					}				
 				}
 				
 					
@@ -399,7 +474,7 @@ public class Game extends Application {
 		EventHandler<ScrollEvent> ScrollHandeler = new EventHandler<ScrollEvent>() {
 			public void handle(ScrollEvent s) {
 				
-				if (s.isControlDown()) {
+				if (players > 0 && s.isControlDown() || players == 1) {
 					if(s.getDeltaY()>0) {
 						percent[0] += 0.05;
 					}
@@ -407,7 +482,7 @@ public class Game extends Application {
 						percent[0] -= 0.05;
 					}
 				}
-				if (s.isAltDown()) {
+				if (s.isAltDown() && !(players != 2)) {
 					if(s.getDeltaY()>0) {
 						percent[1] += 0.05;
 					}
