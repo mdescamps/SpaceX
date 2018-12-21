@@ -86,6 +86,10 @@ public class Game extends Application {
 		stage.show();
 		
 		
+		
+		/**
+		 * gere la fenetre lors du demarage du jeu
+		 */
 		Alert StartBox = new Alert(AlertType.CONFIRMATION);
 		
 		StartBox.getDialogPane().setPrefWidth(450);
@@ -104,6 +108,9 @@ public class Game extends Application {
 		
 		Optional<ButtonType> choice = StartBox.showAndWait();
 		
+		/**
+		 * gere la recharge de la derniere partie
+		 */
 		if(choice.get() == btnReload) {
 			
 			try {
@@ -127,10 +134,15 @@ public class Game extends Application {
 			
 			
 		}
+		/**
+		 * cree une nouvelle partie
+		 */
 		else if(choice.get() == btnNew) {
 			
 			
-			
+			/**
+			 * Gere la boite de dialogue qui renseigne sur le nombre de joueurs
+			 */
 			StartBox.getDialogPane().setPrefWidth(400);
 			StartBox.getDialogPane().setPrefHeight(100);
 			StartBox.setTitle("Choose the number you are");
@@ -161,6 +173,12 @@ public class Game extends Application {
 				start(stage);
 			}
 			
+			
+			
+			/**
+			 * Cree de maniere aleatoire (sur la quantité, la position, l'appartenance, la taille et la quantité de vaisseaux) les planete du jeu tout en gerant les colition
+			 * pour ne pas quelles se chevauchent
+			 */
 			int nbplanets = 0;
 			for (; nbplanets < r.nextInt(5) + 5; nbplanets++) {
 				double h = 0;
@@ -189,8 +207,8 @@ public class Game extends Application {
 			planets.get(1).setPlayer(1);
 			planets.get(0).setNbSpaceShips(0);
 			planets.get(1).setNbSpaceShips(0);
-			planets.get(0).setProductionRate(60);
-			planets.get(1).setProductionRate(60);
+			planets.get(0).setProductionRate(30);
+			planets.get(1).setProductionRate(30);
 			
 		}
 		
@@ -201,12 +219,16 @@ public class Game extends Application {
 		
 		
 
-		
+		/**
+		 * Gere les interaction avec la souris
+		 */
 		EventHandler<MouseEvent> mouseHandler = new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent e) {
 				
 				
-				
+				/**
+				 * Gestion de l'initialisation d'attaques par la selection de deux planete lors d'un cliqué - glissé
+				 */
 				if (e.getEventType() == MouseEvent.MOUSE_PRESSED) {
 					unSelectAll(planets);
 					Point2D p = new Point2D(e.getSceneX(), e.getSceneY());
@@ -392,7 +414,11 @@ public class Game extends Application {
 		scene.setOnMouseDragged(mouseHandler);
 		scene.setOnMousePressed(mouseHandler);
 		
-
+		
+		
+		/**
+		 * gere la fin de partie en calculant a chaque mouvement de la souris le nombre de planet qu'il reste a chaque joueurs et donc l'affichage graphique de fin de partie
+		 */
 		scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
 				if (event.getEventType() == MouseEvent.MOUSE_PRESSED || event.getEventType() != MouseEvent.MOUSE_PRESSED || event.getEventType() == MouseEvent.ANY) {
@@ -458,6 +484,10 @@ public class Game extends Application {
 		});
 		
 		
+		
+		/**
+		 * gere les interaction avec la molette de la souris (controle du pourcentage de chaque joueurs)
+		 */
 		EventHandler<ScrollEvent> ScrollHandeler = new EventHandler<ScrollEvent>() {
 			public void handle(ScrollEvent s) {
 				
@@ -495,7 +525,9 @@ public class Game extends Application {
 		scene.setOnScroll(ScrollHandeler);
 		
 		
-		
+		/**
+		 * gere les interractions avec le clavier en particulier la pause et donc la fenetre graphique associé
+		 */
 		scene.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent e) {
 				
@@ -522,7 +554,9 @@ public class Game extends Application {
 					
 					Optional<ButtonType> choice = StartBox.showAndWait();
 					
-					
+					/**
+					 * gere la sauvegarde de partie 
+					 */
 					if(choice.get() == btnSave) {
 						
 						
@@ -543,6 +577,10 @@ public class Game extends Application {
 						}
 						
 					}
+					
+					/**
+					 * gere la fin de partie et la sauvegarde
+					 */
 					else if(choice.get() == btnSaveQuit) {
 						
 						try {
@@ -563,13 +601,24 @@ public class Game extends Application {
 						stage.close();
 					}
 					
-					
+					/**
+					 * Permet de lancer une nouvelle partie
+					 */
 					else if(choice.get() == btnRestart) {
-							start(stage);
+						stage.close();
+						start(stage);
 					}
+					
+					/**
+					 * Permet de continuer la partie mise en pause
+					 */
 					else if(choice.get() == btnContinue) {
 						
 					}
+					
+					/**
+					 * Met fin a la partie
+					 */
 					else {
 						stage.close();
 					}
@@ -578,7 +627,9 @@ public class Game extends Application {
 		});
 		
 		
-
+		/**
+		 * Gere l'ensemble des animations
+		 */
 		new AnimationTimer() {
 			public void handle(long arg0) {
 				gc.drawImage(space, 0, 0);
@@ -586,6 +637,11 @@ public class Game extends Application {
 					planet.getSprite().render(gc);
 					String text =  "" + planet.getNbSpaceShips();
 					
+					
+					
+					/**
+					 * Gere la couleur des planete associé a chaques joueurs 
+					 */
 					switch (planet.getPlayer()) {
 					case(0):
 						gc.setFill(Color.DEEPSKYBLUE);
@@ -611,7 +667,11 @@ public class Game extends Application {
 						SSBase.remove(i);
 					}
 					
-				
+					
+					
+					/**
+					 * Gere le deplacement des vaisseaux et l'interraction avec une planete
+					 */
 					Iterator<SpaceShip> it = SSLaunch.iterator();
 					while(it.hasNext()) {
 						SpaceShip SpaceShip = it.next();
@@ -642,11 +702,14 @@ public class Game extends Application {
 						}
 					}
 				}
-		
-				
 				
 				timer++;
 				
+				
+				
+				/**
+				 * Gere l'affichage des textes a actualiser tel que les pourcentages et toute leurs caracteristiques 
+				 */
 				gc.setFont(Font.font("Helvetica", FontWeight.BOLD, 15));
 				for (int i = 0 ; i < percent.length ; i++) {
 					String percentage = "percentage : " + (int)((percent[i]+0.002)*100)+ "%";
