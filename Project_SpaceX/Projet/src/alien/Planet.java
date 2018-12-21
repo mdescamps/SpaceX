@@ -20,10 +20,10 @@ public class Planet implements Serializable {
 	
 	
 	/**
-	 * Constructeur de planete avec deux entiers et un sprite en parametre
-	 * @param rate		L'entier qui correspond a vitesse de production
-	 * @param player	L'entier qui correspond au joueur auquel appartien la planete
-	 * @param prite 	Le srite associ√© a la planete
+	 * Constructeur de planete
+	 * @param rate		vitesse de production
+	 * @param player	joueur auquel appartient la planete
+	 * @param sprite 	sprite associe a la planete
 	 */
 	public Planet(int rate, int player, Sprite sprite) {
 		this.productionRate = rate;
@@ -39,7 +39,7 @@ public class Planet implements Serializable {
 	
 	
 	/**
-	 * Methode qui informe si la planete a etait selectionn√©e
+	 * Methode qui informe si la planete a etait selectionnee
 	 * @return		Vrai si elle l'a ete, faux sinon
 	 */
 	public boolean isSelected() {
@@ -54,7 +54,7 @@ public class Planet implements Serializable {
 	}
 	
 	/**
-	 * Methode qui de deselectionne la planete
+	 * Methode qui deselectionne la planete
 	 */
 	public void unSelect() {
 		this.selected = false;
@@ -63,16 +63,16 @@ public class Planet implements Serializable {
 	
 	
 	/**
-	 * Methode qui informe sur le nomber de vaisseaux que poss√®de la planete
-	 * @return		 L'entier qui correspond au nombre de vaisseaux
+	 * Methode qui informe sur le nombre de vaisseaux que possede la planete
+	 * @return	nombre de vaisseaux
 	 */
 	public int getNbSpaceShips() {
 		return nbSpaceShips;
 	}
 
 	/**
-	 * Methode qui initialise le nombre de vaisseaux
-	 * @param nbSpaceShips	 	L'entier qui correspond au nombre de vaisseaux auquel la planete doit etre initialisee			
+	 * Methode qui modifie le nombre de vaisseaux
+	 * @param nbSpaceShips  nombre de vaisseaux auquel la planete doit etre modifiee			
 	 */
 	public void setNbSpaceShips(int nbSpaceShips) {
 		this.nbSpaceShips = nbSpaceShips;
@@ -80,15 +80,16 @@ public class Planet implements Serializable {
 	
 	/**
 	 * Methode qui incremente de 1 le nombre de vaisseaux de la planete
+	 * (utilisee pour les interactions vaisseau/planete)
 	 */
 	public void productShip() {
 		this.nbSpaceShips ++;
 	}
 	
 	/**
-	 * Methode qui initie l'envoie de vaisseaux en dirrection d'une autre planete
+	 * Methode qui initie l'envoie de vaisseaux en direction d'une autre planete
 	 * @param p			La planete cible
-	 * @param number 	L'entier qui correspond a la quantite de vaisseaux deployes
+	 * @param number 	quantite de vaisseaux envoyes
 	 */
 	public void sendShip(Planet p, int number) {
 		this.nbSpaceShips -= number;
@@ -105,8 +106,8 @@ public class Planet implements Serializable {
 	}
 	
 	/**
-	 * Methode qui gere l'interaction d'un vaisseau qui n'appartien pas au proprietaire de la planete et donc decremente le nombre de vaisseaux
-	 * qu'elle possede
+	 * Methode qui gere l'interaction d'un vaisseau qui n'appartient pas au proprietaire de la planete 
+	 * et donc decremente le nombre de vaisseaux qu'elle possede
 	 */
 	public void  getAttacked() {
 		this.nbSpaceShips--;
@@ -115,15 +116,15 @@ public class Planet implements Serializable {
 	
 	/**
 	 * Methode qui informe sur le proprietaire de la planete
-	 * @return 	L'entier qui correspond au proprietaire 
+	 * @return 	numero du joueur
 	 */
 	public int getPlayer() {
 		return this.player;
 	}
 	
 	/**
-	 * Methode qui initie le proprietaire de la planete
-	 * @param p  Numero du joueur ‡ initialiser
+	 * Methode qui modifie le proprietaire de la planete
+	 * @param p  Numero du joueur ‡ modifier
 	 */
 	public void setPlayer(int p) {
 		this.player = p;
@@ -132,8 +133,8 @@ public class Planet implements Serializable {
 	
 	
 	/**
-	 * Methode qui informe sur le Cercle definit par la planete definissant une surface physique pour cette derniere pour cette derniere permettant de gere les 
-	 * interaction avec d'autre objets
+	 * Methode qui retourne le cercle definit pour la planete definissant une surface physique pour cette derniere 
+	 * permettant de gerer les interactions avec d'autres objets
 	 * @return	Le cercle qui correspond a la planete
 	 */
 	public Circle getCircle() {
@@ -144,15 +145,15 @@ public class Planet implements Serializable {
 	
 	/**
 	 * Methode qui informe sur la vitesse de production de la planete
-	 * @return 	L'entier qui correspond au taux de production
+	 * @return 	taux de production
 	 */
 	public int getProductionRate() {
 		return productionRate;
 	}
 
 	/**
-	 * Methode qui permet d'initialiser le taux de production de la planete
-	 * @param productionRate	L'entier qui correspond au taut de production 
+	 * Methode qui permet de modifier le taux de production de la planete
+	 * @param productionRate	nouveau taux de production 
 	 */
 	public void setProductionRate(int productionRate) {
 		this.productionRate = productionRate;
@@ -162,15 +163,15 @@ public class Planet implements Serializable {
 	
 	/**
 	 * Methode qui informe sur le sprite correspondant a la planete
-	 * @return 	Le sprite qui correspond a la planete
+	 * @return 	sprite associe a la planete
 	 */
 	public Sprite getSprite() {
 		return sprite;
 	}
 
 	/**
-	 * Methode qui permet d'initialiser le sprite de la planete
-	 * @param s 	Le sprite que l'on souhaite associer a la planete
+	 * Methode qui permet de modifier le sprite associÈ de la planete
+	 * @param s 	nouveau sprite que l'on souhaite associer a la planete
 	 */
 	public void setSprite(Sprite s) {
 		this.sprite = s;

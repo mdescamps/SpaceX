@@ -2,11 +2,8 @@ package alien;
 
 import java.io.Serializable;
 
-import com.sun.xml.internal.bind.v2.model.annotation.Quick;
-
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.input.KeyCode;
 
 public class Sprite implements Serializable {
 	
@@ -16,8 +13,6 @@ public class Sprite implements Serializable {
 	private double y;
 	private double xSpeed;
 	private double ySpeed;
-	private double xSpeedOrigin;
-	private double ySpeedOrigin;
 	private double width;
 	private double height;
 	private double minX;
@@ -27,14 +22,14 @@ public class Sprite implements Serializable {
 	
 	
 	/**
-	 * Constructeur de Sprite avec un lien vers une image et 4 reels correspondant aux dimentions et condition sur la position en paramètres
+	 * Constructeur de Sprite avec une création d'image et 4 reels correspondant aux dimentions et condition sur la position de l'objet
 	 * @param path 		Lien vers l'image du sprite
 	 * @param width		Largeur de l'image
 	 * @param height	Hauteur de l'image
-	 * @param minX		Position minimum selon l'ordonnée
-	 * @param minY		Position minimum selon l'abscisse
-	 * @param maxX		Poisiton maximum selon l'ordonnée
-	 * @param maxY		Position maximum selon l'abscisse
+	 * @param minX		Position minimum selon l'abscisse
+	 * @param minY		Position minimum selon l'ordonnée
+	 * @param maxX		Poisiton maximum selon l'abscisse
+	 * @param maxY		Position maximum selon l'ordonnée
 	 */
 	public Sprite(String path, double width, double height, double minX, double minY, double maxX, double maxY) {
 		this.image = new Image(path,width,height, false, false);
@@ -47,8 +42,8 @@ public class Sprite implements Serializable {
 	}
 
 	/**
-	 * Constructeur de Sprite avec un autre sprite en paramètre
-	 * @param s		Sprite dont on va copier les propriétées
+	 * Constructeur de Sprite à partir d'un autre sprite
+	 * @param s		Sprite dont on va copier les propriétés
 	 */
 	public Sprite(Sprite s) {
 		image = s.image;
@@ -79,7 +74,7 @@ public class Sprite implements Serializable {
 	
 	
 	/**
-	 * Methode qui renseigne sur la position du sprite selon les ordonnées
+	 * Methode qui renseigne sur la position du sprite selon les abscisses
 	 * @return		Un réel qui correspond cette position
 	 */
 	public double getX() {
@@ -87,7 +82,7 @@ public class Sprite implements Serializable {
 	}
 	
 	/**
-	 * Methode qui renseigne sur la position du sprite selon les abscisses
+	 * Methode qui renseigne sur la position du sprite selon les ordonnées
 	 * @return		Un réel qui correspond a cette positon
 	 */
 	public double getY() {
@@ -95,7 +90,7 @@ public class Sprite implements Serializable {
 	}
 	
 	/**
-	 * Methode qui initialise la position du sprite sur l'axe des abscisse
+	 * Methode qui modifie la position du sprite sur l'axe des abscisses
 	 * @param x		Un réel
 	 */
 	public void setX(double x) {
@@ -103,14 +98,12 @@ public class Sprite implements Serializable {
 	}
 	
 	/**
-	 * Methode qui initialise la position du sprite sur l'axe des ordonnées 
+	 * Methode qui modifie la position du sprite sur l'axe des ordonnées 
 	 * @param y 	Un réel
 	 */
 	public void setY(double y) {
 		this.y = y;
 	}
-	
-	
 	
 	/**
 	 * Methode qui permet de garder le sprite dans les limites que l'on lui impose
@@ -168,20 +161,10 @@ public class Sprite implements Serializable {
 	 * @param ySpeed	Un reel donnant la vitesse sur les ordonnées
 	 */
 	public void setSpeed(double xSpeed, double ySpeed) {
-		if (this.xSpeed == 0 && this.ySpeed == 0) {
-			this.xSpeedOrigin = xSpeed;
-			this.ySpeedOrigin = ySpeed;
-		}
 		this.xSpeed = xSpeed;
 		this.ySpeed = ySpeed;
 	}
-	
-	/**
-	 * Methode qui initialise la vitesse du sprite a une vitesse predefinie
-	 */
-	public void setOriginalSpeed() {
-		this.setSpeed(xSpeedOrigin, ySpeedOrigin);
-	}
+
 	
 	/**
 	 * Methode qui renseigne sur la vitesse du sprtie selon l'axe des abscisses
@@ -192,42 +175,16 @@ public class Sprite implements Serializable {
 	}
 	
 	/**
-	 * Methode qui renseigne sur la vitesse du sprite selon l'axe des ordonées
+	 * Methode qui renseigne sur la vitesse du sprite selon l'axe des ordonnées
 	 * @return		Un reel
 	 */
 	public double getYSpeed() {
 		return this.ySpeed;
 	}
-	
-	/**
-	 * Methode qui modifie la vitessse d'un sprite par rapport a une interaction avec le clavier
-	 * @param code	La touche utiliser (haut,bas,droite,gauche)
-	 */
-	public void changeSpeed(KeyCode code) {
-		switch (code) {
-		case LEFT:
-			xSpeed--;
-			break;
-		case RIGHT:
-			xSpeed++;
-			break;
-		case UP:
-			ySpeed--;
-			break;
-		case DOWN:
-			ySpeed++;
-			break;
-		case SPACE:
-			ySpeed = xSpeed = 0;
-			break;
-		default:
-		}
-	}
-	
-	
 
 	/**
 	 * Methode qui actualise la position du sprite en fonction de sa vitesse
+	 * et qui vérifie que la nouvelle position est correcte
 	 */
 	public void updatePosition() {
 		x += xSpeed;
@@ -249,8 +206,9 @@ public class Sprite implements Serializable {
 	
 	/**
 	 * Methode qui permet de verifier si un sprite est en collision avec un autre
+	 * (utilisée pour la gestion des collisions vaisseau/planete)
 	 * @param s		L'autre sprite
-	 * @return		Vrais si il y a collision, Faux sinon.
+	 * @return		Vrai si il y a collision, Faux sinon.
 	 */
 	public boolean intersects(Sprite s) {
 		return ((x >= s.x && x <= s.x + s.width) || (s.x >= x && s.x <= x + width))
@@ -259,6 +217,7 @@ public class Sprite implements Serializable {
 	
 	/**
 	 * Methode qui permet de verifier si un sprite est en collision avec une planete
+	 * (utilisée pour gérer le fait que 2 planetes ne se superposent pas)
 	 * @param s		Le sprite de la planete
 	 * @return		Vrais si il y a collision, Faux sinon.
 	 */

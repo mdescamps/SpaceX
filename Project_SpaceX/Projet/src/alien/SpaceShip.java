@@ -18,10 +18,11 @@ public class SpaceShip implements Serializable {
 	
 	
 	/**
-	 * Constructeur de vaisseau avec une vitesse, une planet et un sprite en parametre les initialisants
-	 * @param s			Entier qui correspond a la vitesse du vaisseau
-	 * @param p			Planet de destination du vaisseau
-	 * @param sprite 	Sprite correspondant au vaisseau
+	 * Constructeur de vaisseau avec une vitesse, une planete de destination et un sprite associe
+	 * par définition, un vaisseau cree n'appartient a aucun joueur
+	 * @param s			vitesse du vaisseau
+	 * @param p			Planete de destination du vaisseau
+	 * @param sprite 	Sprite associe au vaisseau
 	 */
 	public SpaceShip(int s, Planet p, Sprite sprite) {
 		this.speed = s;
@@ -41,8 +42,8 @@ public class SpaceShip implements Serializable {
 	}
 	
 	/**
-	 * Methode qui initie le proprietaire du vaisseau
-	 * @param player 	L'entier qui correspond au numero du proprietaire
+	 * Methode qui modifie le proprietaire du vaisseau
+	 * @param player 	numero du joueur
 	 */
 	public void setPlayer(int player) {
 		this.player = player;
@@ -51,16 +52,16 @@ public class SpaceShip implements Serializable {
 	
 	
 	/**
-	 * Methode qui initie le sprite du vaisseau
-	 * @param sprite 	Le sprite que l'on souhaite associer au vaisseau
+	 * Methode qui modifie le sprite associe au vaisseau
+	 * @param sprite 	sprite que l'on souhaite associer au vaisseau
 	 */
 	public void setSprite(Sprite sprite) {
 		this.sprite = sprite;
 	}
 	
 	/**
-	 * Methode qui informe sur le sprite qui correspond au vaisseau
-	 * @return 	Le sprite du vaisseau
+	 * Methode qui informe sur le sprite associe au vaisseau
+	 * @return 	sprite associe au vaisseau
 	 */
 	public Sprite getSprite() {
 		return this.sprite;
@@ -69,7 +70,7 @@ public class SpaceShip implements Serializable {
 	
 	
 	/**
-	 * Methode qui initie la position du vaisseau sous la forme d'un point
+	 * Methode qui modifie la position du vaisseau sous la forme d'un point
 	 */
 	public void setPosition() {
 		this.p = new Point2D(this.sprite.getX(), this.sprite.getY());
@@ -86,32 +87,32 @@ public class SpaceShip implements Serializable {
 	
 
 	/**
-	 * Methode qui informe sur la planet de destination du vaisseau
-	 * @return La planet de destinantion
+	 * Methode qui informe sur la planete de destination du vaisseau
+	 * @return planete de destinantion
 	 */
 	public Planet getDestination() {
 		return destination;
 	}
 	
 	/**
-	 * Methode qui initie la planete de destiniantion
-	 * @param destination	La planet de destination
+	 * Methode qui modifie la planete de destiniantion
+	 * @param destination	nouvelle planete de destination
 	 */
 	public void setDestination(Planet destination) {
 		this.destination = destination;
 	}
 	
 	/**
-	 * Methode qui informe sur la planet de depart du vaisseau
-	 * @return La planet de destinantion
+	 * Methode qui informe sur la planete de depart du vaisseau
+	 * @return planete de depart
 	 */
 	public Planet getStart() {
 		return start;
 	}
 
 	/**
-	 * Methode qui initie la planete de depart
-	 * @param destination	La planet de depart
+	 * Methode qui modifie la planete de depart
+	 * @param destination	nouvelle planete de depart
 	 */
 	public void setStart(Planet start) {
 		this.start = start;
@@ -120,7 +121,8 @@ public class SpaceShip implements Serializable {
 	
 	
 	/**
-	 * Methode qui modifie la vitesse du vaisseau en fonction de sa vitesse et de sa position par raport a sa planete de destination
+	 * Methode qui modifie la vitesse et la trajectoire du vaisseau en fonction de sa vitesse 
+	 * et de sa position par rapport a sa planete de destination
 	 */
 	public void travel() {
 		if (this.sprite.getXSpeed() < 0 && this.sprite.getX() <= this.destination.getCircle().getCenter().getX()) {
@@ -138,7 +140,7 @@ public class SpaceShip implements Serializable {
 	}
 	
 	/**
-	 * methode gérant l'envoi des vaisseaux dans l'espace en leur configurant une vitesse de base
+	 * methode gerant l'envoi des vaisseaux dans l'espace en leur configurant une vitesse de base
 	 */
 	public void lauch() {
 		if (this.getSprite().getX() < start.getCircle().getCenter().getX()) {
@@ -174,7 +176,10 @@ public class SpaceShip implements Serializable {
 	}
 	
 
-	
+	/**
+	 * methode qui permet a un vaisseau d'eviter une planete quand celle ci n'est pas sa planete de destination
+	 * @param p planete a evite par le vaisseau
+	 */
 	public void evitate(Planet p) {
 		double xDestination;
 		double yDestination;
