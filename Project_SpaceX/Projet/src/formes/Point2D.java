@@ -4,10 +4,8 @@ import java.io.Serializable;
 
 public class Point2D implements Serializable {
 	
-	
-	
-    private double x, y;
-    
+	private static final long serialVersionUID = -4883945686414205122L;
+	private double x, y;
     
     
     /*

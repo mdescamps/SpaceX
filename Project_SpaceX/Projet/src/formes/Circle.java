@@ -4,11 +4,9 @@ import java.io.Serializable;
 
 public class Circle implements Serializable {
 	
-	
-	
+	private static final long serialVersionUID = 8078636859780901686L;
 	private Point2D p;
 	private double radius;
-	
 	
 	
 	/*
@@ -107,7 +105,7 @@ public class Circle implements Serializable {
 	 * @return 		Vrais si le point est assez proche (ici distance de 20 pixels) du cerlce, Faux sinon
 	 */
 	public boolean isNear(Point2D p) {
-		return (this.getCenter().distance(p) <= this.getRadius() + 20);
+		return (this.getCenter().distance(p) <= this.getRadius() + 10);
 	}
 
 }

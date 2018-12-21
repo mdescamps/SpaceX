@@ -2,14 +2,12 @@ package alien;
 
 import java.io.Serializable;
 
-import com.sun.prism.Image;
-
 import formes.Point2D;
 
 public class SpaceShip implements Serializable {
 	
 	
-
+	private static final long serialVersionUID = 2244946884762466707L;
 	private int speed;
 	private Sprite sprite;
 	private Point2D p;
@@ -192,21 +190,12 @@ public class SpaceShip implements Serializable {
 				} else {
 					yDestination = this.getSprite().getY();
 				}
-				if (yDestination > this.destination.getCircle().getCenter().getY()) {
-					yDestination = p.getCircle().getCenter().getY() + p.getCircle().getRadius();
-				}
 			} else {
 				if (this.getSprite().getYSpeed() != 0) {
 					yDestination = this.getSprite().getY() - ((this.getSprite().getY() - p.getCircle().getCenter().getY()) * 2);
 				} else {
 					yDestination = this.getSprite().getY();
 				}
-				if (yDestination < this.destination.getCircle().getCenter().getY()) {
-					yDestination = p.getCircle().getCenter().getY() - p.getCircle().getRadius();
-				}
-			}
-			if (xDestination > this.destination.getCircle().getCenter().getX()) {
-				xDestination = p.getCircle().getCenter().getX();
 			}
 			this.getSprite().setX(xDestination);
 			this.getSprite().setY(yDestination);
@@ -222,22 +211,32 @@ public class SpaceShip implements Serializable {
 				} else {
 					yDestination = this.getSprite().getY();
 				}
-				if (yDestination > this.destination.getCircle().getCenter().getY()) {
-					yDestination = p.getCircle().getCenter().getY() - p.getCircle().getRadius();
-				}
 			} else {
 				if (this.getSprite().getYSpeed() != 0) {
 					yDestination = this.getSprite().getY() - ((this.getSprite().getY() - p.getCircle().getCenter().getY()) * 2);
 				} else {
 					yDestination = this.getSprite().getY();
 				}
-				if (yDestination < this.destination.getCircle().getCenter().getY()) {
-					yDestination = p.getCircle().getCenter().getY() + p.getCircle().getRadius();
+			}
+				if (this.getSprite().getXSpeed() != 0 && this.getSprite().getYSpeed() != 0) {
+				if ((xDestination >= this.destination.getCircle().getCenter().getX() || xDestination <= this.destination.getCircle().getCenter().getX())  && yDestination < p.getCircle().getCenter().getY()) {
+					xDestination = p.getCircle().getCenter().getX();
+					yDestination = p.getCircle().getCenter().getY() - p.getCircle().getRadius() -20;
+				}
+				if ((xDestination >= this.destination.getCircle().getCenter().getX() || xDestination <= this.destination.getCircle().getCenter().getX()) && yDestination > p.getCircle().getCenter().getY()) {
+					xDestination = p.getCircle().getCenter().getX();
+					yDestination = p.getCircle().getCenter().getY() + p.getCircle().getRadius() + 20;
+				}
+				if ((yDestination >= this.destination.getCircle().getCenter().getY() || yDestination <= this.destination.getCircle().getCenter().getY()) && xDestination < p.getCircle().getCenter().getX()) {
+					xDestination = p.getCircle().getCenter().getX() - p.getCircle().getRadius() - 20;
+					yDestination = p.getCircle().getCenter().getY();
+				}
+				if ((yDestination >= this.destination.getCircle().getCenter().getY() || yDestination <= this.destination.getCircle().getCenter().getY()) && xDestination < p.getCircle().getCenter().getX()) {
+					xDestination = p.getCircle().getCenter().getX() + p.getCircle().getRadius() + 20;
+					yDestination = p.getCircle().getCenter().getY();
 				}
 			}
-			if (xDestination < this.destination.getCircle().getCenter().getX()) {
-				xDestination = p.getCircle().getCenter().getX();
-			}
+			
 			this.getSprite().setX(xDestination);
 			this.getSprite().setY(yDestination);
 		}

@@ -7,19 +7,14 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import formes.Point2D;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.event.EventTarget;
-import javafx.event.EventType;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -30,18 +25,10 @@ import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.DragEvent;
-import javafx.scene.input.Dragboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import javafx.scene.input.TransferMode;
-import javafx.scene.media.Media;
-import javafx.scene.media.MediaException;
-import javafx.scene.media.MediaPlayer;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -286,11 +273,11 @@ public class Game extends Application {
 											}
 											double diffX = planet1.getCircle().getCenter().getX() - planet2.getCircle().getCenter().getX();
 											double diffY = planet1.getCircle().getCenter().getY() - planet2.getCircle().getCenter().getY();
-											if (Math.abs(diffX) < 40 && diffY < 0) {
+											if (Math.abs(diffX) < 80 && diffY < 0) {
 												S.getSprite().setPosition(planet1.getCircle().getCenter().getX(),
 														planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius() + 20);
 											}
-											if (Math.abs(diffX) < 40 && diffY > 0) {
+											if (Math.abs(diffX) < 80 && diffY > 0) {
 												S.getSprite().setPosition(planet1.getCircle().getCenter().getX(),
 														planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius() - 20);
 											}
@@ -596,7 +583,6 @@ public class Game extends Application {
 			public void handle(long arg0) {
 				gc.drawImage(space, 0, 0);
 				for (Planet planet : planets) {
-					//gc.drawImage(new Image(getRessourcePathByName(planet.getSprite().getUrl()),planet.getSprite().width(),planet.getSprite().height(), false, false), planet.getSprite().getX(), planet.getSprite().getY());
 					planet.getSprite().render(gc);
 					String text =  "" + planet.getNbSpaceShips();
 					
@@ -645,7 +631,6 @@ public class Game extends Application {
 							it.remove();
 						}
 						else {
-							//gc.drawImage(new Image(getRessourcePathByName(SpaceShip.getSprite().getUrl()),SpaceShip.getSprite().width(),SpaceShip.getSprite().height(), false, false), SpaceShip.getSprite().getX(), SpaceShip.getSprite().getY());
 							SpaceShip.getSprite().render(gc);
 							
 						}
@@ -653,7 +638,6 @@ public class Game extends Application {
 						if (planet.getCircle().isNear(SpaceShip.getPosition()) && SpaceShip.getDestination() != planet) {
 							SpaceShip.evitate(planet);
 							SpaceShip.travel();
-							//gc.drawImage(new Image(getRessourcePathByName(SpaceShip.getSprite().getUrl()),SpaceShip.getSprite().width(),SpaceShip.getSprite().height(), false, false), SpaceShip.getSprite().getX(), SpaceShip.getSprite().getY());
 							SpaceShip.getSprite().render(gc);
 						}
 					}

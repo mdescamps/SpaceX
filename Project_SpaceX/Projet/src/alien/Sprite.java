@@ -9,6 +9,7 @@ import javafx.scene.input.KeyCode;
 
 public class Sprite implements Serializable {
 	
+	private static final long serialVersionUID = 7830947624607390353L;
 	private Image image;
 	private double x;
 	private double y;

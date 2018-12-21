@@ -8,8 +8,7 @@ import formes.Point2D;
 
 public class Planet implements Serializable {
 
-	
-	
+	private static final long serialVersionUID = -6763150003302789101L;
 	private int productionRate;
 	private int player;
 	private ArrayList<SpaceShip> spaceShips;
