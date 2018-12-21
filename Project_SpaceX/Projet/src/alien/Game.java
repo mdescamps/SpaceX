@@ -281,6 +281,24 @@ public class Game extends Application {
 																  planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius());
 													}
 												}
+												double diffX = planet1.getCircle().getCenter().getX() - planet2.getCircle().getCenter().getX();
+												double diffY = planet1.getCircle().getCenter().getY() - planet2.getCircle().getCenter().getY();
+												if (Math.abs(diffX) < 40 && diffY < 0) {
+													S.getSprite().setPosition(planet1.getCircle().getCenter().getX(),
+															  planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius() + 20);
+												}
+												if (Math.abs(diffX) < 40 && diffY > 0) {
+													S.getSprite().setPosition(planet1.getCircle().getCenter().getX(),
+															  planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius() - 20);
+												}
+												if (Math.abs(diffY) < 40 && diffX < 0) {
+													S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius() + 20,
+															  planet1.getCircle().getCenter().getY());
+												}
+												if (Math.abs(diffY) < 40 && diffX > 0) {
+													S.getSprite().setPosition(planet1.getCircle().getCenter().getX()  - planet1.getCircle().getRadius() - 20,
+															  planet1.getCircle().getCenter().getY());
+												}
 												S.setPosition();
 												S.lauch();
 												SSBase.add(S);
@@ -365,6 +383,7 @@ public class Game extends Application {
 						Optional<ButtonType> choice2 = victory2.showAndWait();
 						
 						if (choice2.get() == btnRestart) {
+							gc.clearRect(0, 0, WIDTH, HEIGHT);
 							start(stage);
 						}
 						else {
@@ -557,7 +576,8 @@ public class Game extends Application {
 						}
 						
 						if (planet.getCircle().isNear(SpaceShip.getPosition()) && SpaceShip.getDestination() != planet) {
-							SpaceShip.getSprite().evitate(planet);
+							SpaceShip.evitate(planet);
+							SpaceShip.travel();
 							//gc.drawImage(new Image(getRessourcePathByName(SpaceShip.getSprite().getUrl()),SpaceShip.getSprite().width(),SpaceShip.getSprite().height(), false, false), SpaceShip.getSprite().getX(), SpaceShip.getSprite().getY());
 							SpaceShip.getSprite().render(gc);
 						}

@@ -19,7 +19,7 @@ public class SpaceShip implements Serializable {
 	
 	
 	
-	/*
+	/**
 	 * Constructeur de vaisseau avec une vitesse, une planet et un sprite en parametre les initialisants
 	 * @param s			Entier qui correspond a la vitesse du vaisseau
 	 * @param p			Planet de destination du vaisseau
@@ -35,14 +35,14 @@ public class SpaceShip implements Serializable {
 
 	
 	
-	/*
+	/**
 	 * Methode qui informe sur le proprietaire du vaisseau
 	 */
 	public int getPlayer() {
 		return this.player;
 	}
 	
-	/*
+	/**
 	 * Methode qui initie le proprietaire du vaisseau
 	 * @param player 	L'entier qui correspond au numero du proprietaire
 	 */
@@ -52,7 +52,7 @@ public class SpaceShip implements Serializable {
 	
 	
 	
-	/*
+	/**
 	 * Methode qui initie le sprite du vaisseau
 	 * @param sprite 	Le sprite que l'on souhaite associer au vaisseau
 	 */
@@ -60,7 +60,7 @@ public class SpaceShip implements Serializable {
 		this.sprite = sprite;
 	}
 	
-	/*
+	/**
 	 * Methode qui informe sur le sprite qui correspond au vaisseau
 	 * @return 	Le sprite du vaisseau
 	 */
@@ -70,14 +70,14 @@ public class SpaceShip implements Serializable {
 	
 	
 	
-	/*
+	/**
 	 * Methode qui initie la position du vaisseau sous la forme d'un point
 	 */
 	public void setPosition() {
 		this.p = new Point2D(this.sprite.getX(), this.sprite.getY());
 	}
 	
-	/*
+	/**
 	 * Methode qui informe sur la position du vaisseau
 	 * @return 	Le point qui correspond a la position du vaisseau
 	 */
@@ -87,7 +87,7 @@ public class SpaceShip implements Serializable {
 	
 	
 
-	/*
+	/**
 	 * Methode qui informe sur la planet de destination du vaisseau
 	 * @return La planet de destinantion
 	 */
@@ -95,7 +95,7 @@ public class SpaceShip implements Serializable {
 		return destination;
 	}
 	
-	/*
+	/**
 	 * Methode qui initie la planete de destiniantion
 	 * @param destination	La planet de destination
 	 */
@@ -103,7 +103,7 @@ public class SpaceShip implements Serializable {
 		this.destination = destination;
 	}
 	
-	/*
+	/**
 	 * Methode qui informe sur la planet de depart du vaisseau
 	 * @return La planet de destinantion
 	 */
@@ -111,7 +111,7 @@ public class SpaceShip implements Serializable {
 		return start;
 	}
 
-	/*
+	/**
 	 * Methode qui initie la planete de depart
 	 * @param destination	La planet de depart
 	 */
@@ -121,7 +121,7 @@ public class SpaceShip implements Serializable {
 	
 	
 	
-	/*
+	/**
 	 * Methode qui modifie la vitesse du vaisseau en fonction de sa vitesse et de sa position par raport a sa planete de destination
 	 */
 	public void travel() {
@@ -139,20 +139,107 @@ public class SpaceShip implements Serializable {
 		}
 	}
 	
-	
+	/**
+	 * methode gérant l'envoi des vaisseaux dans l'espace en leur configurant une vitesse de base
+	 */
 	public void lauch() {
 		if (this.getSprite().getX() < start.getCircle().getCenter().getX()) {
 			if (this.getSprite().getY() < start.getCircle().getCenter().getY()) {
 				this.getSprite().setSpeed(-0.5, -0.5);
-			} else {
+			}
+			if (this.getSprite().getY() > start.getCircle().getCenter().getY()) {
 				this.getSprite().setSpeed(-0.5, 0.5);
 			}
-		} else {
+			if (this.getSprite().getY() == start.getCircle().getCenter().getY()) {
+				this.getSprite().setSpeed(-0.5, 0);
+			}
+		}
+		if (this.getSprite().getX() > start.getCircle().getCenter().getX()) {
 			if (this.getSprite().getY() < start.getCircle().getCenter().getY()) {
 				this.getSprite().setSpeed(0.5, -0.5);
-			} else {
+			}
+			if (this.getSprite().getY() > start.getCircle().getCenter().getY()){
 				this.getSprite().setSpeed(0.5, 0.5);
 			}
+			if (this.getSprite().getY() == start.getCircle().getCenter().getY()) {
+				this.getSprite().setSpeed(0.5, 0);
+			}
+		}
+		if (this.getSprite().getX() == start.getCircle().getCenter().getX()) {
+			if (this.getSprite().getY() < start.getCircle().getCenter().getY()) {
+				this.getSprite().setSpeed(0, -0.5);
+			}
+			if (this.getSprite().getY() > start.getCircle().getCenter().getY()){
+				this.getSprite().setSpeed(0, 0.5);
+			}
+		}
+	}
+	
+
+	
+	public void evitate(Planet p) {
+		double xDestination;
+		double yDestination;
+		if (this.getSprite().getX() <= p.getCircle().getCenter().getX()) {
+			if (this.getSprite().getXSpeed() != 0) {
+				xDestination = this.getSprite().getX() + ((p.getCircle().getCenter().getX() - this.getSprite().getX()) * 2);
+			} else {
+				xDestination = this.getSprite().getX();
+			}
+			if (this.getSprite().getY() <= p.getCircle().getCenter().getY()) {
+				if (this.getSprite().getYSpeed() != 0) {
+					yDestination = this.getSprite().getY() + ((p.getCircle().getCenter().getY() - this.getSprite().getY()) * 2);
+				} else {
+					yDestination = this.getSprite().getY();
+				}
+				if (yDestination > this.destination.getCircle().getCenter().getY()) {
+					yDestination = p.getCircle().getCenter().getY() + p.getCircle().getRadius();
+				}
+			} else {
+				if (this.getSprite().getYSpeed() != 0) {
+					yDestination = this.getSprite().getY() - ((this.getSprite().getY() - p.getCircle().getCenter().getY()) * 2);
+				} else {
+					yDestination = this.getSprite().getY();
+				}
+				if (yDestination < this.destination.getCircle().getCenter().getY()) {
+					yDestination = p.getCircle().getCenter().getY() - p.getCircle().getRadius();
+				}
+			}
+			if (xDestination > this.destination.getCircle().getCenter().getX()) {
+				xDestination = p.getCircle().getCenter().getX();
+			}
+			this.getSprite().setX(xDestination);
+			this.getSprite().setY(yDestination);
+		} else {
+			if (this.getSprite().getXSpeed() != 0) {
+				xDestination = this.getSprite().getX() - ((this.getSprite().getX() - p.getCircle().getCenter().getX()) * 2);
+			} else {
+				xDestination = this.getSprite().getX();
+			}
+			if (this.getSprite().getY() <= p.getCircle().getCenter().getY()) {
+				if (this.getSprite().getYSpeed() != 0) {
+					yDestination = this.getSprite().getY() + ((p.getCircle().getCenter().getY() - this.getSprite().getY()) * 2);
+				} else {
+					yDestination = this.getSprite().getY();
+				}
+				if (yDestination > this.destination.getCircle().getCenter().getY()) {
+					yDestination = p.getCircle().getCenter().getY() - p.getCircle().getRadius();
+				}
+			} else {
+				if (this.getSprite().getYSpeed() != 0) {
+					yDestination = this.getSprite().getY() - ((this.getSprite().getY() - p.getCircle().getCenter().getY()) * 2);
+				} else {
+					yDestination = this.getSprite().getY();
+				}
+				if (yDestination < this.destination.getCircle().getCenter().getY()) {
+					yDestination = p.getCircle().getCenter().getY() + p.getCircle().getRadius();
+				}
+			}
+			if (xDestination < this.destination.getCircle().getCenter().getX()) {
+				xDestination = p.getCircle().getCenter().getX();
+			}
+			this.getSprite().setX(xDestination);
+			this.getSprite().setY(yDestination);
 		}
 	}
 

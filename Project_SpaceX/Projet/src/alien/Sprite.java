@@ -181,56 +181,6 @@ public class Sprite implements Serializable {
 	}
 	
 	
-	
-	public void evitate(Planet p) {
-		double xDestination;
-		double yDestination;
-		if (this.x <= p.getCircle().getCenter().getX()) {
-			if (this.xSpeed != 0) {
-				xDestination = this.x + ((p.getCircle().getCenter().getX() - this.x) * 2);
-			} else {
-				xDestination = this.x;
-			}
-			if (this.y <= p.getCircle().getCenter().getY()) {
-				if (this.ySpeed != 0) {
-					yDestination = this.y + ((p.getCircle().getCenter().getY() - this.y) * 2);
-				} else {
-					yDestination = this.y;
-				}
-			} else {
-				if (this.ySpeed != 0) {
-					yDestination = this.y - ((this.y - p.getCircle().getCenter().getY()) * 2);
-				} else {
-					yDestination = this.y;
-				}
-			}
-			this.x = xDestination;
-			this.y = yDestination;
-		} else {
-			if (this.xSpeed != 0) {
-				xDestination = this.x - ((this.x - p.getCircle().getCenter().getX()) * 2);
-			} else {
-				xDestination = this.x;
-			}
-			if (this.y <= p.getCircle().getCenter().getY()) {
-				if (this.ySpeed != 0) {
-					yDestination = this.y + ((p.getCircle().getCenter().getY() - this.y) * 2);
-				} else {
-					yDestination = this.y;
-				}
-			} else {
-				if (this.ySpeed != 0) {
-					yDestination = this.y - ((this.y - p.getCircle().getCenter().getY()) * 2);
-				} else {
-					yDestination = this.y;
-				}
-			}
-			this.x = xDestination;
-			this.y = yDestination;
-		}
-	}
-	
-	
 
 	public String toString() {
 		return "Sprite<" + x + ", " + y + ">" + this.xSpeed + ";" + this.ySpeed;
