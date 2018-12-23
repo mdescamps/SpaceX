@@ -38,8 +38,8 @@ import javafx.stage.Stage;
 public class Game extends Application {
 	private int players;
 	private float[] percent = new float[2];
-	private final static int WIDTH = 1900;
-	private final static int HEIGHT = 1100;
+	private final static int WIDTH = 1800;
+	private final static int HEIGHT = 1000;
 	private double timer = 0;
 	ArrayList<SpaceShip> SSBase = new ArrayList<SpaceShip>();
 	ArrayList<SpaceShip> SSLaunch = new ArrayList<SpaceShip>();
@@ -170,9 +170,9 @@ public class Game extends Application {
 				players = 2;
 			}
 			else {
-				start(stage);
+				Game newGame = new Game();
+				newGame.start(stage);
 			}
-			
 			
 			
 			/**
@@ -213,6 +213,7 @@ public class Game extends Application {
 		}
 		
 		else {
+			System.exit(0);
 			stage.close();
 		}
 
@@ -433,54 +434,43 @@ public class Game extends Application {
 							Player1Number++;
 						}
 					}
-					if (Player0Number == 0) {
-						Alert victory1 = new Alert(AlertType.CONFIRMATION);
+					
+					if (Player0Number == 0 || Player1Number ==0) {
+						String win;
+						if (Player0Number == 0) {
+							win = "Red Win,";
+						}
+						else {
+							win = "Blue win,"; 
+						}
 						
-						victory1.setTitle("Game Over");
-						victory1.setHeaderText(null);
-						victory1.setGraphic(null);
-						victory1.setContentText("Red Win, Congratulation");
+						Alert victory = new Alert(AlertType.CONFIRMATION);
+						
+						victory.setTitle("Game Over");
+						victory.setHeaderText(null);
+						victory.setGraphic(null);
+						victory.setContentText(win + " Congratulation");
 						
 						ButtonType btnRestart = new ButtonType("Restart");
 						ButtonType btnEnd = new ButtonType("End Game");
 						
-						victory1.getButtonTypes().setAll(btnRestart, btnEnd);
+						victory.getButtonTypes().setAll(btnRestart, btnEnd);
 						
-						Optional<ButtonType> choice2 = victory1.showAndWait();
+						Optional<ButtonType> choice2 = victory.showAndWait();
 						
 						if (choice2.get() == btnRestart) {
-							start(stage);
+							Game newGame = new Game();
+							Stage newStage = new Stage();
+							planets.clear();
+							newGame.start(newStage);
 						}
 						else {
+							System.exit(0);
 							stage.close();
 						}
 					}
-					if (Player1Number == 0) {
-						Alert victory2 = new Alert(AlertType.CONFIRMATION);
-						
-						victory2.setTitle("Game Over");
-						victory2.setHeaderText(null);
-						victory2.setGraphic(null);
-						victory2.setContentText("Blue Win, Congratulation");
-						
-						ButtonType btnRestart = new ButtonType("Restart");
-						ButtonType btnEnd = new ButtonType("End Game");
-						
-						victory2.getButtonTypes().setAll(btnRestart, btnEnd);
-						
-						Optional<ButtonType> choice2 = victory2.showAndWait();
-						
-						if (choice2.get() == btnRestart) {
-							gc.clearRect(0, 0, WIDTH, HEIGHT);
-							start(stage);
-						}
-						else {
-							stage.close();
-						}
-					}
-				}		
-			}
-
+				}
+			}	
 		});
 		
 		
@@ -598,6 +588,7 @@ public class Game extends Application {
 				            e2.printStackTrace();
 							
 						}
+						System.exit(0);
 						stage.close();
 					}
 					
@@ -606,7 +597,10 @@ public class Game extends Application {
 					 */
 					else if(choice.get() == btnRestart) {
 						stage.close();
-						start(stage);
+						Game newGame = new Game();
+						Stage newStage = new Stage();
+						planets.clear();
+						newGame.start(newStage);
 					}
 					
 					/**
@@ -620,6 +614,7 @@ public class Game extends Application {
 					 * Met fin a la partie
 					 */
 					else {
+						System.exit(0);
 						stage.close();
 					}
 				}
