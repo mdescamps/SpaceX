@@ -1,5 +1,6 @@
 package alien;
 
+import java.awt.print.Printable;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -36,7 +37,11 @@ import javafx.scene.text.TextAlignment;
 import javafx.stage.Stage;
 
 public class Game extends Application {
-	private int players;
+	
+	
+	
+	private int[] aiPlayers;
+	private int Difficulty;
 	private float[] percent = new float[2];
 	private final static int WIDTH = 1800;
 	private final static int HEIGHT = 1000;
@@ -46,20 +51,145 @@ public class Game extends Application {
 	ArrayList<Planet> planets = new ArrayList<Planet>();
 	Random r = new Random();
 
+	
+	
 	public static String getRessourcePathByName(String name) {
 		return Game.class.getResource('/' + name).toString();
 	}
 
+	
+	
 	public static void main(String[] args) {
 		launch(args);
 	}
+	
+	
 	
 	public void unSelectAll(ArrayList<Planet> planets) {
 		for (Planet planet : planets) {
 			planet.unSelect();
 		}
 	}
-
+	
+	
+	
+	/**
+	 * Ia qui permet le mode 1 joueur avec 2 niveaux de difficulté.
+	 * @param aiPlayer 	Le numero du joueur simulé par l'ia
+	 */
+	public void aiPlay(int aiPlayer) {
+		
+		
+		
+		if (Difficulty == 1 && timer%360 == 0) {
+		
+			int aiPlanets = r.nextInt(planets.size());
+			int aiCibles = r.nextInt(planets.size());
+		
+			while (planets.get(aiPlanets).getPlayer() != aiPlayer) {
+				aiPlanets = r.nextInt(planets.size());
+			}
+			while(planets.get(aiCibles).getPlayer() == aiPlayer) {
+				aiCibles = r.nextInt(planets.size());
+			}
+			
+			Planet aiPlanet = planets.get(aiPlanets);
+			Planet aiCible = planets.get(aiCibles);
+			int aiSpaceShips = r.nextInt(aiPlanet.getNbSpaceShips());
+			
+			SpaceshipsLauch(aiSpaceShips, aiPlanet, aiCible);
+			
+		}
+		
+		
+		
+		if (Difficulty == 2 && timer%100 == 0){
+			
+			Planet[] aiPlanets = new Planet[planets.size()];
+			int aiPlanetsIndex = 0;
+			for(Planet planet : planets) {
+				if (planet.getPlayer() == aiPlayer) {
+					aiPlanets[aiPlanetsIndex] = planet;
+					aiPlanetsIndex++;
+				}
+			}
+	
+			Planet weakestCible = new Planet(0,0,null);
+			weakestCible.setNbSpaceShips(100000000);
+			for(Planet planet : planets) {
+				if (planet.getPlayer() != aiPlayer) {
+					weakestCible = planet;
+				}
+			}
+			
+			Planet nearestPlanet = aiPlanets[0];
+			for (int i = 0 ; i <= aiPlanetsIndex ; i++) {
+				if(aiPlanets[i].getCircle().getCenter().distance(weakestCible.getCircle().getCenter()) < nearestPlanet.getCircle().getCenter().distance(weakestCible.getCircle().getCenter())) {
+					nearestPlanet = aiPlanets[i];
+				}
+			}
+			
+			SpaceshipsLauch(weakestCible.getNbSpaceShips() + 5, nearestPlanet, weakestCible);
+			
+		}
+		
+		
+		
+	}
+	
+	
+	
+public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
+	for (int i = 0 ; i < number ; i++) {
+		planet1.getAttacked();
+		SpaceShip S = new SpaceShip(0,planet2,new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT));												
+		S.setPlayer(planet1.getPlayer());
+		S.setStart(planet1);
+		if (planet1.getSprite().getX() < planet2.getSprite().getX()) {
+			if (planet1.getSprite().getY() < planet2.getSprite().getY()) {
+				S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius(),
+						planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius());
+			} 
+			else {
+				S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius(),
+						planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius());
+			}
+		} 
+		else {
+			if (planet1.getSprite().getY() < planet2.getSprite().getY()) {
+				S.getSprite().setPosition(planet1.getCircle().getCenter().getX() - planet1.getCircle().getRadius(),
+						planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius());
+			}
+			else {
+				S.getSprite().setPosition(planet1.getCircle().getCenter().getX() - planet1.getCircle().getRadius(),
+						planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius());
+			}
+		}
+		double diffX = planet1.getCircle().getCenter().getX() - planet2.getCircle().getCenter().getX();
+		double diffY = planet1.getCircle().getCenter().getY() - planet2.getCircle().getCenter().getY();
+		if (Math.abs(diffX) < 80 && diffY < 0) {
+			S.getSprite().setPosition(planet1.getCircle().getCenter().getX(),
+					planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius() + 20);
+		}
+		if (Math.abs(diffX) < 80 && diffY > 0) {
+			S.getSprite().setPosition(planet1.getCircle().getCenter().getX(),
+					planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius() - 20);
+		}
+		if (Math.abs(diffY) < 40 && diffX < 0) {
+			S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius() + 20,
+					planet1.getCircle().getCenter().getY());
+		}
+		if (Math.abs(diffY) < 40 && diffX > 0) {
+			S.getSprite().setPosition(planet1.getCircle().getCenter().getX()  - planet1.getCircle().getRadius() - 20,
+					planet1.getCircle().getCenter().getY());
+		}
+		S.setPosition();
+		S.lauch();
+		SSBase.add(S);
+	}
+}
+	
+	
 	
 	public void start(Stage stage) {
 
@@ -70,7 +200,7 @@ public class Game extends Application {
 		Scene scene = new Scene(root);
 		Canvas canvas = new Canvas(WIDTH, HEIGHT);
 		root.getChildren().add(canvas);
-
+		
 		GraphicsContext gc = canvas.getGraphicsContext2D();
 		gc.setFont(Font.font("Helvetica", FontWeight.BOLD, 24));
 		gc.setFill(Color.BISQUE);
@@ -139,7 +269,6 @@ public class Game extends Application {
 		 */
 		else if(choice.get() == btnNew) {
 			
-			
 			/**
 			 * Gere la boite de dialogue qui renseigne sur le nombre de joueurs
 			 */
@@ -161,17 +290,65 @@ public class Game extends Application {
 			Optional<ButtonType> choice2 = StartBox.showAndWait();
 			
 			if(choice2.get() == btn0) {
-				players = 0;
+				aiPlayers = new int[2];
+				aiPlayers[0] = 0;
+				aiPlayers[1] = 1;
+				Difficulty = 1;
 			}
 			else if(choice2.get() == btn1) {
-				players = 1;
+				aiPlayers = new int [1];
+				aiPlayers[0] = 1;
+				
+				
+				
+				/**
+				 * Gere la boite de dialogue qui fixe le niveau de l'ia en mode 1 joueur
+				 */
+				StartBox.getDialogPane().setPrefWidth(400);
+				StartBox.getDialogPane().setPrefHeight(100);
+				StartBox.setTitle("Choose the difficulty");
+				StartBox.setHeaderText(null);
+				StartBox.setGraphic(null);
+				StartBox.setContentText("How strong will be your enemy?");
+				
+				ButtonType btnEasy = new ButtonType ("Esay");
+				ButtonType btnHard = new ButtonType ("Hard");
+				ButtonType btnB = new ButtonType ("Back" , ButtonData.BACK_PREVIOUS);
+				
+				
+				StartBox.getButtonTypes().setAll(btnEasy,btnHard,btnB);
+				
+				Optional<ButtonType> choice3 = StartBox.showAndWait();
+				
+				if(choice3.get() == btnEasy) {
+					Difficulty = 1;
+				}
+				else if(choice3.get() == btnHard) {
+					Difficulty = 2;
+				}
+				else if(choice2.get() == btn2) {
+					aiPlayers = new int[0];
+				}
+				else {
+					stage.close();
+					Game newGame = new Game();
+					Stage newStage = new Stage();
+					planets.clear();
+					newGame.start(newStage);
+				}
+				
+				
+				
 			}
 			else if(choice2.get() == btn2) {
-				players = 2;
+				aiPlayers = new int[0];
 			}
 			else {
+				stage.close();
 				Game newGame = new Game();
-				newGame.start(stage);
+				Stage newStage = new Stage();
+				planets.clear();
+				newGame.start(newStage);
 			}
 			
 			
@@ -218,7 +395,6 @@ public class Game extends Application {
 		}
 
 		
-		
 
 		/**
 		 * Gere les interaction avec la souris
@@ -248,7 +424,7 @@ public class Game extends Application {
 					for (Planet planet1 : planets) {
 						if (planet1.isSelected()) {
 							for (Planet planet2 : planets) {
-								if (planet2.getCircle().isInside(p) && planet2 != planet1 && (players == 2 || planet1.getPlayer() == 0 ) && players > 0) {
+								if (planet2.getCircle().isInside(p) && planet2 != planet1 && (aiPlayers.length == 0 || planet1.getPlayer() == 0 ) && aiPlayers.length < 2) {
 									if (e.isControlDown()) {
 										int player = planet1.getPlayer();
 										number = (int)(percent[player] * planet1.getNbSpaceShips());
@@ -269,53 +445,9 @@ public class Game extends Application {
 										
 										
 									if (number <= planet1.getNbSpaceShips()) {
-										for (int i = 0 ; i < number ; i++) {
-											planet1.getAttacked();
-											SpaceShip S = new SpaceShip(0,planet2,new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT));												
-											S.setPlayer(planet1.getPlayer());
-											S.setStart(planet1);
-											if (planet1.getSprite().getX() < planet2.getSprite().getX()) {
-												if (planet1.getSprite().getY() < planet2.getSprite().getY()) {
-													S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius(),
-															planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius());
-												} 
-												else {
-													S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius(),
-															planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius());
-												}
-											} 
-											else {
-												if (planet1.getSprite().getY() < planet2.getSprite().getY()) {
-													S.getSprite().setPosition(planet1.getCircle().getCenter().getX() - planet1.getCircle().getRadius(),
-															planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius());
-												}
-												else {
-													S.getSprite().setPosition(planet1.getCircle().getCenter().getX() - planet1.getCircle().getRadius(),
-															planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius());
-												}
-											}
-											double diffX = planet1.getCircle().getCenter().getX() - planet2.getCircle().getCenter().getX();
-											double diffY = planet1.getCircle().getCenter().getY() - planet2.getCircle().getCenter().getY();
-											if (Math.abs(diffX) < 80 && diffY < 0) {
-												S.getSprite().setPosition(planet1.getCircle().getCenter().getX(),
-														planet1.getCircle().getCenter().getY() + planet1.getCircle().getRadius() + 20);
-											}
-											if (Math.abs(diffX) < 80 && diffY > 0) {
-												S.getSprite().setPosition(planet1.getCircle().getCenter().getX(),
-														planet1.getCircle().getCenter().getY() - planet1.getCircle().getRadius() - 20);
-											}
-											if (Math.abs(diffY) < 40 && diffX < 0) {
-												S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius() + 20,
-														planet1.getCircle().getCenter().getY());
-											}
-											if (Math.abs(diffY) < 40 && diffX > 0) {
-												S.getSprite().setPosition(planet1.getCircle().getCenter().getX()  - planet1.getCircle().getRadius() - 20,
-														planet1.getCircle().getCenter().getY());
-											}
-											S.setPosition();
-											S.lauch();
-											SSBase.add(S);
-										}
+										
+										SpaceshipsLauch(number, planet1, planet2);
+										
 									}
 								}
 							}
@@ -323,77 +455,7 @@ public class Game extends Application {
 							
 							
 						}
-					}
-					
-					
-					
-					/**
-					 * ia aleatoire qui permet le mode 1 joueur
-					 */
-					if (players == 1) {
-								
-						int aiPlanets = r.nextInt(planets.size());
-						int aiCibles = r.nextInt(planets.size());
-						
-						while (planets.get(aiPlanets).getPlayer() != 1) {
-							aiPlanets = r.nextInt(planets.size());
-						}
-						while(planets.get(aiCibles).getPlayer() == 1) {
-							aiCibles = r.nextInt(planets.size());
-						}
-						
-						Planet aiPlanet = planets.get(aiPlanets);
-						Planet aiCible = planets.get(aiCibles);
-						int aiSpaceShips = r.nextInt(aiPlanet.getNbSpaceShips());
-						
-						for (int i = 0 ; i < aiSpaceShips ; i++) {
-							aiPlanet.getAttacked();
-							SpaceShip S = new SpaceShip(0,aiCible,new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT));												
-							S.setPlayer(aiPlanet.getPlayer());
-							S.setStart(aiPlanet);
-							if (aiPlanet.getSprite().getX() < aiCible.getSprite().getX()) {
-								if (aiPlanet.getSprite().getY() < aiCible.getSprite().getY()) {
-									S.getSprite().setPosition(aiPlanet.getCircle().getCenter().getX() + aiPlanet.getCircle().getRadius(),
-											aiPlanet.getCircle().getCenter().getY() + aiPlanet.getCircle().getRadius());
-								} 
-								else {
-									S.getSprite().setPosition(aiPlanet.getCircle().getCenter().getX() + aiPlanet.getCircle().getRadius(),
-											aiPlanet.getCircle().getCenter().getY() - aiPlanet.getCircle().getRadius());
-								}
-							} 
-							else {
-								if (aiPlanet.getSprite().getY() < aiCible.getSprite().getY()) {
-									S.getSprite().setPosition(aiPlanet.getCircle().getCenter().getX() - aiPlanet.getCircle().getRadius(),
-											aiPlanet.getCircle().getCenter().getY() + aiPlanet.getCircle().getRadius());
-								}
-								else {
-									S.getSprite().setPosition(aiPlanet.getCircle().getCenter().getX() - aiPlanet.getCircle().getRadius(),
-											aiPlanet.getCircle().getCenter().getY() - aiPlanet.getCircle().getRadius());
-								}
-							}
-							double diffX = aiPlanet.getCircle().getCenter().getX() - aiCible.getCircle().getCenter().getX();
-							double diffY = aiPlanet.getCircle().getCenter().getY() - aiCible.getCircle().getCenter().getY();
-							if (Math.abs(diffX) < 40 && diffY < 0) {
-								S.getSprite().setPosition(aiPlanet.getCircle().getCenter().getX(),
-										aiPlanet.getCircle().getCenter().getY() + aiPlanet.getCircle().getRadius() + 20);
-							}
-							if (Math.abs(diffX) < 40 && diffY > 0) {
-								S.getSprite().setPosition(aiPlanet.getCircle().getCenter().getX(),
-										aiPlanet.getCircle().getCenter().getY() - aiPlanet.getCircle().getRadius() - 20);
-							}
-							if (Math.abs(diffY) < 40 && diffX < 0) {
-								S.getSprite().setPosition(aiPlanet.getCircle().getCenter().getX() + aiPlanet.getCircle().getRadius() + 20,
-										aiPlanet.getCircle().getCenter().getY());
-							}
-							if (Math.abs(diffY) < 40 && diffX > 0) {
-								S.getSprite().setPosition(aiPlanet.getCircle().getCenter().getX()  - aiPlanet.getCircle().getRadius() - 20,
-										aiPlanet.getCircle().getCenter().getY());
-							}
-							S.setPosition();
-							S.lauch();
-							SSBase.add(S);
-						}	
-					}				
+					}			
 				}
 				
 					
@@ -481,7 +543,7 @@ public class Game extends Application {
 		EventHandler<ScrollEvent> ScrollHandeler = new EventHandler<ScrollEvent>() {
 			public void handle(ScrollEvent s) {
 				
-				if (players > 0 && s.isControlDown() || players == 1) {
+				if (aiPlayers.length < 2 && s.isControlDown() || aiPlayers.length == 1) {
 					if(s.getDeltaY()>0) {
 						percent[0] += 0.05;
 					}
@@ -489,7 +551,7 @@ public class Game extends Application {
 						percent[0] -= 0.05;
 					}
 				}
-				if (s.isAltDown() && !(players != 2)) {
+				if (s.isAltDown() && aiPlayers.length == 0) {
 					if(s.getDeltaY()>0) {
 						percent[1] += 0.05;
 					}
@@ -522,6 +584,7 @@ public class Game extends Application {
 			public void handle(KeyEvent e) {
 				
 				if(e.getCode() == KeyCode.P) {
+					
 					
 					
 					Alert StartBox = new Alert(AlertType.CONFIRMATION);
@@ -660,7 +723,7 @@ public class Game extends Application {
 						int i = r.nextInt(SSBase.size());
 						SSLaunch.add(SSBase.get(i));
 						SSBase.remove(i);
-					}
+					}	
 					
 					
 					
@@ -699,6 +762,16 @@ public class Game extends Application {
 				}
 				
 				timer++;
+				
+				
+				
+				if(aiPlayers.length > 0 /*&& timer%360 == 0*/) {
+					int aiPlayer = 0;
+					for (int i = 0 ; i < aiPlayers.length ; i++) {
+						aiPlayer = aiPlayers[i];
+						aiPlay(aiPlayer);
+					}
+				}
 				
 				
 				
