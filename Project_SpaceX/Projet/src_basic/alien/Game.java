@@ -47,6 +47,7 @@ public class Game extends Application {
 	private final static int WIDTH = 1800;
 	private final static int HEIGHT = 1000;
 	private double timer = 0;
+	private boolean Pause = false;
 	ArrayList<SpaceShip> SSBase = new ArrayList<SpaceShip>();
 	ArrayList<SpaceShip> SSLaunch = new ArrayList<SpaceShip>();
 	ArrayList<Planet> planets = new ArrayList<Planet>();
@@ -101,7 +102,7 @@ public class Game extends Application {
 		ArrayList<Planet> aiCibles = ennemyPlanets;
 		aiCibles.addAll(freePlanets);
 		
-		if (aiCibles.size() > 0 && aiPlanets.size() > 0) {
+		if (aiCibles.size() > 0 && aiPlanets.size() > 0 && Pause == false) {
 		
 			if (Difficulty == 1 && timer%360 == 0) {
 			
@@ -147,6 +148,7 @@ public class Game extends Application {
 	
 	
 public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
+	
 	for (int i = 0 ; i < number ; i++) {
 		planet1.getAttacked();
 		SpaceShip S = new SpaceShip(0,planet2,new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT));												
@@ -590,6 +592,15 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				
 				if(e.getCode() == KeyCode.P) {
 					
+					Pause = true;
+					int[] tmpPlanetsRates = new int[planets.size()];
+					int i = 0;
+					for (Planet planet : planets) {
+						tmpPlanetsRates[i] = planet.getProductionRate();
+						planet.setProductionRate(0);
+						i++;
+					}
+					
 					
 					
 					Alert StartBox = new Alert(AlertType.CONFIRMATION);
@@ -633,6 +644,12 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				            e2.printStackTrace();
 							
 						}
+						i = 0;
+						for (Planet planet : planets) {
+							planet.setProductionRate(tmpPlanetsRates[i]);
+							i++;
+						}
+						Pause = false;
 						
 					}
 					
@@ -675,7 +692,12 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 					 * Permet de continuer la partie mise en pause
 					 */
 					else if(choice.get() == btnContinue) {
-						
+						i = 0;
+						for (Planet planet : planets) {
+							planet.setProductionRate(tmpPlanetsRates[i]);
+							i++;
+						}
+						Pause = false;
 					}
 					
 					/**
@@ -735,33 +757,34 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 					/**
 					 * Gere le deplacement des vaisseaux et l'interraction avec une planete
 					 */
-					Iterator<SpaceShip> it = SSLaunch.iterator();
-					while(it.hasNext()) {
-						SpaceShip SpaceShip = it.next();
-						SpaceShip.travel();
-						SpaceShip.getSprite().updatePosition();
-						SpaceShip.setPosition();
-						if(planet.getCircle().isInside(SpaceShip.getPosition()) && SpaceShip.getDestination() == planet) {
-							if (planet.getPlayer() == SpaceShip.getPlayer()) {
-								planet.productShip();
+					if (Pause == false) {
+						Iterator<SpaceShip> it = SSLaunch.iterator();
+						while(it.hasNext()) {
+							SpaceShip SpaceShip = it.next();
+							SpaceShip.travel();
+							SpaceShip.getSprite().updatePosition();
+							SpaceShip.setPosition();
+							if(planet.getCircle().isInside(SpaceShip.getPosition()) && SpaceShip.getDestination() == planet) {
+								if (planet.getPlayer() == SpaceShip.getPlayer()) {
+									planet.productShip();
+								}
+								else {
+									planet.getAttacked();
+									if (planet.getNbSpaceShips() < 0) {
+										planet.setPlayer(SpaceShip.getPlayer());
+									}
+								}
+								it.remove();
 							}
 							else {
-								planet.getAttacked();
-								if (planet.getNbSpaceShips() < 0) {
-									planet.setPlayer(SpaceShip.getPlayer());
-								}
+								SpaceShip.getSprite().render(gc);		
 							}
-							it.remove();
-						}
-						else {
-							SpaceShip.getSprite().render(gc);
-							
-						}
 						
-						if (planet.getCircle().isNear(SpaceShip.getPosition()) && SpaceShip.getDestination() != planet) {
-							SpaceShip.evitate(planet);
-							SpaceShip.travel();
-							SpaceShip.getSprite().render(gc);
+							if (planet.getCircle().isNear(SpaceShip.getPosition()) && SpaceShip.getDestination() != planet) {
+								SpaceShip.evitate(planet);
+								SpaceShip.travel();
+								SpaceShip.getSprite().render(gc);
+							}
 						}
 					}
 				}
