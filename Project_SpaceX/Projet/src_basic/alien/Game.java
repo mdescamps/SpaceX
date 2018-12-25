@@ -105,31 +105,45 @@ public class Game extends Application {
 		
 		if (Difficulty == 2 && timer%100 == 0){
 			
-			Planet[] aiPlanets = new Planet[planets.size()];
-			int aiPlanetsIndex = 0;
+			ArrayList<Planet> aiPlanets = new ArrayList<Planet>();
+			ArrayList<Planet> ennemyPlanets = new ArrayList<Planet>();
+			ArrayList<Planet> freePlanets = new ArrayList<Planet>();
 			for(Planet planet : planets) {
+				
 				if (planet.getPlayer() == aiPlayer) {
-					aiPlanets[aiPlanetsIndex] = planet;
-					aiPlanetsIndex++;
+					aiPlanets.add(planet);
+				}
+				
+				if (planet.getPlayer() != aiPlayer && planet.getPlayer() != -1) {
+					ennemyPlanets.add(planet);
+				}
+				
+				if (planet.getPlayer() == -1) {
+					freePlanets.add(planet);
 				}
 			}
-	
+			
 			Planet weakestCible = new Planet(0,0,null);
-			weakestCible.setNbSpaceShips(100000000);
-			for(Planet planet : planets) {
-				if (planet.getPlayer() != aiPlayer) {
+			weakestCible.setNbSpaceShips(10000);
+			for (Planet planet : planets) {
+				if (planet.getNbSpaceShips() < weakestCible.getNbSpaceShips() && planet.getPlayer() != aiPlayer) {
 					weakestCible = planet;
 				}
 			}
 			
-			Planet nearestPlanet = aiPlanets[0];
-			for (int i = 0 ; i <= aiPlanetsIndex ; i++) {
-				if(aiPlanets[i].getCircle().getCenter().distance(weakestCible.getCircle().getCenter()) < nearestPlanet.getCircle().getCenter().distance(weakestCible.getCircle().getCenter())) {
-					nearestPlanet = aiPlanets[i];
+			Planet nearestPlanet = aiPlanets.get(0);
+			for (Planet planet : aiPlanets) {
+				if( planet.getCircle().getCenter().distance(weakestCible.getCircle().getCenter()) < nearestPlanet.getCircle().getCenter().distance(weakestCible.getCircle().getCenter())) {
+					nearestPlanet = planet;
 				}
 			}
 			
-			SpaceshipsLauch(weakestCible.getNbSpaceShips() + 5, nearestPlanet, weakestCible);
+			if (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips() ) {
+			
+				SpaceshipsLauch(weakestCible.getNbSpaceShips() + 5, nearestPlanet, weakestCible);
+				
+			}
+			
 			
 		}
 		
@@ -296,7 +310,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				Difficulty = 1;
 			}
 			else if(choice2.get() == btn1) {
-				aiPlayers = new int [1];
+				aiPlayers = new int[1];
 				aiPlayers[0] = 1;
 				
 				
