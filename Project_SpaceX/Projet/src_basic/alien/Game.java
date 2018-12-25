@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.Random;
 
 import formes.Point2D;
+import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.event.EventHandler;
@@ -100,42 +101,45 @@ public class Game extends Application {
 		ArrayList<Planet> aiCibles = ennemyPlanets;
 		aiCibles.addAll(freePlanets);
 		
-		if (Difficulty == 1 && timer%360 == 0) {
-			
-			int aiPlanetRank = r.nextInt(aiPlanets.size());
-			int aiCibleRank = r.nextInt(aiCibles.size());
-			
-			Planet aiPlanet = aiPlanets.get(aiPlanetRank);
-			Planet aiCible = aiCibles.get(aiCibleRank);
-			
-			int aiSpaceShips = r.nextInt(aiPlanet.getNbSpaceShips());
-			
-			SpaceshipsLauch(aiSpaceShips, aiPlanet, aiCible);
-			
-		}
+		if (aiCibles.size() > 0 && aiPlanets.size() > 0) {
 		
-		
-		
-		if (Difficulty == 2 /*&& timer%100 == 0*/){
+			if (Difficulty == 1 && timer%360 == 0) {
 			
-			Planet weakestCible = aiCibles.get(0);
-			for (Planet planet : aiCibles) {
-				if (planet.getNbSpaceShips() < weakestCible.getNbSpaceShips()) {
-					weakestCible = planet;
-				}
+				int aiPlanetRank = r.nextInt(aiPlanets.size());
+				int aiCibleRank = r.nextInt(aiCibles.size());
+			
+				Planet aiPlanet = aiPlanets.get(aiPlanetRank);
+				Planet aiCible = aiCibles.get(aiCibleRank);
+			
+				int aiSpaceShips = r.nextInt(aiPlanet.getNbSpaceShips());
+			
+				SpaceshipsLauch(aiSpaceShips, aiPlanet, aiCible);
+			
 			}
+		
+		
+		
+			if (Difficulty == 2){
 			
-			Planet nearestPlanet = aiPlanets.get(0);
-			for (Planet planet : aiPlanets) {
-				if( planet.getCircle().getCenter().distance(weakestCible.getCircle().getCenter()) < nearestPlanet.getCircle().getCenter().distance(weakestCible.getCircle().getCenter()) && (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips())) {
-					nearestPlanet = planet;
+				Planet weakestCible = aiCibles.get(0);
+				for (Planet planet : aiCibles) {
+					if (planet.getNbSpaceShips() < weakestCible.getNbSpaceShips()) {
+						weakestCible = planet;
+					}
 				}
-			}
 			
-			if (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips() + 10 ) {
+				Planet nearestPlanet = aiPlanets.get(0);
+				for (Planet planet : aiPlanets) {
+					if( planet.getCircle().getCenter().distance(weakestCible.getCircle().getCenter()) < nearestPlanet.getCircle().getCenter().distance(weakestCible.getCircle().getCenter()) && (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips())) {
+						nearestPlanet = planet;
+					}
+				}
 			
-				SpaceshipsLauch(weakestCible.getNbSpaceShips() + 5, nearestPlanet, weakestCible);
+				if (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips() + 10 ) {
+			
+					SpaceshipsLauch(weakestCible.getNbSpaceShips() + 5, nearestPlanet, weakestCible);
 				
+				}
 			}
 		}
 	}
@@ -267,6 +271,9 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 			
 			
 		}
+		
+		
+		
 		/**
 		 * cree une nouvelle partie
 		 */
@@ -296,7 +303,6 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				aiPlayers = new int[2];
 				aiPlayers[0] = 0;
 				aiPlayers[1] = 1;
-				Difficulty = 1;
 			}
 			else if(choice2.get() == btn1) {
 				aiPlayers = new int[1];
@@ -304,25 +310,35 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				
 				
 				
-				/**
-				 * Gere la boite de dialogue qui fixe le niveau de l'ia en mode 1 joueur
-				 */
+			}
+			else if(choice2.get() == btn2) {
+				aiPlayers = new int[0];
+			}
+			else {
+				stage.close();
+				Game newGame = new Game();
+				Stage newStage = new Stage();
+				planets.clear();
+				newGame.start(newStage);
+			}
+			
+			if (aiPlayers.length > 0 ) {
 				StartBox.getDialogPane().setPrefWidth(400);
 				StartBox.getDialogPane().setPrefHeight(100);
 				StartBox.setTitle("Choose the difficulty");
 				StartBox.setHeaderText(null);
 				StartBox.setGraphic(null);
 				StartBox.setContentText("How strong will be your enemy?");
-				
+			
 				ButtonType btnEasy = new ButtonType ("Esay");
 				ButtonType btnHard = new ButtonType ("Hard");
 				ButtonType btnB = new ButtonType ("Back" , ButtonData.BACK_PREVIOUS);
-				
+			
 				
 				StartBox.getButtonTypes().setAll(btnEasy,btnHard,btnB);
-				
+			
 				Optional<ButtonType> choice3 = StartBox.showAndWait();
-				
+			
 				if(choice3.get() == btnEasy) {
 					Difficulty = 1;
 				}
@@ -339,21 +355,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 					planets.clear();
 					newGame.start(newStage);
 				}
-				
-				
-				
 			}
-			else if(choice2.get() == btn2) {
-				aiPlayers = new int[0];
-			}
-			else {
-				stage.close();
-				Game newGame = new Game();
-				Stage newStage = new Stage();
-				planets.clear();
-				newGame.start(newStage);
-			}
-			
 			
 			/**
 			 * Cree de maniere aleatoire (sur la quantité, la position, l'appartenance, la taille et la quantité de vaisseaux) les planete du jeu tout en gerant les colition
@@ -396,7 +398,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 			System.exit(0);
 			stage.close();
 		}
-
+		
 		
 
 		/**
@@ -487,53 +489,53 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 		 */
 		scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
-				if (event.getEventType() == MouseEvent.MOUSE_PRESSED || event.getEventType() != MouseEvent.MOUSE_PRESSED || event.getEventType() == MouseEvent.ANY) {
+				if ((event.getEventType() == MouseEvent.MOUSE_PRESSED || event.getEventType() != MouseEvent.MOUSE_PRESSED) && SSBase.size() == 0 && SSLaunch.size() == 0) {
 						
-//					int Player0Number = 0;
-//					int Player1Number = 0;
-//					for (Planet planet : planets) {
-//						if(planet.getPlayer() == 0) {
-//							Player0Number++;
-//						}
-//						if(planet.getPlayer() == 1) {
-//							Player1Number++;
-//						}
-//					}
-//					
-//					if (Player0Number == 0 || Player1Number ==0) {
-//						String win;
-//						if (Player0Number == 0) {
-//							win = "Red Win,";
-//						}
-//						else {
-//							win = "Blue win,"; 
-//						}
-//						
-//						Alert victory = new Alert(AlertType.CONFIRMATION);
-//						
-//						victory.setTitle("Game Over");
-//						victory.setHeaderText(null);
-//						victory.setGraphic(null);
-//						victory.setContentText(win + " Congratulation");
-//						
-//						ButtonType btnRestart = new ButtonType("Restart");
-//						ButtonType btnEnd = new ButtonType("End Game");
-//						
-//						victory.getButtonTypes().setAll(btnRestart, btnEnd);
-//						
-//						Optional<ButtonType> choice2 = victory.showAndWait();
-//						
-//						if (choice2.get() == btnRestart) {
-//							Game newGame = new Game();
-//							Stage newStage = new Stage();
-//							planets.clear();
-//							newGame.start(newStage);
-//						}
-//						else {
-//							System.exit(0);
-//							stage.close();
-//						}
-//					}
+					int Player0Number = 0;
+					int Player1Number = 0;
+					for (Planet planet : planets) {
+						if(planet.getPlayer() == 0) {
+							Player0Number++;
+						}
+						if(planet.getPlayer() == 1) {
+							Player1Number++;
+						}
+					}
+					
+					if (Player0Number == 0 || Player1Number ==0) {
+						String win;
+						if (Player0Number == 0) {
+							win = "Red Win,";
+						}
+						else {
+							win = "Blue win,"; 
+						}
+						
+						Alert victory = new Alert(AlertType.CONFIRMATION);
+						
+						victory.setTitle("Game Over");
+						victory.setHeaderText(null);
+						victory.setGraphic(null);
+						victory.setContentText(win + " Congratulation");
+						
+						ButtonType btnRestart = new ButtonType("Restart");
+						ButtonType btnEnd = new ButtonType("End Game");
+						
+						victory.getButtonTypes().setAll(btnRestart, btnEnd);
+						
+						Optional<ButtonType> choice2 = victory.showAndWait();
+						
+						if (choice2.get() == btnRestart) {
+							Game newGame = new Game();
+							Stage newStage = new Stage();
+							planets.clear();
+							newGame.start(newStage);
+						}
+						else {
+							System.exit(0);
+							stage.close();
+						}
+					}
 				}
 			}	
 		});
