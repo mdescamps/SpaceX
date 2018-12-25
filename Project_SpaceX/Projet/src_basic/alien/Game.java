@@ -79,22 +79,35 @@ public class Game extends Application {
 	 */
 	public void aiPlay(int aiPlayer) {
 		
-		
-		
-		if (Difficulty == 1 && timer%360 == 0) {
-		
-			int aiPlanets = r.nextInt(planets.size());
-			int aiCibles = r.nextInt(planets.size());
-		
-			while (planets.get(aiPlanets).getPlayer() != aiPlayer) {
-				aiPlanets = r.nextInt(planets.size());
-			}
-			while(planets.get(aiCibles).getPlayer() == aiPlayer) {
-				aiCibles = r.nextInt(planets.size());
+		ArrayList<Planet> aiPlanets = new ArrayList<Planet>();
+		ArrayList<Planet> ennemyPlanets = new ArrayList<Planet>();
+		ArrayList<Planet> freePlanets = new ArrayList<Planet>();
+		for(Planet planet : planets) {
+			
+			if (planet.getPlayer() == aiPlayer) {
+				aiPlanets.add(planet);
 			}
 			
-			Planet aiPlanet = planets.get(aiPlanets);
-			Planet aiCible = planets.get(aiCibles);
+			if (planet.getPlayer() != aiPlayer && planet.getPlayer() != -1) {
+				ennemyPlanets.add(planet);
+			}
+			
+			if (planet.getPlayer() == -1) {
+				freePlanets.add(planet);
+			}
+		}
+		
+		ArrayList<Planet> aiCibles = ennemyPlanets;
+		aiCibles.addAll(freePlanets);
+		
+		if (Difficulty == 1 && timer%360 == 0) {
+			
+			int aiPlanetRank = r.nextInt(aiPlanets.size());
+			int aiCibleRank = r.nextInt(aiCibles.size());
+			
+			Planet aiPlanet = aiPlanets.get(aiPlanetRank);
+			Planet aiCible = aiCibles.get(aiCibleRank);
+			
 			int aiSpaceShips = r.nextInt(aiPlanet.getNbSpaceShips());
 			
 			SpaceshipsLauch(aiSpaceShips, aiPlanet, aiCible);
@@ -103,52 +116,28 @@ public class Game extends Application {
 		
 		
 		
-		if (Difficulty == 2 && timer%100 == 0){
+		if (Difficulty == 2 /*&& timer%100 == 0*/){
 			
-			ArrayList<Planet> aiPlanets = new ArrayList<Planet>();
-			ArrayList<Planet> ennemyPlanets = new ArrayList<Planet>();
-			ArrayList<Planet> freePlanets = new ArrayList<Planet>();
-			for(Planet planet : planets) {
-				
-				if (planet.getPlayer() == aiPlayer) {
-					aiPlanets.add(planet);
-				}
-				
-				if (planet.getPlayer() != aiPlayer && planet.getPlayer() != -1) {
-					ennemyPlanets.add(planet);
-				}
-				
-				if (planet.getPlayer() == -1) {
-					freePlanets.add(planet);
-				}
-			}
-			
-			Planet weakestCible = new Planet(0,0,null);
-			weakestCible.setNbSpaceShips(10000);
-			for (Planet planet : planets) {
-				if (planet.getNbSpaceShips() < weakestCible.getNbSpaceShips() && planet.getPlayer() != aiPlayer) {
+			Planet weakestCible = aiCibles.get(0);
+			for (Planet planet : aiCibles) {
+				if (planet.getNbSpaceShips() < weakestCible.getNbSpaceShips()) {
 					weakestCible = planet;
 				}
 			}
 			
 			Planet nearestPlanet = aiPlanets.get(0);
 			for (Planet planet : aiPlanets) {
-				if( planet.getCircle().getCenter().distance(weakestCible.getCircle().getCenter()) < nearestPlanet.getCircle().getCenter().distance(weakestCible.getCircle().getCenter())) {
+				if( planet.getCircle().getCenter().distance(weakestCible.getCircle().getCenter()) < nearestPlanet.getCircle().getCenter().distance(weakestCible.getCircle().getCenter()) && (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips())) {
 					nearestPlanet = planet;
 				}
 			}
 			
-			if (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips() ) {
+			if (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips() + 10 ) {
 			
 				SpaceshipsLauch(weakestCible.getNbSpaceShips() + 5, nearestPlanet, weakestCible);
 				
 			}
-			
-			
 		}
-		
-		
-		
 	}
 	
 	
@@ -500,51 +489,51 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 			public void handle(MouseEvent event) {
 				if (event.getEventType() == MouseEvent.MOUSE_PRESSED || event.getEventType() != MouseEvent.MOUSE_PRESSED || event.getEventType() == MouseEvent.ANY) {
 						
-					int Player0Number = 0;
-					int Player1Number = 0;
-					for (Planet planet : planets) {
-						if(planet.getPlayer() == 0) {
-							Player0Number++;
-						}
-						if(planet.getPlayer() == 1) {
-							Player1Number++;
-						}
-					}
-					
-					if (Player0Number == 0 || Player1Number ==0) {
-						String win;
-						if (Player0Number == 0) {
-							win = "Red Win,";
-						}
-						else {
-							win = "Blue win,"; 
-						}
-						
-						Alert victory = new Alert(AlertType.CONFIRMATION);
-						
-						victory.setTitle("Game Over");
-						victory.setHeaderText(null);
-						victory.setGraphic(null);
-						victory.setContentText(win + " Congratulation");
-						
-						ButtonType btnRestart = new ButtonType("Restart");
-						ButtonType btnEnd = new ButtonType("End Game");
-						
-						victory.getButtonTypes().setAll(btnRestart, btnEnd);
-						
-						Optional<ButtonType> choice2 = victory.showAndWait();
-						
-						if (choice2.get() == btnRestart) {
-							Game newGame = new Game();
-							Stage newStage = new Stage();
-							planets.clear();
-							newGame.start(newStage);
-						}
-						else {
-							System.exit(0);
-							stage.close();
-						}
-					}
+//					int Player0Number = 0;
+//					int Player1Number = 0;
+//					for (Planet planet : planets) {
+//						if(planet.getPlayer() == 0) {
+//							Player0Number++;
+//						}
+//						if(planet.getPlayer() == 1) {
+//							Player1Number++;
+//						}
+//					}
+//					
+//					if (Player0Number == 0 || Player1Number ==0) {
+//						String win;
+//						if (Player0Number == 0) {
+//							win = "Red Win,";
+//						}
+//						else {
+//							win = "Blue win,"; 
+//						}
+//						
+//						Alert victory = new Alert(AlertType.CONFIRMATION);
+//						
+//						victory.setTitle("Game Over");
+//						victory.setHeaderText(null);
+//						victory.setGraphic(null);
+//						victory.setContentText(win + " Congratulation");
+//						
+//						ButtonType btnRestart = new ButtonType("Restart");
+//						ButtonType btnEnd = new ButtonType("End Game");
+//						
+//						victory.getButtonTypes().setAll(btnRestart, btnEnd);
+//						
+//						Optional<ButtonType> choice2 = victory.showAndWait();
+//						
+//						if (choice2.get() == btnRestart) {
+//							Game newGame = new Game();
+//							Stage newStage = new Stage();
+//							planets.clear();
+//							newGame.start(newStage);
+//						}
+//						else {
+//							System.exit(0);
+//							stage.close();
+//						}
+//					}
 				}
 			}	
 		});
@@ -779,7 +768,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				
 				
 				
-				if(aiPlayers.length > 0 /*&& timer%360 == 0*/) {
+				if(aiPlayers.length > 0) {
 					int aiPlayer = 0;
 					for (int i = 0 ; i < aiPlayers.length ; i++) {
 						aiPlayer = aiPlayers[i];
