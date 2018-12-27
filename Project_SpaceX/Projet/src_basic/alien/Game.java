@@ -481,6 +481,58 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 										
 									}
 								}
+								
+								else if(planet2.getCircle().isInside(p) && planet2 == planet1 && (aiPlayers.length == 0 || planet1.getPlayer() == 0 ) && aiPlayers.length < 2){
+									
+									for(Planet planet : planets) {
+										if(planet.getCircle().isInside(p) && planet.getPlayer() != -1 && (aiPlayers.length == 0 || (aiPlayers.length == 1 && planet.getPlayer() == 0))) {
+											
+											Alert UpgradesBox = new Alert(AlertType.CONFIRMATION);
+											
+											UpgradesBox.getDialogPane().setPrefWidth(800);
+											UpgradesBox.getDialogPane().setPrefHeight(100);
+											UpgradesBox.setTitle("Upgrades Panel");
+											UpgradesBox.setHeaderText(null);
+											UpgradesBox.setGraphic(null);
+											UpgradesBox.setContentText(null);
+											
+											ButtonType btnShield = new ButtonType ("Shield(100)");
+											ButtonType btnRate = new ButtonType ("Production Rate(50)");
+											ButtonType btnB = new ButtonType ("Back" , ButtonData.BACK_PREVIOUS);
+											
+											UpgradesBox.getButtonTypes().setAll(btnShield,btnRate,btnB);
+										
+											Optional<ButtonType> choice = UpgradesBox.showAndWait();
+											
+											if (choice.get() == btnShield) {
+												if (planet.getNbSpaceShips() >= 100) {
+													planet.setShield(300);
+												}
+												else {
+													Alert dialogW = new Alert(AlertType.WARNING);
+													dialogW.setTitle("Upgrade Impossible");
+													dialogW.setHeaderText(null);
+													dialogW.setContentText("No enough resources");
+													dialogW.showAndWait();
+												}
+											}
+											
+											else if (choice.get() == btnRate) {
+												if (planet.getNbSpaceShips() >= 50) {
+													planet.upgradeProductionRate(5);
+												}
+												else {
+													Alert dialogW = new Alert(AlertType.WARNING);
+													dialogW.setTitle("Upgrade Impossible");
+													dialogW.setHeaderText(null);
+													dialogW.setContentText("No enough resources");
+													dialogW.showAndWait();
+												}
+											}
+										}
+									}
+									
+								}
 							}
 							planet1.unSelect();
 							
@@ -490,61 +542,6 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				}
 				
 				
-				
-				if (e.getEventType() == MouseEvent.MOUSE_CLICKED) {
-					
-					Point2D p = new Point2D(e.getSceneX(),e.getSceneY());
-					
-					for(Planet planet : planets) {
-						if(planet.getCircle().isInside(p) && (aiPlayers.length == 0 || (aiPlayers.length == 1 && planet.getPlayer() == 0))) {
-							
-							Alert UpgradesBox = new Alert(AlertType.CONFIRMATION);
-							
-							UpgradesBox.getDialogPane().setPrefWidth(400);
-							UpgradesBox.getDialogPane().setPrefHeight(100);
-							UpgradesBox.setTitle("Upgrades Panel");
-							UpgradesBox.setHeaderText(null);
-							UpgradesBox.setGraphic(null);
-							UpgradesBox.setContentText(null);
-							
-							ButtonType btnShield = new ButtonType ("Shield(100)");
-							ButtonType btnRate = new ButtonType ("Production Rate(50)");
-							ButtonType btnB = new ButtonType ("Back" , ButtonData.BACK_PREVIOUS);
-							
-							UpgradesBox.getButtonTypes().setAll(btnShield,btnRate,btnB);
-						
-							Optional<ButtonType> choice = UpgradesBox.showAndWait();
-							
-							if (choice.get() == btnShield) {
-								if (planet.getNbSpaceShips() >= 100) {
-									planet.setShield(300);
-								}
-								else {
-									Alert dialogW = new Alert(AlertType.WARNING);
-									dialogW.setTitle("Upgrade Impossible");
-									dialogW.setHeaderText(null);
-									dialogW.setContentText("No enough resources");
-									dialogW.showAndWait();
-								}
-							}
-							
-							else if (choice.get() == btnRate) {
-								if (planet.getNbSpaceShips() >= 50) {
-									planet.upgradeProductionRate(5);
-								}
-								else {
-									Alert dialogW = new Alert(AlertType.WARNING);
-									dialogW.setTitle("Upgrade Impossible");
-									dialogW.setHeaderText(null);
-									dialogW.setContentText("No enough resources");
-									dialogW.showAndWait();
-								}
-							}
-						}
-					}
-				}
-				
-					
 				
 				if (e.isShiftDown()) {
 					SpaceShip S = new SpaceShip(0,planets.get(0),new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT));
