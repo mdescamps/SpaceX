@@ -46,6 +46,7 @@ public class Game extends Application {
 	private final static int WIDTH = 1800;
 	private final static int HEIGHT = 1000;
 	private double timer = 0;
+	private boolean Pause = false;
 	ArrayList<SpaceShip> SSBase = new ArrayList<SpaceShip>();
 	ArrayList<SpaceShip> SSLaunch = new ArrayList<SpaceShip>();
 	ArrayList<Planet> planets = new ArrayList<Planet>();
@@ -100,42 +101,45 @@ public class Game extends Application {
 		ArrayList<Planet> aiCibles = ennemyPlanets;
 		aiCibles.addAll(freePlanets);
 		
-		if (Difficulty == 1 && timer%360 == 0) {
-			
-			int aiPlanetRank = r.nextInt(aiPlanets.size());
-			int aiCibleRank = r.nextInt(aiCibles.size());
-			
-			Planet aiPlanet = aiPlanets.get(aiPlanetRank);
-			Planet aiCible = aiCibles.get(aiCibleRank);
-			
-			int aiSpaceShips = r.nextInt(aiPlanet.getNbSpaceShips());
-			
-			SpaceshipsLauch(aiSpaceShips, aiPlanet, aiCible);
-			
-		}
+		if (aiCibles.size() > 0 && aiPlanets.size() > 0 && Pause == false) {
 		
-		
-		
-		if (Difficulty == 2 /*&& timer%100 == 0*/){
+			if (Difficulty == 1 && timer%360 == 0) {
 			
-			Planet weakestCible = aiCibles.get(0);
-			for (Planet planet : aiCibles) {
-				if (planet.getNbSpaceShips() < weakestCible.getNbSpaceShips()) {
-					weakestCible = planet;
-				}
+				int aiPlanetRank = r.nextInt(aiPlanets.size());
+				int aiCibleRank = r.nextInt(aiCibles.size());
+			
+				Planet aiPlanet = aiPlanets.get(aiPlanetRank);
+				Planet aiCible = aiCibles.get(aiCibleRank);
+			
+				int aiSpaceShips = r.nextInt(aiPlanet.getNbSpaceShips());
+			
+				SpaceshipsLauch(aiSpaceShips, aiPlanet, aiCible);
+			
 			}
+		
+		
+		
+			if (Difficulty == 2){
 			
-			Planet nearestPlanet = aiPlanets.get(0);
-			for (Planet planet : aiPlanets) {
-				if( planet.getCircle().getCenter().distance(weakestCible.getCircle().getCenter()) < nearestPlanet.getCircle().getCenter().distance(weakestCible.getCircle().getCenter()) && (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips())) {
-					nearestPlanet = planet;
+				Planet weakestCible = aiCibles.get(0);
+				for (Planet planet : aiCibles) {
+					if (planet.getNbSpaceShips() < weakestCible.getNbSpaceShips()) {
+						weakestCible = planet;
+					}
 				}
-			}
 			
-			if (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips() + 10 ) {
+				Planet nearestPlanet = aiPlanets.get(0);
+				for (Planet planet : aiPlanets) {
+					if( planet.getCircle().getCenter().distance(weakestCible.getCircle().getCenter()) < nearestPlanet.getCircle().getCenter().distance(weakestCible.getCircle().getCenter()) && (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips())) {
+						nearestPlanet = planet;
+					}
+				}
 			
-				SpaceshipsLauch(weakestCible.getNbSpaceShips() + 5, nearestPlanet, weakestCible);
+				if (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips() + 10 ) {
+			
+					SpaceshipsLauch(weakestCible.getNbSpaceShips() + 5, nearestPlanet, weakestCible);
 				
+				}
 			}
 		}
 	}
@@ -143,6 +147,7 @@ public class Game extends Application {
 	
 	
 public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
+	
 	for (int i = 0 ; i < number ; i++) {
 		planet1.getAttacked();
 		SpaceShip S = new SpaceShip(0,planet2,new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT));												
@@ -295,6 +300,9 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 			
 			
 		}
+		
+		
+		
 		/**
 		 * cree une nouvelle partie
 		 */
@@ -324,46 +332,10 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				aiPlayers = new int[2];
 				aiPlayers[0] = 0;
 				aiPlayers[1] = 1;
-				Difficulty = 1;
 			}
 			else if(choice2.get() == btn1) {
 				aiPlayers = new int[1];
 				aiPlayers[0] = 1;
-				
-				
-				
-				/**
-				 * Gere la boite de dialogue qui fixe le niveau de l'ia en mode 1 joueur
-				 */
-				StartBox.getDialogPane().setPrefWidth(400);
-				StartBox.getDialogPane().setPrefHeight(100);
-				StartBox.setTitle("Choose the difficulty");
-				StartBox.setHeaderText(null);
-				StartBox.setGraphic(null);
-				StartBox.setContentText("How strong will be your enemy?");
-				
-				ButtonType btnEasy = new ButtonType ("Easy");
-				ButtonType btnHard = new ButtonType ("Hard");
-				ButtonType btnB = new ButtonType ("Back" , ButtonData.BACK_PREVIOUS);
-				
-				
-				StartBox.getButtonTypes().setAll(btnEasy,btnHard,btnB);
-				
-				Optional<ButtonType> choice3 = StartBox.showAndWait();
-				
-				if(choice3.get() == btnEasy) {
-					Difficulty = 1;
-				}
-				else if(choice3.get() == btnHard) {
-					Difficulty = 2;
-				}
-				else {
-					stage.close();
-					Game newGame = new Game();
-					Stage newStage = new Stage();
-					planets.clear();
-					newGame.start(newStage);
-				}
 				
 				
 				
@@ -379,6 +351,37 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				newGame.start(newStage);
 			}
 			
+			if (aiPlayers.length > 0 ) {
+				StartBox.getDialogPane().setPrefWidth(400);
+				StartBox.getDialogPane().setPrefHeight(100);
+				StartBox.setTitle("Choose the difficulty");
+				StartBox.setHeaderText(null);
+				StartBox.setGraphic(null);
+				StartBox.setContentText("How strong will be your enemy?");
+				
+				ButtonType btnEasy = new ButtonType ("Easy");
+				ButtonType btnHard = new ButtonType ("Hard");
+				ButtonType btnB = new ButtonType ("Back" , ButtonData.BACK_PREVIOUS);
+			
+				
+				StartBox.getButtonTypes().setAll(btnEasy,btnHard,btnB);
+			
+				Optional<ButtonType> choice3 = StartBox.showAndWait();
+			
+				if(choice3.get() == btnEasy) {
+					Difficulty = 1;
+				}
+				else if(choice3.get() == btnHard) {
+					Difficulty = 2;
+				}
+				else {
+					stage.close();
+					Game newGame = new Game();
+					Stage newStage = new Stage();
+					planets.clear();
+					newGame.start(newStage);
+				}
+			}
 			
 			/**
 			 * Cree de maniere aleatoire (sur la quantité, la position, l'appartenance, la taille et la quantité de vaisseaux) les planete du jeu tout en gerant les colition
@@ -421,7 +424,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 			System.exit(0);
 			stage.close();
 		}
-
+		
 		
 
 		/**
@@ -512,53 +515,53 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 		 */
 		scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
 			public void handle(MouseEvent event) {
-				if (event.getEventType() == MouseEvent.MOUSE_PRESSED || event.getEventType() != MouseEvent.MOUSE_PRESSED || event.getEventType() == MouseEvent.ANY) {
+				if ((event.getEventType() == MouseEvent.MOUSE_PRESSED || event.getEventType() != MouseEvent.MOUSE_PRESSED) && SSBase.size() == 0 && SSLaunch.size() == 0) {
 						
-//					int Player0Number = 0;
-//					int Player1Number = 0;
-//					for (Planet planet : planets) {
-//						if(planet.getPlayer() == 0) {
-//							Player0Number++;
-//						}
-//						if(planet.getPlayer() == 1) {
-//							Player1Number++;
-//						}
-//					}
-//					
-//					if (Player0Number == 0 || Player1Number ==0) {
-//						String win;
-//						if (Player0Number == 0) {
-//							win = "Red Win,";
-//						}
-//						else {
-//							win = "Blue win,"; 
-//						}
-//						
-//						Alert victory = new Alert(AlertType.CONFIRMATION);
-//						
-//						victory.setTitle("Game Over");
-//						victory.setHeaderText(null);
-//						victory.setGraphic(null);
-//						victory.setContentText(win + " Congratulation");
-//						
-//						ButtonType btnRestart = new ButtonType("Restart");
-//						ButtonType btnEnd = new ButtonType("End Game");
-//						
-//						victory.getButtonTypes().setAll(btnRestart, btnEnd);
-//						
-//						Optional<ButtonType> choice2 = victory.showAndWait();
-//						
-//						if (choice2.get() == btnRestart) {
-//							Game newGame = new Game();
-//							Stage newStage = new Stage();
-//							planets.clear();
-//							newGame.start(newStage);
-//						}
-//						else {
-//							System.exit(0);
-//							stage.close();
-//						}
-//					}
+					int Player0Number = 0;
+					int Player1Number = 0;
+					for (Planet planet : planets) {
+						if(planet.getPlayer() == 0) {
+							Player0Number++;
+						}
+						if(planet.getPlayer() == 1) {
+							Player1Number++;
+						}
+					}
+					
+					if (Player0Number == 0 || Player1Number ==0) {
+						String win;
+						if (Player0Number == 0) {
+							win = "Red Win,";
+						}
+						else {
+							win = "Blue win,"; 
+						}
+						
+						Alert victory = new Alert(AlertType.CONFIRMATION);
+						
+						victory.setTitle("Game Over");
+						victory.setHeaderText(null);
+						victory.setGraphic(null);
+						victory.setContentText(win + " Congratulation");
+						
+						ButtonType btnRestart = new ButtonType("Restart");
+						ButtonType btnEnd = new ButtonType("End Game");
+						
+						victory.getButtonTypes().setAll(btnRestart, btnEnd);
+						
+						Optional<ButtonType> choice2 = victory.showAndWait();
+						
+						if (choice2.get() == btnRestart) {
+							Game newGame = new Game();
+							Stage newStage = new Stage();
+							planets.clear();
+							newGame.start(newStage);
+						}
+						else {
+							System.exit(0);
+							stage.close();
+						}
+					}
 				}
 			}	
 		});
@@ -613,6 +616,15 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				
 				if(e.getCode() == KeyCode.P) {
 					
+					Pause = true;
+					int[] tmpPlanetsRates = new int[planets.size()];
+					int i = 0;
+					for (Planet planet : planets) {
+						tmpPlanetsRates[i] = planet.getProductionRate();
+						planet.setProductionRate(0);
+						i++;
+					}
+					
 					
 					
 					Alert StartBox = new Alert(AlertType.CONFIRMATION);
@@ -646,8 +658,8 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 						    ObjectOutputStream oos1 = new ObjectOutputStream(fos1);
 							
 						    oos1.writeInt(aiPlayers.length);
-						    for (int i = 0 ; i < aiPlayers.length ; i++) {
-						    	oos1.writeInt(aiPlayers[i]);
+						    for (int j = 0 ; j < aiPlayers.length ; j++) {
+						    	oos1.writeInt(aiPlayers[j]);
 						    }
 						    
 						    oos1.writeInt(Difficulty);
@@ -660,6 +672,12 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				            e2.printStackTrace();
 							
 						}
+						i = 0;
+						for (Planet planet : planets) {
+							planet.setProductionRate(tmpPlanetsRates[i]);
+							i++;
+						}
+						Pause = false;
 						
 						
 						try {
@@ -701,7 +719,12 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 					 * Permet de continuer la partie mise en pause
 					 */
 					else if(choice.get() == btnContinue) {
-						
+						i = 0;
+						for (Planet planet : planets) {
+							planet.setProductionRate(tmpPlanetsRates[i]);
+							i++;
+						}
+						Pause = false;
 					}
 					
 					/**
@@ -761,33 +784,34 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 					/**
 					 * Gere le deplacement des vaisseaux et l'interraction avec une planete
 					 */
-					Iterator<SpaceShip> it = SSLaunch.iterator();
-					while(it.hasNext()) {
-						SpaceShip SpaceShip = it.next();
-						SpaceShip.travel();
-						SpaceShip.getSprite().updatePosition();
-						SpaceShip.setPosition();
-						if(planet.getCircle().isInside(SpaceShip.getPosition()) && SpaceShip.getDestination() == planet) {
-							if (planet.getPlayer() == SpaceShip.getPlayer()) {
-								planet.productShip();
+					if (Pause == false) {
+						Iterator<SpaceShip> it = SSLaunch.iterator();
+						while(it.hasNext()) {
+							SpaceShip SpaceShip = it.next();
+							SpaceShip.travel();
+							SpaceShip.getSprite().updatePosition();
+							SpaceShip.setPosition();
+							if(planet.getCircle().isInside(SpaceShip.getPosition()) && SpaceShip.getDestination() == planet) {
+								if (planet.getPlayer() == SpaceShip.getPlayer()) {
+									planet.productShip();
+								}
+								else {
+									planet.getAttacked();
+									if (planet.getNbSpaceShips() < 0) {
+										planet.setPlayer(SpaceShip.getPlayer());
+									}
+								}
+								it.remove();
 							}
 							else {
-								planet.getAttacked();
-								if (planet.getNbSpaceShips() < 0) {
-									planet.setPlayer(SpaceShip.getPlayer());
-								}
+								SpaceShip.getSprite().render(gc);		
 							}
-							it.remove();
-						}
-						else {
-							SpaceShip.getSprite().render(gc);
-							
-						}
 						
-						if (planet.getCircle().isNear(SpaceShip.getPosition()) && SpaceShip.getDestination() != planet) {
-							SpaceShip.evitate(planet);
-							SpaceShip.travel();
-							SpaceShip.getSprite().render(gc);
+							if (planet.getCircle().isNear(SpaceShip.getPosition()) && SpaceShip.getDestination() != planet) {
+								SpaceShip.evitate(planet);
+								SpaceShip.travel();
+								SpaceShip.getSprite().render(gc);
+							}
 						}
 					}
 				}
