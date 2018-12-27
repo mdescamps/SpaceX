@@ -176,7 +176,6 @@ public class Planet implements Serializable {
 	public void setSprite(Sprite s) {
 		this.sprite = s;
 	}
-	
-	
+
 
 }

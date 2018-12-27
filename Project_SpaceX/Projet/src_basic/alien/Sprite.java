@@ -105,6 +105,22 @@ public class Sprite implements Serializable {
 		this.y = y;
 	}
 	
+	public double getMinX() {
+		return minX;
+	}
+
+	public double getMinY() {
+		return minY;
+	}
+
+	public double getMaxX() {
+		return maxX;
+	}
+
+	public double getMaxY() {
+		return maxY;
+	}
+
 	/**
 	 * Methode qui permet de garder le sprite dans les limites que l'on lui impose
 	 */

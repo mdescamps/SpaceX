@@ -183,7 +183,8 @@ public class SpaceShip implements Serializable {
 	public void evitate(Planet p) {
 		double xDestination;
 		double yDestination;
-		if (this.getSprite().getX() <= p.getCircle().getCenter().getX()) {
+		
+/*		if (this.getSprite().getX() <= p.getCircle().getCenter().getX()) {
 			if (this.getSprite().getXSpeed() != 0) {
 				xDestination = this.getSprite().getX() + ((p.getCircle().getCenter().getX() - this.getSprite().getX()) * 2);
 			} else {
@@ -204,7 +205,9 @@ public class SpaceShip implements Serializable {
 			}
 			this.getSprite().setX(xDestination);
 			this.getSprite().setY(yDestination);
+			
 		} else {
+			
 			if (this.getSprite().getXSpeed() != 0) {
 				xDestination = this.getSprite().getX() - ((this.getSprite().getX() - p.getCircle().getCenter().getX()) * 2);
 			} else {
@@ -223,28 +226,68 @@ public class SpaceShip implements Serializable {
 					yDestination = this.getSprite().getY();
 				}
 			}
-				if (this.getSprite().getXSpeed() != 0 && this.getSprite().getYSpeed() != 0) {
-				if ((xDestination >= this.destination.getCircle().getCenter().getX() || xDestination <= this.destination.getCircle().getCenter().getX())  && yDestination < p.getCircle().getCenter().getY()) {
+			
+			if (this.getSprite().getXSpeed() != 0 && this.getSprite().getYSpeed() != 0) {
+				
+				if ((xDestination >= this.destination.getCircle().getCenter().getX() || xDestination <= this.destination.getCircle().getCenter().getX())  && yDestination < p.getCircle().getCenter().getY() && yDestination > this.destination.getCircle().getCenter().getY()) {
 					xDestination = p.getCircle().getCenter().getX();
-					yDestination = p.getCircle().getCenter().getY() - p.getCircle().getRadius() -20;
+					yDestination = p.getCircle().getCenter().getY() - p.getCircle().getRadius() -10;
 				}
-				if ((xDestination >= this.destination.getCircle().getCenter().getX() || xDestination <= this.destination.getCircle().getCenter().getX()) && yDestination > p.getCircle().getCenter().getY()) {
+				if ((xDestination >= this.destination.getCircle().getCenter().getX() || xDestination <= this.destination.getCircle().getCenter().getX()) && yDestination > p.getCircle().getCenter().getY() && yDestination < this.destination.getCircle().getCenter().getY()) {
 					xDestination = p.getCircle().getCenter().getX();
-					yDestination = p.getCircle().getCenter().getY() + p.getCircle().getRadius() + 20;
+					yDestination = p.getCircle().getCenter().getY() + p.getCircle().getRadius() + 10;
 				}
-				if ((yDestination >= this.destination.getCircle().getCenter().getY() || yDestination <= this.destination.getCircle().getCenter().getY()) && xDestination < p.getCircle().getCenter().getX()) {
-					xDestination = p.getCircle().getCenter().getX() - p.getCircle().getRadius() - 20;
+				if ((yDestination >= this.destination.getCircle().getCenter().getY() || yDestination <= this.destination.getCircle().getCenter().getY()) && xDestination < p.getCircle().getCenter().getX() && xDestination > this.destination.getCircle().getCenter().getY()) {
+					xDestination = p.getCircle().getCenter().getX() - p.getCircle().getRadius() - 10;
 					yDestination = p.getCircle().getCenter().getY();
 				}
-				if ((yDestination >= this.destination.getCircle().getCenter().getY() || yDestination <= this.destination.getCircle().getCenter().getY()) && xDestination < p.getCircle().getCenter().getX()) {
-					xDestination = p.getCircle().getCenter().getX() + p.getCircle().getRadius() + 20;
+				if ((yDestination >= this.destination.getCircle().getCenter().getY() || yDestination <= this.destination.getCircle().getCenter().getY()) && xDestination > p.getCircle().getCenter().getX() && xDestination < this.destination.getCircle().getCenter().getY()) {
+					xDestination = p.getCircle().getCenter().getX() + p.getCircle().getRadius() + 10;
 					yDestination = p.getCircle().getCenter().getY();
 				}
+				
 			}
 			
 			this.getSprite().setX(xDestination);
 			this.getSprite().setY(yDestination);
 		}
+		*/
+		
+			if (this.getSprite().getXSpeed() != 0) {
+				xDestination = this.getSprite().getX() + ((p.getCircle().getCenter().getX() - this.getSprite().getX()) * 2);
+			} else {
+				xDestination = this.getSprite().getX();
+			}
+			
+			if (this.getSprite().getYSpeed() != 0) {
+				yDestination = this.getSprite().getY() + ((p.getCircle().getCenter().getY() - this.getSprite().getY()) * 2);
+			} else {
+				yDestination = this.getSprite().getY();
+			}
+			
+			if (this.getSprite().getXSpeed() != 0 && this.getSprite().getYSpeed() != 0) {
+				
+				if ((xDestination >= this.destination.getCircle().getCenter().getX() || xDestination <= this.destination.getCircle().getCenter().getX())  && yDestination < p.getCircle().getCenter().getY() && yDestination > this.destination.getCircle().getCenter().getY()) {
+					xDestination = p.getCircle().getCenter().getX();
+					yDestination = p.getCircle().getCenter().getY() - p.getCircle().getRadius() -10;
+				}
+				if ((xDestination >= this.destination.getCircle().getCenter().getX() || xDestination <= this.destination.getCircle().getCenter().getX()) && yDestination > p.getCircle().getCenter().getY() && yDestination < this.destination.getCircle().getCenter().getY()) {
+					xDestination = p.getCircle().getCenter().getX();
+					yDestination = p.getCircle().getCenter().getY() + p.getCircle().getRadius() + 10;
+				}
+				if ((yDestination >= this.destination.getCircle().getCenter().getY() || yDestination <= this.destination.getCircle().getCenter().getY()) && xDestination < p.getCircle().getCenter().getX() && xDestination > this.destination.getCircle().getCenter().getY()) {
+					xDestination = p.getCircle().getCenter().getX() - p.getCircle().getRadius() - 10;
+					yDestination = p.getCircle().getCenter().getY();
+				}
+				if ((yDestination >= this.destination.getCircle().getCenter().getY() || yDestination <= this.destination.getCircle().getCenter().getY()) && xDestination > p.getCircle().getCenter().getX() && xDestination < this.destination.getCircle().getCenter().getY()) {
+					xDestination = p.getCircle().getCenter().getX() + p.getCircle().getRadius() + 10;
+					yDestination = p.getCircle().getCenter().getY();
+				}
+				
+			}
+			
+			this.getSprite().setX(xDestination);
+			this.getSprite().setY(yDestination);
 	}
 
 }

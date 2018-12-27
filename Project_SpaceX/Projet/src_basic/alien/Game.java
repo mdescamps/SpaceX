@@ -1,6 +1,6 @@
 package alien;
 
-import java.awt.print.Printable;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -209,11 +209,8 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 		gc.setFill(Color.BISQUE);
 		gc.setStroke(Color.TRANSPARENT);
 		gc.setLineWidth(1);
-			
-			
 		
 		Image space = new Image(getRessourcePathByName("images/space.jpg"), WIDTH, HEIGHT, false, false);
-		
 		gc.drawImage(space, 0, 0);
 		stage.setScene(scene);
 		stage.show();
@@ -236,8 +233,14 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 		ButtonType btnNew = new ButtonType ("new game");
 		ButtonType btnQuit = new ButtonType ("Quit" , ButtonData.CANCEL_CLOSE);
 		
+		File f1 = new File("game.txt");
+		File f2 = new File("data.txt");
 		
-		StartBox.getButtonTypes().setAll(btnReload,btnNew,btnQuit);
+		if (!f1.exists() || !f2.exists()) {
+			StartBox.getButtonTypes().setAll(btnNew,btnQuit);
+		} else {
+			StartBox.getButtonTypes().setAll(btnReload,btnNew,btnQuit);
+		}
 		
 		Optional<ButtonType> choice = StartBox.showAndWait();
 		
@@ -247,12 +250,37 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 		if(choice.get() == btnReload) {
 			
 			try {
+			
+				FileInputStream fis = new FileInputStream("game.txt");
+			    ObjectInputStream ois = new ObjectInputStream(fis);
+			    
+				FileInputStream fis1 = new FileInputStream("data.txt");
+				ObjectInputStream ois1 = new ObjectInputStream(fis1);
 				
-			FileInputStream fis = new FileInputStream("game.txt");
-		    ObjectInputStream ois = new ObjectInputStream(fis);
+				while (fis1.available() != 0) {
+				    
+						int size;
+						size = ois1.readInt();
+						this.aiPlayers = new int[size];
+					    for (int i = 0 ; i < size ; i++) {
+					    	this.aiPlayers[i] = ois1.readInt();
+					    }
+			    		this.Difficulty = ois1.readInt();
+				}
+				
+
+	    		ois1.close();
+				
+				
+    		
 		    while (fis.available() != 0) {
 		    	try {
-					planets.add((Planet) ois.readObject());
+		    		
+		    		PlanetForSave pfs =(PlanetForSave) ois.readObject();
+		    		SpriteForSave sfs = pfs.getSprite();
+		    		Sprite s = SpriteForSave.convertForInput(sfs);
+		    		Planet p = PlanetForSave.convertForInput(pfs, s);
+					planets.add(p);
 				} catch (ClassNotFoundException e1) {
 					e1.printStackTrace();
 				}
@@ -314,7 +342,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				StartBox.setGraphic(null);
 				StartBox.setContentText("How strong will be your enemy?");
 				
-				ButtonType btnEasy = new ButtonType ("Esay");
+				ButtonType btnEasy = new ButtonType ("Easy");
 				ButtonType btnHard = new ButtonType ("Hard");
 				ButtonType btnB = new ButtonType ("Back" , ButtonData.BACK_PREVIOUS);
 				
@@ -328,9 +356,6 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				}
 				else if(choice3.get() == btnHard) {
 					Difficulty = 2;
-				}
-				else if(choice2.get() == btn2) {
-					aiPlayers = new int[0];
 				}
 				else {
 					stage.close();
@@ -615,14 +640,41 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 					 */
 					if(choice.get() == btnSave) {
 						
+						try {
+							
+							FileOutputStream fos1 = new FileOutputStream("data.txt");
+						    ObjectOutputStream oos1 = new ObjectOutputStream(fos1);
+							
+						    oos1.writeInt(aiPlayers.length);
+						    for (int i = 0 ; i < aiPlayers.length ; i++) {
+						    	oos1.writeInt(aiPlayers[i]);
+						    }
+						    
+						    oos1.writeInt(Difficulty);
+						    oos1.flush();
+						    oos1.close();
+							
+						} catch (FileNotFoundException e1) {
+				            e1.printStackTrace();
+				        } catch (IOException e2) {
+				            e2.printStackTrace();
+							
+						}
+						
 						
 						try {
 							FileOutputStream fos = new FileOutputStream("game.txt");
 						    ObjectOutputStream oos = new ObjectOutputStream(fos);
 						    
+
+						    
 						    for (Planet p : planets) {
-						    	oos.writeObject(p);
+						    	SpriteForSave sfs = SpriteForSave.convertForOutput("images/Planet.png", p.getSprite());
+						    	PlanetForSave pfs = new PlanetForSave(p.getProductionRate(),p.getPlayer(), sfs, p.getCircle(), p.getNbSpaceShips());
+						    	oos.writeObject(pfs);
 						    }
+						    
+						    oos.flush();
 						    oos.close();
 						    
 						} catch (FileNotFoundException e1) {
@@ -632,30 +684,6 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 							
 						}
 						
-					}
-					
-					/**
-					 * gere la fin de partie et la sauvegarde
-					 */
-					else if(choice.get() == btnSaveQuit) {
-						
-						try {
-							FileOutputStream fos = new FileOutputStream("game.txt");
-						    ObjectOutputStream oos = new ObjectOutputStream(fos);
-						    
-						    for (Planet p : planets) {
-						    	oos.writeObject(p);
-						    }
-						    oos.close();
-						    
-						} catch (FileNotFoundException e1) {
-				            e1.printStackTrace();
-				        } catch (IOException e2) {
-				            e2.printStackTrace();
-							
-						}
-						System.exit(0);
-						stage.close();
 					}
 					
 					/**
@@ -765,7 +793,6 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				}
 				
 				timer++;
-				
 				
 				
 				if(aiPlayers.length > 0) {
