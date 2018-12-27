@@ -16,6 +16,7 @@ public class Planet implements Serializable {
 	private Sprite sprite;
 	private Circle c;
 	private boolean selected;
+	private int Shield;
 	
 	
 	
@@ -34,6 +35,29 @@ public class Planet implements Serializable {
 		Point2D center = new Point2D(sprite.getX() + (sprite.width()/2) - 10, sprite.getY() + (sprite.height()/2) - 10);
 		this.c = new Circle(center,(sprite.height() / 2));
 		this.selected = false;
+		this.Shield = 0;
+	}
+	
+	
+	
+	/**
+	 * Methode qui active le bouclier d'une planete 
+	 */
+	public void setShield(int Shield) {
+		this.nbSpaceShips -= 100;
+		this.Shield = Shield;
+	}
+	
+	/**
+	 * Methode qui retourne l'etat du bouclier
+	 * @return		Un entier qui correspond a l'etat du bouclier
+	 */
+	public int getShield() {
+		return this.Shield;
+	}
+	
+	public void dammageShield() {
+		this.Shield -= 1;
 	}
 	
 	
@@ -157,6 +181,11 @@ public class Planet implements Serializable {
 	 */
 	public void setProductionRate(int productionRate) {
 		this.productionRate = productionRate;
+	}
+	
+	public void upgradeProductionRate(int Rate) {
+		this.nbSpaceShips -= 50;
+		this.productionRate -= Rate;
 	}
 	
 	
