@@ -38,14 +38,18 @@ public class Planet implements Serializable {
 		this.Shield = 0;
 	}
 	
+	Planet(){}
+	
 	
 	
 	/**
 	 * Methode qui active le bouclier d'une planete 
 	 */
 	public void setShield(int Shield) {
-		this.nbSpaceShips -= 100;
-		this.Shield = Shield;
+		if (this.nbSpaceShips > 100) {
+			this.nbSpaceShips -= 100;
+			this.Shield = Shield;
+		}
 	}
 	
 	/**

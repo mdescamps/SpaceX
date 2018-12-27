@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Random;
@@ -98,8 +100,86 @@ public class Game extends Application {
 			}
 		}
 		
+		Collections.sort(ennemyPlanets, new Comparator<Planet>() {
+
+			@Override
+			public int compare(Planet planet1, Planet planet2) {
+			
+				if (planet1.getNbSpaceShips() + planet1.getShield() > planet2.getNbSpaceShips() + planet2.getShield()) {
+					return 1;
+				}
+				else if (planet1.getNbSpaceShips() + planet1.getShield() < planet2.getNbSpaceShips() + planet2.getShield()) {
+					return -1;
+				}
+				else {
+					return 0;
+				}
+			
+			}
+			
+		});
+		
+		Collections.sort(freePlanets, new Comparator<Planet>() {
+
+			@Override
+			public int compare(Planet planet1, Planet planet2) {
+			
+				if (planet1.getNbSpaceShips() + planet1.getShield() > planet2.getNbSpaceShips() + planet2.getShield()) {
+					return 1;
+				}
+				else if (planet1.getNbSpaceShips() + planet1.getShield() < planet2.getNbSpaceShips() + planet2.getShield()) {
+					return -1;
+				}
+				else {
+					return 0;
+				}
+			
+			}
+			
+		});
+		
+		Collections.sort(aiPlanets, new Comparator<Planet>() {
+
+			@Override
+			public int compare(Planet planet1, Planet planet2) {
+			
+				if (planet1.getNbSpaceShips() + planet1.getShield() > planet2.getNbSpaceShips() + planet2.getShield()) {
+					return 1;
+				}
+				else if (planet1.getNbSpaceShips() + planet1.getShield() < planet2.getNbSpaceShips() + planet2.getShield()) {
+					return -1;
+				}
+				else {
+					return 0;
+				}
+			
+			}
+			
+		});
+		
+		
+		
 		ArrayList<Planet> aiCibles = ennemyPlanets;
 		aiCibles.addAll(freePlanets);
+		
+		Collections.sort(aiCibles, new Comparator<Planet>() {
+
+			@Override
+			public int compare(Planet planet1, Planet planet2) {
+			
+				if (planet1.getNbSpaceShips() + planet1.getShield() > planet2.getNbSpaceShips() + planet2.getShield()) {
+					return 1;
+				}
+				else if (planet1.getNbSpaceShips() + planet1.getShield() < planet2.getNbSpaceShips() + planet2.getShield()) {
+					return -1;
+				}
+				else {
+					return 0;
+				}
+			
+			}
+			
+		});
 		
 		if (aiCibles.size() > 0 && aiPlanets.size() > 0 && Pause == false) {
 		
@@ -119,14 +199,11 @@ public class Game extends Application {
 		
 		
 		
-			if (Difficulty == 2){
-			
+			if (Difficulty == 2) {
+				
 				Planet weakestCible = aiCibles.get(0);
-				for (Planet planet : aiCibles) {
-					if (planet.getNbSpaceShips() < weakestCible.getNbSpaceShips()) {
-						weakestCible = planet;
-					}
-				}
+				Planet StrongestAiPlanet = aiPlanets.get(aiPlanets.size() - 1);
+				Planet StrongestEnnemyPlanet = ennemyPlanets.get(ennemyPlanets.size()-1);
 			
 				Planet nearestPlanet = aiPlanets.get(0);
 				for (Planet planet : aiPlanets) {
@@ -135,10 +212,16 @@ public class Game extends Application {
 					}
 				}
 			
-				if (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips() + 10 ) {
+				if (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips() + 10 && StrongestEnnemyPlanet.getNbSpaceShips() < (nearestPlanet.getNbSpaceShips() + nearestPlanet.getShield()) - (weakestCible.getNbSpaceShips() + 5)) {
 			
 					SpaceshipsLauch(weakestCible.getNbSpaceShips() + 5, nearestPlanet, weakestCible);
 				
+				}
+				
+				else if (StrongestAiPlanet.getShield() == 0  && StrongestAiPlanet.getNbSpaceShips() > 100) {
+					
+					aiPlanets.get(aiPlanets.size()-1).setShield(300);
+					
 				}
 			}
 		}
@@ -435,7 +518,8 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				
 				
 				/**
-				 * Gestion de l'initialisation d'attaques par la selection de deux planete lors d'un cliqué - glissé
+				 * Gestion de l'initialisation d'attaques par la selection de deux planete lors d'un cliqué - glissé ou bien l'envoie de vaisseaux alliés ainsi
+				 * que l'amelioration des planetes
 				 */
 				if (e.getEventType() == MouseEvent.MOUSE_PRESSED) {
 					unSelectAll(planets);
@@ -455,6 +539,10 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 					for (Planet planet1 : planets) {
 						if (planet1.isSelected()) {
 							for (Planet planet2 : planets) {
+								
+								/**
+								 * Attaque ou envoie de renfort d'une planete vers une autre
+								 */
 								if (planet2.getCircle().isInside(p) && planet2 != planet1 && (aiPlayers.length == 0 || planet1.getPlayer() == 0 ) && aiPlayers.length < 2) {
 									if (e.isControlDown()) {
 										int player = planet1.getPlayer();
@@ -482,6 +570,9 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 									}
 								}
 								
+								/**
+								 * Amelioration des planetes
+								 */
 								else if(planet2.getCircle().isInside(p) && planet2 == planet1 && (aiPlayers.length == 0 || planet1.getPlayer() == 0 ) && aiPlayers.length < 2){
 									
 									for(Planet planet : planets) {
@@ -857,7 +948,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				gc.drawImage(space, 0, 0);
 				for (Planet planet : planets) {
 					planet.getSprite().render(gc);
-					String text =  "" + planet.getNbSpaceShips();
+					String text =  "" + planet.getNbSpaceShips() + "\n+" +  planet.getShield() + "S";
 					
 					
 					
