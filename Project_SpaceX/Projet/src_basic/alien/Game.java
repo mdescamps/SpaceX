@@ -700,7 +700,64 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				        } catch (IOException e2) {
 				            e2.printStackTrace();
 							
+				        }
+						
+					}
+					
+					else if(choice.get() == btnSaveQuit) {
+						
+						try {
+							
+							FileOutputStream fos1 = new FileOutputStream("data.txt");
+						    ObjectOutputStream oos1 = new ObjectOutputStream(fos1);
+							
+						    oos1.writeInt(aiPlayers.length);
+						    for (int j = 0 ; j < aiPlayers.length ; j++) {
+						    	oos1.writeInt(aiPlayers[j]);
+						    }
+						    
+						    oos1.writeInt(Difficulty);
+						    oos1.flush();
+						    oos1.close();
+							
+						} catch (FileNotFoundException e1) {
+				            e1.printStackTrace();
+				        } catch (IOException e2) {
+				            e2.printStackTrace();
+							
 						}
+						i = 0;
+						for (Planet planet : planets) {
+							planet.setProductionRate(tmpPlanetsRates[i]);
+							i++;
+						}
+						Pause = false;
+						
+						
+						try {
+							FileOutputStream fos = new FileOutputStream("game.txt");
+						    ObjectOutputStream oos = new ObjectOutputStream(fos);
+						    
+
+						    
+						    for (Planet p : planets) {
+						    	SpriteForSave sfs = SpriteForSave.convertForOutput("images/Planet.png", p.getSprite());
+						    	PlanetForSave pfs = new PlanetForSave(p.getProductionRate(),p.getPlayer(), sfs, p.getCircle(), p.getNbSpaceShips());
+						    	oos.writeObject(pfs);
+						    }
+						    
+						    oos.flush();
+						    oos.close();
+						    
+						} catch (FileNotFoundException e1) {
+				            e1.printStackTrace();
+				        } catch (IOException e2) {
+				            e2.printStackTrace();
+							
+						}
+						
+						System.exit(0);
+						stage.close();
 						
 					}
 					
