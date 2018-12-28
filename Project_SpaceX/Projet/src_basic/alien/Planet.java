@@ -130,8 +130,8 @@ public class Planet implements Serializable {
 	 * Methode qui incremente de 1 le nombre de vaisseaux de la planete
 	 * (utilisee pour les interactions vaisseau/planete)
 	 */
-	public void productShip() {
-		this.nbSpaceShips ++;
+	public void productShip(int prod) {
+		this.nbSpaceShips += prod;
 	}
 	
 

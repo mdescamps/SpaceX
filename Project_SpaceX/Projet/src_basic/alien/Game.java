@@ -1010,7 +1010,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 					gc.setTextAlign(TextAlignment.CENTER);
 					
 					if (timer%(planet.getProductionRate()) == 0 && planet.getPlayer() != -1) {
-						planet.productShip();
+						planet.productShip(1);
 					}
 					
 					if (timer % 5 == 0 && SSBase.size() > 0) {
@@ -1033,7 +1033,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 							SpaceShip.setPosition();
 							if(planet.getCircle().isInside(SpaceShip.getPosition()) && SpaceShip.getDestination() == planet) {
 								if (planet.getPlayer() == SpaceShip.getPlayer()) {
-									planet.productShip();
+									planet.productShip(SpaceShip.getFirePower());
 								}
 								else {
 									if (planet.getShield() <= 0) {
