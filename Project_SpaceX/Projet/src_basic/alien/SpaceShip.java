@@ -16,6 +16,13 @@ public class SpaceShip implements Serializable {
 	private Planet destination;
 	private Planet start;
 	private boolean evitate;
+	double[] dest = new double[2];
+	double initX;
+	double initY;
+	double initSX;
+	double initSY;
+	double cX;
+	double cY;
 	
 	
 	
@@ -139,6 +146,10 @@ public class SpaceShip implements Serializable {
 		this.start = start;
 	}
 	
+	/**
+	 * Methode 
+	 * @return
+	 */
 	public boolean isEvitate() {
 		return this.evitate;
 	}
@@ -147,8 +158,55 @@ public class SpaceShip implements Serializable {
 		this.evitate = e;
 	}
 	
+	public double getInitSX() {
+		return initSX;
+	}
+
+
+	public double getInitSY() {
+		return initSY;
+	}
+
+
+	public void setDest(double[] dest) {
+		this.dest = dest;
+	}
 	
-	
+	public double[] getDest() {
+		return this.dest;
+	}
+
+
+	public void setInitX(double initX) {
+		this.initX = initX;
+	}
+
+
+	public void setInitY(double initY) {
+		this.initY = initY;
+	}
+
+
+	public void setInitSX(double initSX) {
+		this.initSX = initSX;
+	}
+
+
+	public void setInitSY(double initSY) {
+		this.initSY = initSY;
+	}
+
+
+	public void setcX(double cX) {
+		this.cX = cX;
+	}
+
+
+	public void setcY(double cY) {
+		this.cY = cY;
+	}
+
+
 	/**
 	 * Methode qui modifie la vitesse et la trajectoire du vaisseau en fonction de sa vitesse 
 	 * et de sa position par rapport a sa planete de destination
@@ -256,7 +314,7 @@ public class SpaceShip implements Serializable {
 
 
 
-	public void evitate(double[] dest, double initX, double initY, double cX, double cY, double initSX, double initSY) {
+	public void evitate() {
 		double r = 0;		
 		if (initSY == 0) {
 			r = Math.abs(cX - initX);
