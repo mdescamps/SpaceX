@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Random;
@@ -98,10 +100,89 @@ public class Game extends Application {
 			}
 		}
 		
-		ArrayList<Planet> aiCibles = ennemyPlanets;
+		Collections.sort(ennemyPlanets, new Comparator<Planet>() {
+
+			@Override
+			public int compare(Planet planet1, Planet planet2) {
+			
+				if (planet1.getNbSpaceShips() + planet1.getShield() > planet2.getNbSpaceShips() + planet2.getShield()) {
+					return 1;
+				}
+				else if (planet1.getNbSpaceShips() + planet1.getShield() < planet2.getNbSpaceShips() + planet2.getShield()) {
+					return -1;
+				}
+				else {
+					return 0;
+				}
+			
+			}
+			
+		});
+		
+		Collections.sort(freePlanets, new Comparator<Planet>() {
+
+			@Override
+			public int compare(Planet planet1, Planet planet2) {
+			
+				if (planet1.getNbSpaceShips() + planet1.getShield() > planet2.getNbSpaceShips() + planet2.getShield()) {
+					return 1;
+				}
+				else if (planet1.getNbSpaceShips() + planet1.getShield() < planet2.getNbSpaceShips() + planet2.getShield()) {
+					return -1;
+				}
+				else {
+					return 0;
+				}
+			
+			}
+			
+		});
+		
+		Collections.sort(aiPlanets, new Comparator<Planet>() {
+
+			@Override
+			public int compare(Planet planet1, Planet planet2) {
+			
+				if (planet1.getNbSpaceShips() + planet1.getShield() > planet2.getNbSpaceShips() + planet2.getShield()) {
+					return 1;
+				}
+				else if (planet1.getNbSpaceShips() + planet1.getShield() < planet2.getNbSpaceShips() + planet2.getShield()) {
+					return -1;
+				}
+				else {
+					return 0;
+				}
+			
+			}
+			
+		});
+		
+		
+		
+		ArrayList<Planet> aiCibles = new ArrayList<Planet>();
+		aiCibles.addAll(ennemyPlanets);
 		aiCibles.addAll(freePlanets);
 		
-		if (aiCibles.size() > 0 && aiPlanets.size() > 0 && Pause == false) {
+		Collections.sort(aiCibles, new Comparator<Planet>() {
+
+			@Override
+			public int compare(Planet planet1, Planet planet2) {
+			
+				if (planet1.getNbSpaceShips() + planet1.getShield() > planet2.getNbSpaceShips() + planet2.getShield()) {
+					return 1;
+				}
+				else if (planet1.getNbSpaceShips() + planet1.getShield() < planet2.getNbSpaceShips() + planet2.getShield()) {
+					return -1;
+				}
+				else {
+					return 0;
+				}
+			
+			}
+			
+		});
+		
+		if (ennemyPlanets.size() > 0 && aiCibles.size() > 0 && aiPlanets.size() > 0 && Pause == false) {
 		
 			if (Difficulty == 1 && timer%360 == 0) {
 			
@@ -119,14 +200,11 @@ public class Game extends Application {
 		
 		
 		
-			if (Difficulty == 2){
-			
+			if (Difficulty == 2) {
+				
 				Planet weakestCible = aiCibles.get(0);
-				for (Planet planet : aiCibles) {
-					if (planet.getNbSpaceShips() < weakestCible.getNbSpaceShips()) {
-						weakestCible = planet;
-					}
-				}
+				Planet StrongestAiPlanet = aiPlanets.get(aiPlanets.size() - 1);
+				Planet StrongestEnnemyPlanet = ennemyPlanets.get(ennemyPlanets.size()-1);
 			
 				Planet nearestPlanet = aiPlanets.get(0);
 				for (Planet planet : aiPlanets) {
@@ -135,10 +213,16 @@ public class Game extends Application {
 					}
 				}
 			
-				if (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips() + 10 ) {
+				if (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips() + 10 && StrongestEnnemyPlanet.getNbSpaceShips() < (nearestPlanet.getNbSpaceShips() + nearestPlanet.getShield()) - (weakestCible.getNbSpaceShips() + 10)) {
 			
 					SpaceshipsLauch(weakestCible.getNbSpaceShips() + 5, nearestPlanet, weakestCible);
 				
+				}
+				
+				else if (StrongestAiPlanet.getShield() == 0  && StrongestAiPlanet.getNbSpaceShips() > 100) {
+					
+					aiPlanets.get(aiPlanets.size()-1).setShield(300);
+					
 				}
 			}
 		}
@@ -149,10 +233,27 @@ public class Game extends Application {
 public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 	
 	for (int i = 0 ; i < number ; i++) {
-		planet1.getAttacked();
-		SpaceShip S = new SpaceShip(0,planet2,new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT));												
+		planet1.getAttacked(1);
+		SpaceShip S = new SpaceShip(0,planet2,new Sprite("images/spaceship.png", 25, 20, 0, 0, WIDTH, HEIGHT),planet1.getSpaceShipsFirePower() );												
 		S.setPlayer(planet1.getPlayer());
 		S.setStart(planet1);
+		
+		switch(planet1.getSpaceShipsFirePower()) {
+		case(2):
+			S.setSprite(new Sprite("images/spaceship2.png",25,20,0,0,WIDTH,HEIGHT));
+			break;
+		case(3):
+			S.setSprite(new Sprite("images/spaceship3.png",25,20,0,0,WIDTH,HEIGHT));
+			break;
+		case(4):
+			S.setSprite(new Sprite("images/spaceship4.png",25,20,0,0,WIDTH,HEIGHT));
+			break;
+		case(5):
+			S.setSprite(new Sprite("images/spaceship5.png",25,20,0,0,WIDTH,HEIGHT));
+			break;
+		default:
+		}
+		
 		if (planet1.getSprite().getX() < planet2.getSprite().getX()) {
 			if (planet1.getSprite().getY() < planet2.getSprite().getY()) {
 				S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius(),
@@ -435,13 +536,14 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				
 				
 				/**
-				 * Gestion de l'initialisation d'attaques par la selection de deux planete lors d'un cliqué - glissé
+				 * Gestion de l'initialisation d'attaques par la selection de deux planete lors d'un cliqué - glissé ou bien l'envoie de vaisseaux alliés ainsi
+				 * que l'amelioration des planetes
 				 */
 				if (e.getEventType() == MouseEvent.MOUSE_PRESSED) {
 					unSelectAll(planets);
 					Point2D p = new Point2D(e.getSceneX(), e.getSceneY());
 					for (Planet planet : planets) {
-						if (planet.getCircle().isInside(p) && planet.getPlayer() != -1) {
+						if (planet.getCircle().isInside(p)) {
 							planet.select();
 						}
 					}
@@ -455,12 +557,14 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 					for (Planet planet1 : planets) {
 						if (planet1.isSelected()) {
 							for (Planet planet2 : planets) {
-								if (planet2.getCircle().isInside(p) && planet2 != planet1 && (aiPlayers.length == 0 || planet1.getPlayer() == 0 ) && aiPlayers.length < 2) {
-									if (e.isControlDown()) {
-										int player = planet1.getPlayer();
-										number = (int)(percent[player] * planet1.getNbSpaceShips());
-									}
-									else {
+								
+								/**
+								 * Attaque ou envoie de renfort d'une planete vers une autre
+								 */
+								if (planet2.getCircle().isInside(p) 
+										&& planet2 != planet1
+										&& (aiPlayers.length == 0 || planet1.getPlayer() == 0 ) 
+										&& aiPlayers.length < 2  && planet1.getPlayer() != -1) {
 																		
 										TextInputDialog ask = new TextInputDialog("guest");
 										ask.setTitle("control panel");
@@ -471,7 +575,6 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 										if (textIn.isPresent()) {
 											number = Integer.valueOf(textIn.get());
 										}
-									}
 										
 										
 										
@@ -482,6 +585,18 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 									}
 								}
 								
+								if (e.isControlDown() && planet1 == planet2 && planet1.getPlayer() != 0) {
+									for (Planet player0Planets : planets) {
+										if (player0Planets.getPlayer() == 0) {
+											number = (int)(percent[0] * player0Planets.getNbSpaceShips());
+											SpaceshipsLauch(number, player0Planets, planet2);
+										}
+									}
+								}
+								
+								/**
+								 * Amelioration des planetes
+								 */
 								else if(planet2.getCircle().isInside(p) && planet2 == planet1 && (aiPlayers.length == 0 || planet1.getPlayer() == 0 ) && aiPlayers.length < 2){
 									
 									for(Planet planet : planets) {
@@ -498,9 +613,10 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 											
 											ButtonType btnShield = new ButtonType ("Shield(100)");
 											ButtonType btnRate = new ButtonType ("Production Rate(50)");
+											ButtonType btnFirePower = new ButtonType ("Fire power (50)");
 											ButtonType btnB = new ButtonType ("Back" , ButtonData.BACK_PREVIOUS);
 											
-											UpgradesBox.getButtonTypes().setAll(btnShield,btnRate,btnB);
+											UpgradesBox.getButtonTypes().setAll(btnShield,btnRate,btnFirePower,btnB);
 										
 											Optional<ButtonType> choice = UpgradesBox.showAndWait();
 											
@@ -518,14 +634,28 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 											}
 											
 											else if (choice.get() == btnRate) {
-												if (planet.getNbSpaceShips() >= 50) {
+												if (planet.getNbSpaceShips() >= 50 && planet.getProductionRateUpgrade() < 5) {
 													planet.upgradeProductionRate(5);
+													planet.addProductionRateUpgrade();
 												}
 												else {
 													Alert dialogW = new Alert(AlertType.WARNING);
 													dialogW.setTitle("Upgrade Impossible");
 													dialogW.setHeaderText(null);
-													dialogW.setContentText("No enough resources");
+													dialogW.setContentText("No enough resources or planete enough rate upgraded");
+													dialogW.showAndWait();
+												}
+											}
+											
+											else if (choice.get() == btnFirePower) {
+												if (planet.getNbSpaceShips() >= 50 && planet.getSpaceShipsFirePower() < 5) {
+													planet.addFirePowerUpgrade();
+												}
+												else {
+													Alert dialogW = new Alert(AlertType.WARNING);
+													dialogW.setTitle("Upgrade Impossible");
+													dialogW.setHeaderText(null);
+													dialogW.setContentText("No enough resources or planete enough fire power upgraded");
 													dialogW.showAndWait();
 												}
 											}
@@ -544,7 +674,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				
 				
 				if (e.isShiftDown()) {
-					SpaceShip S = new SpaceShip(0,planets.get(0),new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT));
+					SpaceShip S = new SpaceShip(0,planets.get(0),new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT),1);
 					S.setPlayer(0);
 					S.setStart(planets.get(0));
 					S.getSprite().setSpeed(1, 1);
@@ -864,7 +994,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				gc.drawImage(space, 0, 0);
 				for (Planet planet : planets) {
 					planet.getSprite().render(gc);
-					String text =  "" + planet.getNbSpaceShips();
+					String text =  "" + planet.getNbSpaceShips() + "\n+" +  planet.getShield() + "S";
 					
 					
 					
@@ -887,7 +1017,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 					gc.setTextAlign(TextAlignment.CENTER);
 					
 					if (timer%(planet.getProductionRate()) == 0 && planet.getPlayer() != -1) {
-						planet.productShip();
+						planet.productShip(1);
 					}
 					
 					if (timer % 5 == 0 && SSBase.size() > 0) {
@@ -915,11 +1045,11 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 							SpaceShip.setPosition();
 							if(planet.getCircle().isInside(SpaceShip.getPosition()) && SpaceShip.getDestination() == planet) {
 								if (planet.getPlayer() == SpaceShip.getPlayer()) {
-									planet.productShip();
+									planet.productShip(SpaceShip.getFirePower());
 								}
 								else {
 									if (planet.getShield() <= 0) {
-										planet.getAttacked();
+										planet.getAttacked(SpaceShip.getFirePower());
 										if (planet.getNbSpaceShips() < 0) {
 											planet.setPlayer(SpaceShip.getPlayer());
 											planet.setNbSpaceShips(0);
@@ -975,23 +1105,28 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				 */
 				gc.setFont(Font.font("Helvetica", FontWeight.BOLD, 15));
 				for (int i = 0 ; i < percent.length ; i++) {
-					String percentage = "percentage : " + (int)((percent[i]+0.002)*100)+ "%";
+					int allSpaceShips = 0;
+					for (Planet allPlanetsOwned : planets) {
+						if (allPlanetsOwned.getPlayer() == i) {
+							allSpaceShips += allPlanetsOwned.getNbSpaceShips()*allPlanetsOwned.getSpaceShipsFirePower();
+						}
+					}
+					String percentage = "percentage : " + (int)((percent[i]+0.002)*100)+ "% : " + (int)(allSpaceShips*percent[i]) + "/" + allSpaceShips;
 					switch (i) {
 					case(0):
 						gc.setFill(Color.DEEPSKYBLUE);
-						gc.fillText(percentage, 95, 36);
+						gc.fillText(percentage, 125, 36);
 						break;
 					case(1):
 						gc.setFill(Color.RED);
-						gc.fillText(percentage, WIDTH - 95, 36);
+						gc.fillText(percentage, WIDTH - 125, 36);
 						break;
 					default:
 						gc.setFill(Color.BISQUE);
 					}
 				}
 				gc.setTextAlign(TextAlignment.RIGHT);
-				gc.setFont(Font.font("Helvetica", FontWeight.BOLD, 24));
-				
+				gc.setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
 			}
 		}.start();
 	}
