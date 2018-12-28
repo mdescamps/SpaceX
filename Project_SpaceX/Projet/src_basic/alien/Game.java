@@ -713,18 +713,6 @@ public class Game extends Application {
 						}
 					}			
 				}
-				
-				
-				
-				if (e.isShiftDown()) {
-					SpaceShip S = new SpaceShip(0,planets.get(0),new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT),1);
-					S.setPlayer(0);
-					S.setStart(planets.get(0));
-					S.getSprite().setSpeed(1, 1);
-					S.getSprite().setPosition(e.getX() , e.getY());
-					S.setPosition();
-					SSLaunch.add(S);
-				}
 			}
 		};
 		

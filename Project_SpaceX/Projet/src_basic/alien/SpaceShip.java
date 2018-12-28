@@ -147,61 +147,97 @@ public class SpaceShip implements Serializable {
 	}
 	
 	/**
-	 * Methode 
-	 * @return
+	 * Methode qui informe si un vaisseau fait une manoeuvre d'evitement
+	 * @return vrai si il est en train d'eviter, faux sinon
 	 */
 	public boolean isEvitate() {
 		return this.evitate;
 	}
 	
+	/**
+	 * Methode qui modifie si un vaisseau entre en evitement
+	 * @param e nouvelle valeur d'evitement
+	 */
 	public void setEvitate(boolean e) {
 		this.evitate = e;
 	}
 	
+	/**
+	 * Methode qui donne la vitesse initiale avant evitement
+	 * @return vitesse initiale en x
+	 */
 	public double getInitSX() {
 		return initSX;
 	}
 
-
+	/**
+	 * Methode qui informe de la vitesse initiale avant evitement
+	 * @return vitesse initiale en y
+	 */
 	public double getInitSY() {
 		return initSY;
 	}
 
-
+	/**
+	 * modifie la destination de l'evitement
+	 * @param dest nouvelle destination
+	 */
 	public void setDest(double[] dest) {
 		this.dest = dest;
 	}
 	
+	/**
+	 * donne la destination suite a l'evitement
+	 * @return la destination du vaisseau pour l'evitement
+	 */
 	public double[] getDest() {
 		return this.dest;
 	}
 
-
+	/**
+	 * modifie la position de base avant evitement
+	 * @param initX position en x de base
+	 */
 	public void setInitX(double initX) {
 		this.initX = initX;
 	}
 
-
+	/**
+	 * modifie la position de base avant evitement
+	 * @param initY position en y de base
+	 */
 	public void setInitY(double initY) {
 		this.initY = initY;
 	}
 
-
+	/**
+	 * modifie la vitesse de base avant evitement
+	 * @param initSX vitesse de base en x
+	 */
 	public void setInitSX(double initSX) {
 		this.initSX = initSX;
 	}
 
-
+	/**
+	 * modifie la vitesse de base avant evitement
+	 * @param initSY vitesse de base en y
+	 */
 	public void setInitSY(double initSY) {
 		this.initSY = initSY;
 	}
 
-
+	/**
+	 * modifie le centre de la planete a eviter
+	 * @param cX coordonnee x du centre de la planete a eviter
+	 */
 	public void setcX(double cX) {
 		this.cX = cX;
 	}
 
-
+	/**
+	 * modifie le centre de la planete a eviter
+	 * @param cY coordonnee y du centre de la planete a eviter
+	 */
 	public void setcY(double cY) {
 		this.cY = cY;
 	}
@@ -313,7 +349,10 @@ public class SpaceShip implements Serializable {
 	}
 
 
-
+	/**
+	 * ALGO D'EVITEMENT POUR MODIFIER LA VITESSE ET LA DIRECTION DU VAISSEAU 
+	 * AFIN DE CONTOURNER UNE PLANETE
+	 */
 	public void evitate() {
 		double r = 0;		
 		if (initSY == 0) {
