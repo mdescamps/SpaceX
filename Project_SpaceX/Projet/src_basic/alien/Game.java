@@ -1051,15 +1051,21 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				 */
 				gc.setFont(Font.font("Helvetica", FontWeight.BOLD, 15));
 				for (int i = 0 ; i < percent.length ; i++) {
-					String percentage = "percentage : " + (int)((percent[i]+0.002)*100)+ "%";
+					int allSpaceShips = 0;
+					for (Planet allPlanetsOwned : planets) {
+						if (allPlanetsOwned.getPlayer() == i) {
+							allSpaceShips += allPlanetsOwned.getNbSpaceShips();
+						}
+					}
+					String percentage = "percentage : " + (int)((percent[i]+0.002)*100)+ "% : " + (int)(allSpaceShips*percent[i]) + "/" + allSpaceShips;
 					switch (i) {
 					case(0):
 						gc.setFill(Color.DEEPSKYBLUE);
-						gc.fillText(percentage, 95, 36);
+						gc.fillText(percentage, 125, 36);
 						break;
 					case(1):
 						gc.setFill(Color.RED);
-						gc.fillText(percentage, WIDTH - 95, 36);
+						gc.fillText(percentage, WIDTH - 125, 36);
 						break;
 					default:
 						gc.setFill(Color.BISQUE);
