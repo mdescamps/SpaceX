@@ -213,7 +213,7 @@ public class Game extends Application {
 					}
 				}
 			
-				if (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips() + 10 && StrongestEnnemyPlanet.getNbSpaceShips() < (nearestPlanet.getNbSpaceShips() + nearestPlanet.getShield()) - (weakestCible.getNbSpaceShips() + 5)) {
+				if (nearestPlanet.getNbSpaceShips() >= weakestCible.getNbSpaceShips() + 10 && StrongestEnnemyPlanet.getNbSpaceShips() < (nearestPlanet.getNbSpaceShips() + nearestPlanet.getShield()) - (weakestCible.getNbSpaceShips() + 10)) {
 			
 					SpaceshipsLauch(weakestCible.getNbSpaceShips() + 5, nearestPlanet, weakestCible);
 				
@@ -526,7 +526,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 					unSelectAll(planets);
 					Point2D p = new Point2D(e.getSceneX(), e.getSceneY());
 					for (Planet planet : planets) {
-						if (planet.getCircle().isInside(p) && planet.getPlayer() != -1) {
+						if (planet.getCircle().isInside(p)) {
 							planet.select();
 						}
 					}
@@ -544,12 +544,10 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 								/**
 								 * Attaque ou envoie de renfort d'une planete vers une autre
 								 */
-								if (planet2.getCircle().isInside(p) && planet2 != planet1 && (aiPlayers.length == 0 || planet1.getPlayer() == 0 ) && aiPlayers.length < 2) {
-									if (e.isControlDown()) {
-										int player = planet1.getPlayer();
-										number = (int)(percent[player] * planet1.getNbSpaceShips());
-									}
-									else {
+								if (planet2.getCircle().isInside(p) 
+										&& planet2 != planet1
+										&& (aiPlayers.length == 0 || planet1.getPlayer() == 0 ) 
+										&& aiPlayers.length < 2  && planet1.getPlayer() != -1) {
 																		
 										TextInputDialog ask = new TextInputDialog("guest");
 										ask.setTitle("control panel");
@@ -560,7 +558,6 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 										if (textIn.isPresent()) {
 											number = Integer.valueOf(textIn.get());
 										}
-									}
 										
 										
 										
@@ -568,6 +565,15 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 										
 										SpaceshipsLauch(number, planet1, planet2);
 										
+									}
+								}
+								
+								if (e.isControlDown() && planet1 == planet2 && planet1.getPlayer() != 0) {
+									for (Planet player0Planets : planets) {
+										if (player0Planets.getPlayer() == 0) {
+											number = (int)(percent[0] * player0Planets.getNbSpaceShips());
+											SpaceshipsLauch(number, player0Planets, planet2);
+										}
 									}
 								}
 								
