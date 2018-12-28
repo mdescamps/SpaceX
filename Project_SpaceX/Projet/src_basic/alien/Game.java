@@ -630,24 +630,24 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 												shieldControl.setGraphic(null);
 												shieldControl.setContentText("Shiel value :");
 												Optional<String> selection = shieldControl.showAndWait();
-												/*if(selection.isPresent()) {*/
+
 												String selected = selection.get();
-												if (selected == "Low(50)" && planet.getNbSpaceShips() >= 50) {
+												if (selected == "Low(50)" && planet.getNbSpaceShips() >= 50 && planet.getShield() < 100) {
 													planet.setShield(100);
-													}
-													else if (selected == "Standard(100)" && planet.getNbSpaceShips() >= 100) {
-														planet.setShield(200);
-													}
-													else if (selected == "Height(150)" && planet.getNbSpaceShips() >= 150) {
-														planet.setShield(300);
-													}
-													else {
-														Alert dialogW = new Alert(AlertType.WARNING);
-														dialogW.setTitle("Upgrade Impossible");
-														dialogW.setHeaderText(null);
-														dialogW.setContentText("No enough resources");
-														dialogW.showAndWait();
-													}
+												}
+												else if (selected == "Standard(100)" && planet.getNbSpaceShips() >= 100 && planet.getShield() < 200) {
+													planet.setShield(200);
+												}
+												else if (selected == "Height(150)" && planet.getNbSpaceShips() >= 150 && planet.getShield() < 300) {
+													planet.setShield(300);
+												}
+												else {
+													Alert dialogW = new Alert(AlertType.WARNING);
+													dialogW.setTitle("Upgrade Impossible");
+													dialogW.setHeaderText(null);
+													dialogW.setContentText("No enough resources or Shield already up to date");
+													dialogW.showAndWait();
+												}
 											}
 											
 											else if (choice.get() == btnRate) {
