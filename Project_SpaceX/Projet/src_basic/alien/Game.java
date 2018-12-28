@@ -853,6 +853,13 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 		 * Gere l'ensemble des animations
 		 */
 		new AnimationTimer() {
+			double[] dest = new double[2];
+			double initX;
+			double initY;
+			double initSX;
+			double initSY;
+			double cX;
+			double cY;
 			public void handle(long arg0) {
 				gc.drawImage(space, 0, 0);
 				for (Planet planet : planets) {
@@ -899,7 +906,12 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 						while(it.hasNext()) {
 							SpaceShip SpaceShip = it.next();
 							SpaceShip.travel();
-							SpaceShip.getSprite().updatePosition();
+							if (!SpaceShip.isEvitate()) {
+								SpaceShip.getSprite().updatePosition();
+							} else {
+								SpaceShip.evitate(dest, initX, initY, cX, cY, initSX, initSY);
+								SpaceShip.getSprite().updatePosition();
+							}
 							SpaceShip.setPosition();
 							if(planet.getCircle().isInside(SpaceShip.getPosition()) && SpaceShip.getDestination() == planet) {
 								if (planet.getPlayer() == SpaceShip.getPlayer()) {
@@ -926,10 +938,20 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 								SpaceShip.getSprite().render(gc);		
 							}
 						
-							if (planet.getCircle().isNear(SpaceShip.getPosition()) && SpaceShip.getDestination() != planet) {
-								SpaceShip.evitate(planet);
-								SpaceShip.travel();
-								SpaceShip.getSprite().render(gc);
+							if (planet.getCircle().isNear(SpaceShip.getPosition()) && SpaceShip.getDestination() != planet && !SpaceShip.isEvitate()) {
+								SpaceShip.setEvitate(true);
+								dest = SpaceShip.searchDest(planet);
+								initX = SpaceShip.getSprite().getX();
+								initY = SpaceShip.getSprite().getY();
+								cX = planet.getCircle().getCenter().getX();
+								cY = planet.getCircle().getCenter().getY();
+								initSX = SpaceShip.getSprite().getXSpeed();
+								initSY = SpaceShip.getSprite().getYSpeed();
+							}
+							
+							if (Math.abs(SpaceShip.getSprite().getX() - dest[0]) < 20 && Math.abs(SpaceShip.getSprite().getY() - dest[1]) < 20 && SpaceShip.isEvitate()) {
+								SpaceShip.getSprite().setSpeed(initSX, initSY);
+								SpaceShip.setEvitate(false);
 							}
 						}
 					}

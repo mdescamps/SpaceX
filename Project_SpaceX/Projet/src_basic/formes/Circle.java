@@ -84,7 +84,7 @@ public class Circle implements Serializable {
 	 * @return 		Vrais si le point est assez proche (ici distance de 10 pixels) du cerlce, Faux sinon
 	 */
 	public boolean isNear(Point2D p) {
-		return (this.getCenter().distance(p) <= this.getRadius() + 10);
+		return (this.getCenter().distance(p) <= this.getRadius() + 20);
 	}
 
 }
