@@ -588,7 +588,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 								if (e.isControlDown() && planet1 == planet2 && planet1.getPlayer() != 0) {
 									for (Planet player0Planets : planets) {
 										if (player0Planets.getPlayer() == 0) {
-											number = (int)(percent[0] * player0Planets.getNbSpaceShips() * player0Planets.getSpaceShipsFirePower());
+											number = (int)(percent[0] * player0Planets.getNbSpaceShips());
 											SpaceshipsLauch(number, player0Planets, planet2);
 										}
 									}
