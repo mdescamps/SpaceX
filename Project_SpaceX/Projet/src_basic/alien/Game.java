@@ -233,8 +233,8 @@ public class Game extends Application {
 public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 	
 	for (int i = 0 ; i < number ; i++) {
-		planet1.getAttacked();
-		SpaceShip S = new SpaceShip(0,planet2,new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT));												
+		planet1.getAttacked(1);
+		SpaceShip S = new SpaceShip(0,planet2,new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT),planet1.getSpaceShipsFirePower() );												
 		S.setPlayer(planet1.getPlayer());
 		S.setStart(planet1);
 		if (planet1.getSprite().getX() < planet2.getSprite().getX()) {
@@ -571,7 +571,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 								if (e.isControlDown() && planet1 == planet2 && planet1.getPlayer() != 0) {
 									for (Planet player0Planets : planets) {
 										if (player0Planets.getPlayer() == 0) {
-											number = (int)(percent[0] * player0Planets.getNbSpaceShips());
+											number = (int)(percent[0] * player0Planets.getNbSpaceShips() * player0Planets.getSpaceShipsFirePower());
 											SpaceshipsLauch(number, player0Planets, planet2);
 										}
 									}
@@ -596,9 +596,10 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 											
 											ButtonType btnShield = new ButtonType ("Shield(100)");
 											ButtonType btnRate = new ButtonType ("Production Rate(50)");
+											ButtonType btnFirePower = new ButtonType ("Fire power (50)");
 											ButtonType btnB = new ButtonType ("Back" , ButtonData.BACK_PREVIOUS);
 											
-											UpgradesBox.getButtonTypes().setAll(btnShield,btnRate,btnB);
+											UpgradesBox.getButtonTypes().setAll(btnShield,btnRate,btnFirePower,btnB);
 										
 											Optional<ButtonType> choice = UpgradesBox.showAndWait();
 											
@@ -616,14 +617,28 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 											}
 											
 											else if (choice.get() == btnRate) {
-												if (planet.getNbSpaceShips() >= 50) {
+												if (planet.getNbSpaceShips() >= 50 && planet.getProductionRateUpgrade() < 5) {
 													planet.upgradeProductionRate(5);
+													planet.addProductionRateUpgrade();
 												}
 												else {
 													Alert dialogW = new Alert(AlertType.WARNING);
 													dialogW.setTitle("Upgrade Impossible");
 													dialogW.setHeaderText(null);
-													dialogW.setContentText("No enough resources");
+													dialogW.setContentText("No enough resources or planete enough rate upgraded");
+													dialogW.showAndWait();
+												}
+											}
+											
+											else if (choice.get() == btnFirePower) {
+												if (planet.getNbSpaceShips() >= 50 && planet.getSpaceShipsFirePower() < 5) {
+													planet.addFirePowerUpgrade();
+												}
+												else {
+													Alert dialogW = new Alert(AlertType.WARNING);
+													dialogW.setTitle("Upgrade Impossible");
+													dialogW.setHeaderText(null);
+													dialogW.setContentText("No enough resources or planete enough fire power upgraded");
 													dialogW.showAndWait();
 												}
 											}
@@ -642,7 +657,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 				
 				
 				if (e.isShiftDown()) {
-					SpaceShip S = new SpaceShip(0,planets.get(0),new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT));
+					SpaceShip S = new SpaceShip(0,planets.get(0),new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT),1);
 					S.setPlayer(0);
 					S.setStart(planets.get(0));
 					S.getSprite().setSpeed(1, 1);
@@ -1005,7 +1020,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 								}
 								else {
 									if (planet.getShield() <= 0) {
-										planet.getAttacked();
+										planet.getAttacked(SpaceShip.getFirePower());
 										if (planet.getNbSpaceShips() < 0) {
 											planet.setPlayer(SpaceShip.getPlayer());
 											planet.setNbSpaceShips(0);
@@ -1054,7 +1069,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 					int allSpaceShips = 0;
 					for (Planet allPlanetsOwned : planets) {
 						if (allPlanetsOwned.getPlayer() == i) {
-							allSpaceShips += allPlanetsOwned.getNbSpaceShips();
+							allSpaceShips += allPlanetsOwned.getNbSpaceShips()*allPlanetsOwned.getSpaceShipsFirePower();
 						}
 					}
 					String percentage = "percentage : " + (int)((percent[i]+0.002)*100)+ "% : " + (int)(allSpaceShips*percent[i]) + "/" + allSpaceShips;
@@ -1072,8 +1087,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 					}
 				}
 				gc.setTextAlign(TextAlignment.RIGHT);
-				gc.setFont(Font.font("Helvetica", FontWeight.BOLD, 24));
-				
+				gc.setFont(Font.font("Helvetica", FontWeight.BOLD, 20));
 			}
 		}.start();
 	}

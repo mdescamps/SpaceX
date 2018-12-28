@@ -9,6 +9,7 @@ public class SpaceShip implements Serializable {
 	
 	private static final long serialVersionUID = 2244946884762466707L;
 	private int speed;
+	private int firePower;
 	private Sprite sprite;
 	private Point2D p;
 	private int player;
@@ -24,12 +25,30 @@ public class SpaceShip implements Serializable {
 	 * @param p			Planete de destination du vaisseau
 	 * @param sprite 	Sprite associe au vaisseau
 	 */
-	public SpaceShip(int s, Planet p, Sprite sprite) {
+	public SpaceShip(int s, Planet p, Sprite sprite, int firePower) {
 		this.speed = s;
 		this.sprite = sprite;
 		this.sprite.setSpeed(this.sprite.getXSpeed() * speed, this.sprite.getYSpeed());
 		this.player = -1;
 		this.destination = p;
+		this.firePower = firePower;
+	}
+	
+	
+	/**
+	 * Methode qui infome sur la puissance du vaisseau
+	 * @return	Un entier qui représente la puissance du vaisseau
+	 */
+	public int getFirePower() {
+		return this.firePower;
+	}
+	
+	/**
+	 * Methode qui permet de modifier la puissance d'un vaisseau
+	 * @param firePower 	Entier qui represente la nouvelle puissance du vaisseau
+	 */
+	public void setFirePower(int firePower) {
+		this.firePower = firePower;
 	}
 
 	

@@ -10,9 +10,11 @@ public class Planet implements Serializable {
 
 	private static final long serialVersionUID = -6763150003302789101L;
 	private int productionRate;
+	private int productionRateUpgrades;
 	private int player;
 	private ArrayList<SpaceShip> spaceShips;
 	private int nbSpaceShips;
+	private int SpaceShipsFirePower;
 	private Sprite sprite;
 	private Circle c;
 	private boolean selected;
@@ -36,9 +38,26 @@ public class Planet implements Serializable {
 		this.c = new Circle(center,(sprite.height() / 2));
 		this.selected = false;
 		this.Shield = 0;
+		this.SpaceShipsFirePower = 1;
 	}
 	
-	Planet(){}
+	
+	
+	/**
+	 * Methoden qui informe sur la puissance des vaisseaux d'une planete
+	 * @param SpaceShipsFirePower 	Un entier qui correspond a la puissance des vaisseaux de la planete
+	 */
+	public void addFirePowerUpgrade() {
+		this.SpaceShipsFirePower++;
+	}
+	
+	/**
+	 * Methode qui retourne la puissance des vaisseaux de la planete
+	 * @return		Un entier qui correspon a la puissance des vaisseaux
+	 */
+	public int getSpaceShipsFirePower() {
+		return this.SpaceShipsFirePower;
+	}
 	
 	
 	
@@ -114,31 +133,14 @@ public class Planet implements Serializable {
 		this.nbSpaceShips ++;
 	}
 	
-	/**
-	 * Methode qui initie l'envoie de vaisseaux en direction d'une autre planete
-	 * @param p			La planete cible
-	 * @param number 	quantite de vaisseaux envoyes
-	 */
-	public void sendShip(Planet p, int number) {
-		this.nbSpaceShips -= number;
-		if (this.player != p.getPlayer()) {
-			for (int i = 0 ; i < number ; i++) {
-				p.getAttacked();
-			}
-		}
-		else {
-			for(int i = 0 ;i < number ; i++) {
-				p.productShip();
-			}
-		}
-	}
+
 	
 	/**
 	 * Methode qui gere l'interaction d'un vaisseau qui n'appartient pas au proprietaire de la planete 
 	 * et donc decremente le nombre de vaisseaux qu'elle possede
 	 */
-	public void  getAttacked() {
-		this.nbSpaceShips--;
+	public void  getAttacked(int power) {
+		this.nbSpaceShips -= power;
 	}
 	
 	
@@ -187,9 +189,28 @@ public class Planet implements Serializable {
 		this.productionRate = productionRate;
 	}
 	
+	/**
+	 * Methode qui modifie la vitesse de production de la planete
+	 * @param Rate		Un entier qui correspond a la quantite dont il faut modifier la production
+	 */
 	public void upgradeProductionRate(int Rate) {
 		this.nbSpaceShips -= 50;
 		this.productionRate -= Rate;
+	}
+	
+	/**
+	 * Methode qui exprime le fait que la production de la planete a etait amelioree par l'augmentation d'un entier
+	 */
+	public void addProductionRateUpgrade() {
+		this.productionRateUpgrades++;
+	}
+	
+	/**
+	 * Methode qui informe sur le nombre de fois qu'a etait ameliore la production de la planete
+	 * @return	Un entier qui correspond au nombre d'amelioration de la production
+	 */
+	public int getProductionRateUpgrade() {
+		return this.productionRateUpgrades;
 	}
 	
 	
