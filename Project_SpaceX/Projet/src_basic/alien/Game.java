@@ -595,6 +595,15 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 									}
 								}
 								
+								if (e.isAltDown() && planet1 == planet2 && planet1.getPlayer() != 1) {
+									for (Planet player0Planets : planets) {
+										if (player0Planets.getPlayer() == 1) {
+											number = (int)(percent[1] * player0Planets.getNbSpaceShips());
+											SpaceshipsLauch(number, player0Planets, planet2);
+										}
+									}
+								}
+								
 								/**
 								 * Amelioration des planetes
 								 */
