@@ -26,6 +26,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonBar.ButtonData;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ChoiceDialog;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
@@ -611,7 +612,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 											UpgradesBox.setGraphic(null);
 											UpgradesBox.setContentText(null);
 											
-											ButtonType btnShield = new ButtonType ("Shield(100)");
+											ButtonType btnShield = new ButtonType ("Shield");
 											ButtonType btnRate = new ButtonType ("Production Rate(50)");
 											ButtonType btnFirePower = new ButtonType ("Fire power (50)");
 											ButtonType btnB = new ButtonType ("Back" , ButtonData.BACK_PREVIOUS);
@@ -621,16 +622,32 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 											Optional<ButtonType> choice = UpgradesBox.showAndWait();
 											
 											if (choice.get() == btnShield) {
-												if (planet.getNbSpaceShips() >= 100) {
-													planet.setShield(300);
-												}
-												else {
-													Alert dialogW = new Alert(AlertType.WARNING);
-													dialogW.setTitle("Upgrade Impossible");
-													dialogW.setHeaderText(null);
-													dialogW.setContentText("No enough resources");
-													dialogW.showAndWait();
-												}
+												
+												String[] shields = {"Low(50)", "Standard(100)", "Height(150)"};
+												ChoiceDialog<String> shieldControl = new ChoiceDialog<>(shields[0], shields);
+												shieldControl.setTitle("Shield upgrade control panel");
+												shieldControl.setHeaderText(null);
+												shieldControl.setGraphic(null);
+												shieldControl.setContentText("Shiel value :");
+												Optional<String> selection = shieldControl.showAndWait();
+												/*if(selection.isPresent()) {*/
+												String selected = selection.get();
+												if (selected == "Low(50)" && planet.getNbSpaceShips() >= 50) {
+													planet.setShield(100);
+													}
+													else if (selected == "Standard(100)" && planet.getNbSpaceShips() >= 100) {
+														planet.setShield(200);
+													}
+													else if (selected == "Height(150)" && planet.getNbSpaceShips() >= 150) {
+														planet.setShield(300);
+													}
+													else {
+														Alert dialogW = new Alert(AlertType.WARNING);
+														dialogW.setTitle("Upgrade Impossible");
+														dialogW.setHeaderText(null);
+														dialogW.setContentText("No enough resources");
+														dialogW.showAndWait();
+													}
 											}
 											
 											else if (choice.get() == btnRate) {
