@@ -159,7 +159,8 @@ public class Game extends Application {
 		
 		
 		
-		ArrayList<Planet> aiCibles = ennemyPlanets;
+		ArrayList<Planet> aiCibles = new ArrayList<Planet>();
+		aiCibles.addAll(ennemyPlanets);
 		aiCibles.addAll(freePlanets);
 		
 		Collections.sort(aiCibles, new Comparator<Planet>() {
@@ -181,7 +182,7 @@ public class Game extends Application {
 			
 		});
 		
-		if (aiCibles.size() > 0 && aiPlanets.size() > 0 && Pause == false) {
+		if (ennemyPlanets.size() > 0 && aiCibles.size() > 0 && aiPlanets.size() > 0 && Pause == false) {
 		
 			if (Difficulty == 1 && timer%360 == 0) {
 			
