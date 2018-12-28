@@ -48,6 +48,7 @@ public class Planet implements Serializable {
 	 * @param SpaceShipsFirePower 	Un entier qui correspond a la puissance des vaisseaux de la planete
 	 */
 	public void addFirePowerUpgrade() {
+		this.nbSpaceShips -= 50;
 		this.SpaceShipsFirePower++;
 	}
 	

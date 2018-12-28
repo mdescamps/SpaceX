@@ -234,9 +234,26 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 	
 	for (int i = 0 ; i < number ; i++) {
 		planet1.getAttacked(1);
-		SpaceShip S = new SpaceShip(0,planet2,new Sprite("images/spaceship.png", 20, 15, 0, 0, WIDTH, HEIGHT),planet1.getSpaceShipsFirePower() );												
+		SpaceShip S = new SpaceShip(0,planet2,new Sprite("images/spaceship.png", 25, 20, 0, 0, WIDTH, HEIGHT),planet1.getSpaceShipsFirePower() );												
 		S.setPlayer(planet1.getPlayer());
 		S.setStart(planet1);
+		
+		switch(planet1.getSpaceShipsFirePower()) {
+		case(2):
+			S.setSprite(new Sprite("images/spaceship2.png",25,20,0,0,WIDTH,HEIGHT));
+			break;
+		case(3):
+			S.setSprite(new Sprite("images/spaceship3.png",25,20,0,0,WIDTH,HEIGHT));
+			break;
+		case(4):
+			S.setSprite(new Sprite("images/spaceship4.png",25,20,0,0,WIDTH,HEIGHT));
+			break;
+		case(5):
+			S.setSprite(new Sprite("images/spaceship5.png",25,20,0,0,WIDTH,HEIGHT));
+			break;
+		default:
+		}
+		
 		if (planet1.getSprite().getX() < planet2.getSprite().getX()) {
 			if (planet1.getSprite().getY() < planet2.getSprite().getY()) {
 				S.getSprite().setPosition(planet1.getCircle().getCenter().getX() + planet1.getCircle().getRadius(),
