@@ -1079,7 +1079,7 @@ public void SpaceshipsLauch(int number, Planet planet1, Planet planet2) {
 								initSY = SpaceShip.getSprite().getYSpeed();
 							}
 							
-							if (Math.abs(SpaceShip.getSprite().getX() - dest[0]) < 20 && Math.abs(SpaceShip.getSprite().getY() - dest[1]) < 20 && SpaceShip.isEvitate()) {
+							if (Math.abs(SpaceShip.getSprite().getX() - dest[0]) < 30 && Math.abs(SpaceShip.getSprite().getY() - dest[1]) < 30 && SpaceShip.isEvitate()) {
 								SpaceShip.getSprite().setSpeed(initSX, initSY);
 								SpaceShip.setEvitate(false);
 							}

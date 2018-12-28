@@ -259,113 +259,196 @@ public class SpaceShip implements Serializable {
 	public void evitate(double[] dest, double initX, double initY, double cX, double cY, double initSX, double initSY) {
 		double r = 0;		
 		if (initSY == 0) {
-			r = Math.abs(dest[0] - initX) / 2;
+			r = Math.abs(cX - initX);
 			if (dest[0] > initX && dest[1] < cY) {
-				this.getSprite().setSpeed( 0, -0.2);
+				this.getSprite().setSpeed( 0, -0.5);
 				if (this.getSprite().getY() <= cY - r) {
-					this.getSprite().setSpeed(0.2, 0);
+					this.getSprite().setSpeed(0.5, 0);
 				} 
 				if (this.getSprite().getX() >= dest[0]) {
-					this.getSprite().setSpeed(0, 0.2);
+					this.getSprite().setSpeed(0, 0.5);
 				}
 			}
 			if (dest[0] > initX && dest[1] > cY) {
-				this.getSprite().setSpeed( 0, 0.2);
+				this.getSprite().setSpeed( 0, 0.5);
 				if (this.getSprite().getY() > cY + r) {
-					this.getSprite().setSpeed(0.2, 0);
+					this.getSprite().setSpeed(0.5, 0);
 				} 
 				if (this.getSprite().getX() > dest[0]) {
-					this.getSprite().setSpeed(0, -0.2);
+					this.getSprite().setSpeed(0, -0.5);
 				}
 			}
 			if (dest[0] < initX && dest[1] < cY) {
-				this.getSprite().setSpeed( 0, -0.2);
+				this.getSprite().setSpeed( 0, -0.5);
 				if (this.getSprite().getY() <= cY - r) {
-					this.getSprite().setSpeed(-0.2, 0);
+					this.getSprite().setSpeed(-0.5, 0);
 				}
 				if (this.getSprite().getX() <= dest[0]) {
-					this.getSprite().setSpeed(0, 0.2);
+					this.getSprite().setSpeed(0, 0.5);
 				}
 			}
 			if (dest[0] < initX && dest[1] > cY) {
-				this.getSprite().setSpeed( 0, 0.2);
+				this.getSprite().setSpeed( 0, 0.5);
 				if (this.getSprite().getY() > cY + r) {
-					this.getSprite().setSpeed(-0.2, 0);
+					this.getSprite().setSpeed(-0.5, 0);
 				} 
 				if (this.getSprite().getX() < dest[0]) {
-					this.getSprite().setSpeed(0, -0.2);
+					this.getSprite().setSpeed(0, -0.5);
 				}
 			}
 		}
 		
 		if (initSX == 0) {
-			r = Math.abs(dest[1] - initY) / 2;
+			r = Math.abs(cY - initY);
 			if (dest[1] > initY && dest[0] < cX) {
-				this.getSprite().setSpeed( -0.2, 0);
-				if (this.getSprite().getX() <= cX - r) {
-					this.getSprite().setSpeed(0, 0.2);
+				this.getSprite().setSpeed( -0.5, 0);
+				if (this.getSprite().getX() <= cX - 1.5 * r) {
+					this.getSprite().setSpeed(0, 0.5);
 				}
-				if (this.getSprite().getY() >= dest[0]) {
-					this.getSprite().setSpeed(0.2, 0);
+				if (this.getSprite().getY() >= dest[1]) {
+					this.getSprite().setSpeed(0.5, 0);
 				}
 			}
 			if (dest[1] > initY && dest[0] > cX) {
-				this.getSprite().setSpeed( 0.2, 0);
-				if (this.getSprite().getX() <= cX - r) {
-					this.getSprite().setSpeed(0, 0.2);
+				this.getSprite().setSpeed( 0.5, 0);
+				if (this.getSprite().getX() >= cX + 1.5 *r) {
+					this.getSprite().setSpeed(0, 0.5);
 				}
-				if (this.getSprite().getY() >= dest[0]) {
-					this.getSprite().setSpeed(-0.2, 0);
+				if (this.getSprite().getY() >= dest[1]) {
+					this.getSprite().setSpeed(-0.5, 0);
 				}
 			}
 			if (dest[1] < initY && dest[0] < cX) {
-				this.getSprite().setSpeed( -0.2, 0);
-				if (this.getSprite().getX() <= cX - r) {
-					this.getSprite().setSpeed(0, -0.2);
+				this.getSprite().setSpeed( -0.5, 0);
+				if (this.getSprite().getX() <= cX - 1.5 * r) {
+					this.getSprite().setSpeed(0, -0.5);
 				} 
-				if (this.getSprite().getY() >= dest[0]) {
-					this.getSprite().setSpeed(0.2, 0);
+				if (this.getSprite().getY() <= dest[1]) {
+					this.getSprite().setSpeed(0.5, 0);
 				}
 			}
 			if (dest[1] < initY && dest[0] > cX) {
-				this.getSprite().setSpeed( 0.2, 0);
-				if (this.getSprite().getX() <= cX - r) {
-					this.getSprite().setSpeed(0, -0.2);
+				this.getSprite().setSpeed( 0.5, 0);
+				if (this.getSprite().getX() >= cX + 1.5 * r) {
+					this.getSprite().setSpeed(0, -0.5);
 				} 
-				if (this.getSprite().getY() >= dest[0]) {
-					this.getSprite().setSpeed(-0.2, 0);
+				if (this.getSprite().getY() <= dest[1]) {
+					this.getSprite().setSpeed(-0.5, 0);
 				}
 			}
 		}
 		
 		if (initSX != 0 && initSY != 0) {
-//			r = Math.abs(dest[1] - initY) / 2;
-//			
-//			if (initX < dest[0] && initY < dest[1]) {
-//				if (r > cX) {
-//					this.getSprite().setSpeed(initSX, -initSY);
-//					
-//					if (this.getSprite().getX() >= cX) {
-//						this.getSprite().setSpeed(initSX, initSY);
-//					}
-//					
-//					if (this.getSprite().getY() >= cY) {
-//						this.getSprite().setSpeed(-initSX, initSY);
-//					}
-//				}
-//				if (r < cX) {
-//					this.getSprite().setSpeed(-initSX, initSY);
-//					
-//					if (this.getSprite().getX() >= cX) {
-//						this.getSprite().setSpeed(initSX, initSY);
-//					}
-//					
-//					if (this.getSprite().getY() >= cY) {
-//						this.getSprite().setSpeed(initSX, -initSY);
-//					}
-//				}
-//			}
-			this.getSprite().setPosition(dest[0], dest[1]);
+			double diffX = Math.abs(dest[0] - initX) / 2;
+			double diffY = Math.abs(dest[1] - initY) / 2;
+			
+			if (initX < dest[0] && initY < dest[1]) {
+				diffX = initX + diffX;
+				diffY = initY + diffY;
+				if (diffX > cX) {
+					this.getSprite().setSpeed(initSX, -initSY);
+					
+					if (this.getSprite().getX() >= diffX) {
+						this.getSprite().setSpeed(initSX, initSY);
+					}
+					
+					if (this.getSprite().getY() >= diffY) {
+						this.getSprite().setSpeed(-initSX, initSY);
+					}
+				}
+				if (diffX < cX) {
+					this.getSprite().setSpeed(-initSX, initSY);
+					
+					if (this.getSprite().getY() >= diffY) {
+						this.getSprite().setSpeed(initSX, initSY);
+					}
+					
+					if (this.getSprite().getX() >= diffX) {
+						this.getSprite().setSpeed(initSX, -initSY);
+					}
+				}
+			}
+			
+			if (initX > dest[0] && initY < dest[1]) {
+				diffX = initX - diffX;
+				diffY = initY + diffY;
+				if (diffX < cX) {
+					this.getSprite().setSpeed(initSX, -initSY);
+					
+					if (this.getSprite().getX() <= diffX) {
+						this.getSprite().setSpeed(initSX, initSY);
+					}
+					
+					if (this.getSprite().getY() >= diffY) {
+						this.getSprite().setSpeed(-initSX, initSY);
+					}
+				}
+				if (diffX > cX) {
+					this.getSprite().setSpeed(-initSX, initSY);
+					
+					if (this.getSprite().getY() >= diffY) {
+						this.getSprite().setSpeed(initSX, initSY);
+					}
+					
+					if (this.getSprite().getX() >= diffX) {
+						this.getSprite().setSpeed(initSX, -initSY);
+					}
+				}
+			}
+			
+			if (initX < dest[0] && initY > dest[1]) {
+				diffX = initX + diffX;
+				diffY = initY - diffY;
+				if (diffX < cX) {
+					this.getSprite().setSpeed(-initSX, initSY);
+					
+					if (this.getSprite().getY() <= diffY) {
+						this.getSprite().setSpeed(initSX, initSY);
+					}
+					
+					if (this.getSprite().getX() >= diffX) {
+						this.getSprite().setSpeed(initSX, -initSY);
+					}
+				}
+				if (diffX > cX) {
+					this.getSprite().setSpeed(initSX, -initSY);
+					
+					if (this.getSprite().getX() >= diffX) {
+						this.getSprite().setSpeed(initSX, initSY);
+					}
+					
+					if (this.getSprite().getY() <= diffY) {
+						this.getSprite().setSpeed(-initSX, initSY);
+					}
+				}
+			}
+			
+			if (initX > dest[0] && initY > dest[1]) {
+				diffX = initX - diffX;
+				diffY = initY - diffY;
+				if (diffX < cX) {
+					this.getSprite().setSpeed(initSX, -initSY);
+					
+					if (this.getSprite().getX() <= diffX) {
+						this.getSprite().setSpeed(initSX, initSY);
+					}
+					
+					if (this.getSprite().getY() <= diffY) {
+						this.getSprite().setSpeed(-initSX, initSY);
+					}
+				}
+				if (diffX > cX) {
+					this.getSprite().setSpeed(-initSX, initSY);
+					
+					if (this.getSprite().getY() <= diffY) {
+						this.getSprite().setSpeed(initSX, initSY);
+					}
+					
+					if (this.getSprite().getX() <= diffX) {
+						this.getSprite().setSpeed(initSX, -initSY);
+					}
+				}
+			}
 		}
 		
 	}
